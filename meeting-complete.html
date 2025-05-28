@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smartsheet/ZoomInfo: QBR + Roadmap - Chorus by ZoomInfo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom styles */
+    .chorus-logo {
+      color: #1976D2;
+    }
+    
+    .chorus-waveform {
+      fill: #1976D2;
+    }
+    
+    /* User dropdown styles */
+    .user-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5rem;
+      width: 240px;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      z-index: 50;
+      overflow: hidden;
+      display: none;
+      border: 1px solid #E5E7EB;
+    }
+    
+    .user-dropdown.active {
+      display: block;
+    }
+    
+    .user-dropdown-header {
+      padding: 1rem;
+      border-bottom: 1px solid #E5E7EB;
+      background-color: #F9FAFB;
+    }
+    
+    .user-dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      color: #374151;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    
+    .user-dropdown-item:hover {
+      background-color: #F3F4F6;
+      color: #1976D2;
+    }
+    
+    .user-dropdown-item svg {
+      margin-right: 0.75rem;
+      transition: color 0.2s ease;
+    }
+
+    /* Enhanced video player styles */
+    .video-container {
+      background: linear-gradient(135deg, #1e1e1e 0%, #000 100%);
+      border-radius: 0.75rem;
+      position: relative;
+      aspect-ratio: 16/9;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+      border: 1px solid #374151;
+    }
+
+    .video-controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .play-button {
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: none;
+    }
+
+    .play-button:hover {
+      background: white;
+      transform: scale(1.05);
+      box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.15);
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 6px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 3px;
+      position: relative;
+      cursor: pointer;
+      transition: height 0.2s ease;
+    }
+
+    .progress-bar:hover {
+      height: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1976D2 0%, #42A5F5 100%);
+      border-radius: 3px;
+      width: 8.5%;
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .progress-bar:hover .progress-fill::after {
+      opacity: 1;
+    }
+
+    .video-control-button {
+      color: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.1);
+      border: none;
+      padding: 0.5rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .video-control-button:hover {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+
+    /* Enhanced speaker timeline */
+    .speaker-timeline-container {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: 1px solid #E5E7EB;
+    }
+
+    .speaker-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background: #F9FAFB;
+      border-radius: 0.5rem;
+      border: 1px solid #E5E7EB;
+    }
+
+    .speaker-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+      margin-right: 0.75rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .speaker-timeline {
+      height: 24px;
+      background: #F3F4F6;
+      border-radius: 12px;
+      margin-top: 0.75rem;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #E5E7EB;
+    }
+
+    .speaker-segment {
+      height: 100%;
+      position: absolute;
+      top: 0;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .speaker-segment:hover {
+      transform: scaleY(1.1);
+      z-index: 1;
+    }
+
+    .speaker-percentage {
+      font-weight: 600;
+      color: #1976D2;
+      font-size: 0.875rem;
+    }
+
+    /* Enhanced tab styles */
+    .tab-container {
+      background: white;
+      border-bottom: 1px solid #E5E7EB;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .tab-button {
+      padding: 1rem 1.25rem;
+      border-bottom: 3px solid transparent;
+      color: #6B7280;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.875rem;
+      position: relative;
+    }
+
+    .tab-button.active {
+      color: #1976D2;
+      border-bottom-color: #1976D2;
+      background: linear-gradient(to bottom, transparent 0%, rgba(25, 118, 210, 0.05) 100%);
+    }
+
+    .tab-button:hover:not(.active) {
+      color: #374151;
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .action-assignee {
+      font-weight: 600;
+      color: #1976D2;
+    }
+
+    /* Expandable Panel Styles */
+    .expandable-panel {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .expandable-panel:hover {
+      border-color: #D1D5DB;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      background: #F9FAFB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid transparent;
+    }
+
+    .panel-header:hover {
+      background: #F3F4F6;
+    }
+
+    .panel-header.expanded {
+      border-bottom-color: #E5E7EB;
+      background: #F3F4F6;
+    }
+
+    .panel-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #111827;
+      display: flex;
+      align-items: center;
+    }
+
+    .panel-chevron {
+      width: 16px;
+      height: 16px;
+      color: #6B7280;
+      transition: transform 0.2s ease;
+    }
+
+    .panel-chevron.expanded {
+      transform: rotate(90deg);
+    }
+
+    .panel-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .panel-content.expanded {
+      max-height: 2000px;
+    }
+
+    .panel-content-inner {
+      padding: 1rem;
+      background: white;
+    }
+
+    /* Conversation metrics styles */
+    .metric-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #F3F4F6;
+    }
+
+    .metric-item:last-child {
+      border-bottom: none;
+    }
+
+    .metric-label {
+      display: flex;
+      align-items: center;
+      font-size: 0.875rem;
+      color: #374151;
+    }
+
+    .metric-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 0.75rem;
+    }
+
+    .metric-dot.green {
+      background-color: #10B981;
+    }
+
+    .metric-dot.red {
+      background-color: #EF4444;
+    }
+
+    .metric-value {
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: #111827;
+    }
+
+    .info-icon {
+      width: 16px;
+      height: 16px;
+      margin-left: 0.5rem;
+      color: #9CA3AF;
+      cursor: help;
+    }
+
+    /* Hide scrollbar for tabs */
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Header -->
+  <header class="border-b border-gray-200 bg-white">
+    <div class="flex items-center justify-between px-4 py-2">
+      <div class="flex items-center">
+        <a href="index.html" class="flex items-center mr-8">
+          <svg width="24" height="24" viewBox="0 0 24 24" class="chorus-waveform">
+            <path d="M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M7 14C7 14 8.5 16 12 16C15.5 16 17 14 17 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M7 10C7 10 8.5 8 12 8C15.5 8 17 10 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M12 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          <span class="ml-2 text-xl font-semibold chorus-logo">Chorus</span>
+        </a>
+        
+        <nav class="hidden md:flex space-x-8">
+          <a href="index.html" class="text-gray-600 hover:text-blue-600 py-4 font-medium">Home</a>
+          <a href="#" class="text-blue-600 border-b-2 border-blue-600 py-4 font-medium">Engagements</a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">Deals</a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">Playlists</a>
+        </nav>
+      </div>
+      
+      <div class="flex items-center relative">
+        <button id="user-menu-button" class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-medium text-white">
+          GP
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Meeting Header -->
+  <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+    <div class="flex items-center">
+      <button onclick="history.back()" class="mr-4 p-2 hover:bg-gray-100 rounded">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <h1 class="text-xl font-semibold text-gray-900">Smartsheet/ZoomInfo: QBR + Roadmap</h1>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex min-h-screen">
+    <!-- Video Section -->
+    <div class="flex-1 p-6">
+      <div class="video-container">
+        <div class="w-full h-full bg-gray-900 rounded-lg flex items-center justify-center relative">
+          <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+               alt="Meeting participants" 
+               class="w-full h-full object-cover rounded-lg">
+          
+          <!-- Video Controls -->
+          <div class="video-controls">
+            <button class="play-button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5,3 19,12 5,21"/>
+              </svg>
+            </button>
+            
+            <div class="flex items-center text-white text-sm">
+              <span>1.5x</span>
+            </div>
+            
+            <div class="flex items-center text-white text-sm">
+              <span>15</span>
+            </div>
+            
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+            
+            <div class="flex items-center text-white text-sm">
+              <span>00:00 / 01:02:47</span>
+            </div>
+            
+            <div class="flex items-center text-white text-sm">
+              <span>1.25x</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Speaker Timeline -->
+      <div class="speaker-timeline-container">
+        <div class="text-center text-gray-500 text-sm mb-4">
+          Speaker Separation Unavailable
+        </div>
+        
+        <div class="speaker-info">
+          <div class="speaker-avatar" style="background-color: #EF4444;">
+            D
+          </div>
+          <div class="flex-1">
+            <div class="font-medium text-gray-900">Deck</div>
+          </div>
+          <div class="speaker-percentage" style="color: #EF4444;">65%</div>
+        </div>
+        
+        <div class="speaker-timeline">
+          <div class="speaker-segment" style="left: 0%; width: 65%; background: linear-gradient(90deg, #EF4444 0%, #DC2626 100%);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="w-96 bg-white border-l border-gray-200">
+      <!-- Tabs -->
+      <div class="border-b border-gray-200">
+        <div class="flex overflow-x-auto scrollbar-hide">
+          <button class="tab-button active flex-shrink-0" onclick="switchTab('overview')">Overview</button>
+          <button class="tab-button flex-shrink-0" onclick="switchTab('highlights')">Detailed</button>
+          <button class="tab-button flex-shrink-0" onclick="switchTab('comments')">Comments</button>
+          <button class="tab-button flex-shrink-0" onclick="switchTab('transcript')">Transcript</button>
+        </div>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="p-6 overflow-y-auto" style="height: calc(100vh - 200px);">
+        <!-- Overview Tab -->
+        <div id="overview-tab">
+          <!-- Meeting Details -->
+          <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Meeting Details</h3>
+            
+            <div class="space-y-3">
+              <div>
+                <span class="text-sm font-medium text-gray-700">Meeting Date:</span>
+                <span class="text-sm text-gray-900 ml-2">May 16, 2025</span>
+              </div>
+              
+              <div>
+                <span class="text-sm font-medium text-gray-700">Participants:</span>
+                <span class="text-sm text-gray-900 ml-2">Krista Hatem</span>
+                <span class="text-sm text-blue-600 ml-1">+6</span>
+              </div>
+              
+              <div>
+                <span class="text-sm font-medium text-gray-700">Account:</span>
+                <a href="#" class="text-sm text-blue-600 ml-2 hover:underline">Smartsheet Inc</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deal Context -->
+          <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Deal Context</h3>
+            
+            <div class="space-y-3">
+              <div>
+                <a href="#" class="text-sm text-blue-600 hover:underline">Smartsheet Bulk Credit Processing Issue Refund</a>
+              </div>
+              
+              <div>
+                <span class="text-sm text-gray-700">Stage at time of call:</span>
+                <span class="text-sm font-medium text-gray-900 ml-2">Stage 4: Negotiate</span>
+              </div>
+              
+              <div>
+                <span class="text-sm text-gray-700">Close date:</span>
+                <span class="text-sm text-gray-900 ml-2">May 29, 2025</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meeting Summary -->
+          <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Meeting Summary</h3>
+            
+            <div class="space-y-6">
+              <!-- Action Items -->
+              <div>
+                <h4 class="text-sm font-medium text-gray-900 mb-3"># Action Items</h4>
+                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
+                  <p>1. <span class="action-assignee">Gabe</span> to schedule a follow-up meeting with Chad to discuss how ZoomInfo features can align with Smartsheet's upcoming account planning and Vista value selling initiatives</p>
+                  
+                  <p>2. <span class="action-assignee">Gabe</span> to provide recommended custom prompts for account insight summaries</p>
+                  
+                  <p>3. <span class="action-assignee">Krista and Thor</span> to work on updating ROI metrics to focus more on revenue sourced metrics rather than time savings</p>
+                  
+                  <p>4. <span class="action-assignee">ZoomInfo team</span> to provide more detailed metrics with speaker notes in future presentations</p>
+                  
+                  <p>5. <span class="action-assignee">ZoomInfo team</span> to support Chad with enablement for sellers to increase platform adoption</p>
+                </div>
+              </div>
+
+              <!-- Meeting Summary Points -->
+              <div>
+                <h4 class="text-sm font-medium text-gray-900 mb-3"># Meeting Summary</h4>
+                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
+                  <p>1. This was an introductory meeting between ZoomInfo and Smartsheet teams, with a focus on introducing Chad Dyar (new Director of Sales Enablement at Smartsheet) to the partnership.</p>
+                  
+                  <p>2. Smartsheet recently renewed a 2-year agreement with ZoomInfo (expires April 2027) and has a separate Chorus agreement (expires October 2026).</p>
+                  
+                  <p>3. Smartsheet is using multiple ZoomInfo products including Co-Pilot, contact/company data, form completion, MarketingOS, and RingLead cleanse for data hygiene.</p>
+                  
+                  <p>4. Usage metrics showed opportunities for improvement - only 56% of users are active in the last 30 days, and there's lower than expected engagement with features like intent searches and scoops.</p>
+                  
+                  <p>5. Chad expressed interest in focusing on revenue-sourced metrics rather than time-saving metrics for ROI calculations.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Tab with Expandable Panels -->
+        <div id="highlights-tab" class="hidden">
+          <!-- Executive Summary Panel - Open by Default -->
+          <div class="expandable-panel">
+            <div class="panel-header expanded" onclick="togglePanel('executive-summary')">
+              <div class="panel-title">Executive Summary</div>
+              <svg class="panel-chevron expanded" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+            <div class="panel-content expanded" id="executive-summary-content">
+              <div class="panel-content-inner">
+                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
+                  <p>This meeting served as an introductory QBR between ZoomInfo and Smartsheet, with a particular focus on introducing Chad Dyar, the new Director of Sales Enablement at Smartsheet, to the partnership. The session was intentionally kept high-level as a precursor to a more formal business review in the future.</p>
+                  
+                  <p>The ZoomInfo team presented an overview of how Smartsheet is currently utilizing their platform, reviewed the recently renewed contract, discussed current usage metrics, and shared upcoming product roadmap details with emphasis on AI-powered features and account intelligence capabilities.</p>
+                  
+                  <p>The meeting revealed significant opportunities for Smartsheet to better leverage their ZoomInfo investment, as usage metrics showed lower-than-expected engagement. The conversation concluded with Gabe's detailed roadmap presentation, which generated considerable interest from Chad regarding AI-powered account insights and potential integration with Smartsheet's upcoming initiatives.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer/Prospect Context Panel -->
+          <div class="expandable-panel">
+            <div class="panel-header" onclick="togglePanel('customer-context')">
+              <div class="panel-title">Customer/Prospect Context</div>
+              <svg class="panel-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+            <div class="panel-content" id="customer-context-content">
+              <div class="panel-content-inner">
+                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
+                  <p>Smartsheet recently renewed their contract with ZoomInfo for a 2-year term ending in April 2027. They are utilizing multiple ZoomInfo products including Co-Pilot (the AI-enhanced version), ZoomInfo Marketing, RingLead Cleanse for data hygiene, and Chorus for conversation intelligence (under a separate agreement expiring October 2026). The company has approximately 900 total licenses across these products.</p>
+                  
+                  <p>Smartsheet is currently focused on enhancing their outbound prospecting efforts, with Chad mentioning they're looking to unlock some outbound prospecting efforts coming up. They are also implementing a new coaching platform and planning to launch a "value selling" methodology in the coming quarter, replacing their current MEDIC qualification framework.</p>
+                  
+                  <p>The company is undergoing several strategic initiatives including territory design and segmentation under newly hired director Bill Mel, who will be managing a team of data stewards. This indicates Smartsheet is looking to enhance their data governance and GTM alignment strategies.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Key Discussion Points Panel -->
+          <div class="expandable-panel">
+            <div class="panel-header" onclick="togglePanel('discussion-points')">
+              <div class="panel-title">Key Discussion Points</div>
+              <svg class="panel-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+            <div class="panel-content" id="discussion-points-content">
+              <div class="panel-content-inner">
+                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
+                  <p>The meeting began with team introductions, with Krista explaining that the session would be "pretty high level" as requested by Thor, with a more formal business review to be scheduled later. Chad expressed his primary interest in learning about ZoomInfo's roadmap, stating it had been "a couple of years" since he'd received updates.</p>
+                  
+                  <p>Discussion moved to how Smartsheet is currently using ZoomInfo, including the Salesforce integration for contact and company data, enriching records, using Form Complete for website forms, leveraging MarketingOS for advertising, and utilizing automation with intent and website signal features.</p>
+                  
+                  <p>A significant portion focused on potential use cases and opportunities. Thor mentioned they had recently hired Bill Mel as director of GTM alignment who would be managing data stewards and handling territory design and segmentation. Chad expressed particular interest in account planning and prioritization.</p>
+                  
+                  <p>The team also discussed ROI measurement, with Chad indicating a preference for revenue-based metrics over time savings: "I am not as keen on time saving metric because I am in Revenue sourced metrics... I would do source and I would do growth."</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product/Solution Details Panel -->
+          <div class="expandable-panel">
+            <div class="panel-header" onclick="togglePanel('product-details')">
+              <div class="panel-title">Product/Solution Details</div>
+              <svg class="panel-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+            <div class="panel-content" id="product-details-content">
+              <div class="panel-content-inner">
+                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
+                  <p>The meeting included a detailed presentation of ZoomInfo's product roadmap by Gabe Pirela, focusing on three key pillars: powering productivity, providing complete account intelligence, and unlocking strategic go-to-market insights. Gabe explained that when thinking about AI, they try to stay grounded on the jobs that sales teams need to do and how to make those more efficient.</p>
+                  
+                  <p>For productivity enhancements, Gabe described upcoming features that would allow customization of meeting summaries and automatic extraction of qualification framework components (like MEDIC) from calls. These could then be automatically pushed to the CRM. Chad mentioned they were moving from MEDIC to "value selling" and asked about the timeline, with Gabe targeting "sometime this summer, so like July August."</p>
+                  
+                  <p>Regarding account intelligence, Gabe explained they're building bridges between their products

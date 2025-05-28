@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chorus by ZoomInfo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom styles */
+    .chorus-logo {
+      color: #1976D2;
+    }
+    
+    .chorus-waveform {
+      fill: #1976D2;
+    }
+    
+    .chorus-calendar-day {
+      border-radius: 0.375rem;
+      padding: 0.5rem;
+      text-align: center;
+      cursor: pointer;
+    }
+    
+    .chorus-calendar-day.active {
+      background-color: #1976D2;
+      color: white;
+    }
+    
+    .chorus-calendar-day.today {
+      background-color: #E3F2FD;
+      color: #1976D2;
+      font-weight: 500;
+    }
+    
+    .chorus-meeting-item {
+      border: 1px solid #E0E0E0;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      transition: box-shadow 0.2s;
+    }
+    
+    .chorus-meeting-item:hover {
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .chorus-audio-bar {
+      background-color: #1976D2;
+      border-radius: 9999px;
+      width: 4px;
+      height: 20px;
+    }
+    
+    /* User dropdown styles */
+    .user-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5rem;
+      width: 240px;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      z-index: 50;
+      overflow: hidden;
+      display: none;
+    }
+    
+    .user-dropdown.active {
+      display: block;
+    }
+    
+    .user-dropdown-header {
+      padding: 1rem;
+      border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .user-dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      color: #374151;
+      transition: background-color 0.2s;
+    }
+    
+    .user-dropdown-item:hover {
+      background-color: #F3F4F6;
+    }
+    
+    .user-dropdown-item svg {
+      margin-right: 0.75rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Header -->
+  <header class="border-b border-gray-200 bg-white">
+    <div class="flex items-center justify-between px-4 py-2">
+      <div class="flex items-center">
+        <a href="index.html" class="flex items-center mr-8">
+          <svg width="24" height="24" viewBox="0 0 24 24" class="chorus-waveform">
+            <path d="M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M7 14C7 14 8.5 16 12 16C15.5 16 17 14 17 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M7 10C7 10 8.5 8 12 8C15.5 8 17 10 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M12 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          <span class="ml-2 text-xl font-semibold chorus-logo">Chorus</span>
+        </a>
+        
+        <nav class="hidden md:flex space-x-8">
+          <a href="#" class="text-blue-600 border-b-2 border-blue-600 py-4 font-medium">
+            Home
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Engagements
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Deals
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Playlists
+          </a>
+          <div class="relative group">
+            <button class="text-gray-600 hover:text-blue-600 py-4 font-medium flex items-center">
+              More
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+        </nav>
+      </div>
+      
+      <div class="flex items-center">
+        <div class="relative mr-4">
+          <div class="flex items-center border rounded-md px-3 py-1.5 bg-gray-50">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search in Chorus"
+              class="ml-2 bg-transparent outline-none text-sm w-40 md:w-60"
+            />
+            <button class="ml-2 text-gray-400 border-l pl-2">
+              Options
+            </button>
+          </div>
+        </div>
+        
+        <div class="flex items-center relative">
+          <button id="user-menu-button" class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-medium text-white">
+            GP
+          </button>
+          
+          <!-- User dropdown menu -->
+          <div id="user-dropdown" class="user-dropdown">
+            <div class="user-dropdown-header">
+              <div class="font-medium">Gabe Pirela</div>
+            </div>
+            <a href="settings/personal-settings.html" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Settings
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              Help Center
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              Live Chat
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Log Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="p-4">
+    <div class="flex flex-col md:flex-row gap-4">
+      <!-- Calendar View -->
+      <div class="flex-1">
+        <div class="bg-white rounded-lg shadow-sm">
+          <div class="flex justify-between items-center p-4">
+            <div class="flex items-center">
+              <button class="p-1 rounded-full hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <h2 class="mx-4 text-lg font-medium">May, 2025</h2>
+              <button class="p-1 rounded-full hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+              <button class="ml-4 px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-md">
+                TODAY
+              </button>
+            </div>
+            
+            <div class="flex items-center">
+              <div class="relative mr-2">
+                <div class="flex items-center border rounded-md px-3 py-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <input
+                    type="text"
+                    placeholder="Gabe Pirela"
+                    class="ml-2 outline-none text-sm w-32"
+                  />
+                  <button class="ml-1 text-gray-400">
+                    ✕
+                  </button>
+                </div>
+              </div>
+              
+              <button class="p-1 rounded-md hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-7 gap-1 px-4 pb-2">
+            <div class="text-center">
+              <div class="text-sm text-gray-500 mb-1">Sunday</div>
+              <div class="chorus-calendar-day">25</div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm text-gray-500 mb-1">Monday</div>
+              <div class="chorus-calendar-day">26</div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm text-gray-500 mb-1">Tuesday</div>
+              <div class="chorus-calendar-day today active">27</div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm text-gray-500 mb-1">Wednesday</div>
+              <div class="chorus-calendar-day">28</div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm text-gray-500 mb-1">Thursday</div>
+              <div class="chorus-calendar-day">29</div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm text-gray-500 mb-1">Friday</div>
+              <div class="chorus-calendar-day">30</div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm text-gray-500 mb-1">Saturday</div>
+              <div class="chorus-calendar-day">31</div>
+            </div>
+          </div>
+          
+          <div class="border-t mt-2">
+            <div class="p-4">
+              <div class="flex items-center mb-4">
+                <div class="bg-blue-100 p-2 rounded-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div class="ml-4">
+                  <h3 class="font-medium">Connect your calendar</h3>
+                  <p class="text-sm text-gray-500">
+                    Until you connect, you will see only some meetings you attended with team members that were recorded.
+                  </p>
+                </div>
+                <button class="ml-auto px-4 py-2 bg-blue-600 text-white rounded-md font-medium">
+                  Connect
+                </button>
+              </div>
+              
+              <div class="space-y-3 mt-6">
+                <!-- Meeting 1 -->
+                <div class="chorus-meeting-item cursor-pointer" onclick="openMeeting('meeting1')">
+                  <div class="flex">
+                    <div class="w-16 text-gray-500 font-medium">
+                      9:56
+                      <div class="text-xs mt-1">
+                        AM
+                      </div>
+                    </div>
+                    
+                    <div class="flex-1">
+                      <div class="flex justify-between">
+                        <div>
+                          <h4 class="font-medium">Record Demos + Sprint planning + kick off</h4>
+                        </div>
+                        
+                        <div class="text-sm text-gray-500">
+                          36 Mins
+                        </div>
+                      </div>
+                      
+                      <div class="flex items-center mt-2">
+                        <div class="flex items-center mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                          </svg>
+                          <span class="text-xs text-blue-600">Meeting Recap</span>
+                        </div>
+                        
+                        <div class="flex items-center">
+                          <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-xs text-white">
+                            PD
+                          </div>
+                          <span class="ml-2 text-sm">Pargles Da Costa</span>
+                          
+                          <span class="ml-2 text-xs text-blue-600">+13</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Meeting 2 -->
+                <div class="chorus-meeting-item">
+                  <div class="flex">
+                    <div class="w-16 text-gray-500 font-medium">
+                      12:00
+                      <div class="text-xs mt-1">
+                        PM
+                      </div>
+                    </div>
+                    
+                    <div class="flex-1">
+                      <div class="flex justify-between">
+                        <div>
+                          <h4 class="font-medium">AI Emailer Intro</h4>
+                        </div>
+                      </div>
+                      
+                      <div class="flex items-center mt-2">
+                        <div class="flex items-center">
+                          <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-xs text-white">
+                            CD
+                          </div>
+                          <span class="ml-2 text-sm">Chris Dalia</span>
+                          
+                          <span class="ml-2 text-xs text-blue-600">+3</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Meeting 3 -->
+                <div class="chorus-meeting-item">
+                  <div class="flex">
+                    <div class="w-16 text-gray-500 font-medium">
+                      12:58
+                      <div class="text-xs mt-1">
+                        PM
+                      </div>
+                    </div>
+                    
+                    <div class="flex-1">
+                      <div class="flex justify-between">
+                        <div>
+                          <h4 class="font-medium">Adobe Systems</h4>
+                          <p class="text-sm text-gray-500">no show Zoominfo/Adobe Systems</p>
+                        </div>
+                      </div>
+                      
+                      <div class="flex items-center mt-2">
+                        <div class="flex items-center mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                          </svg>
+                          <span class="text-xs text-blue-600">Meeting Brief</span>
+                        </div>
+                        
+                        <div class="flex items-center">
+                          <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-xs text-white">
+                            DT
+                          </div>
+                          <span class="ml-2 text-sm">Donny Thomas</span>
+                          
+                          <span class="ml-2 text-xs text-blue-600">+5</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Meeting 4 -->
+                <div class="chorus-meeting-item">
+                  <div class="flex">
+                    <div class="w-16 text-gray-500 font-medium">
+                      2:00
+                      <div class="text-xs mt-1">
+                        PM
+                      </div>
+                    </div>
+                    
+                    <div class="flex-1">
+                      <div class="flex justify-between">
+                        <div>
+                          <h4 class="font-medium">Copilot CI E2E Eng & Integrations Sync</h4>
+                        </div>
+                      </div>
+                      
+                      <div class="flex items-center mt-2">
+                        <div class="flex items-center">
+                          <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-xs text-white">
+                            AE
+                          </div>
+                          <span class="ml-2 text-sm">Arelai Ephraim</span>
+                          
+                          <span class="ml-2 text-xs text-blue-600">+9</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Sidebar -->
+      <div class="w-full md:w-80 space-y-6">
+        <!-- Continue Watching -->
+        <div class="bg-white rounded-lg shadow-sm p-4">
+          <h2 class="text-lg font-medium mb-4">Continue Watching</h2>
+          
+          <div class="flex justify-center items-center h-40">
+            <div class="flex flex-col items-center">
+              <div class="flex space-x-1 mb-2">
+                <div class="chorus-audio-bar" style="height: 15px; background-color: #1976D2;"></div>
+                <div class="chorus-audio-bar" style="height: 25px; background-color: #90CAF9;"></div>
+                <div class="chorus-audio-bar" style="height: 35px; background-color: #1976D2;"></div>
+                <div class="chorus-audio-bar" style="height: 20px; background-color: #90CAF9;"></div>
+                <div class="chorus-audio-bar" style="height: 30px; background-color: #1976D2;"></div>
+                <div class="chorus-audio-bar" style="height: 18px; background-color: #90CAF9;"></div>
+                <div class="chorus-audio-bar" style="height: 22px; background-color: #1976D2;"></div>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" class="text-blue-600 h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              <p class="text-sm text-gray-500 text-center">
+                Your recently watched recordings will appear here
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Team Leaderboard -->
+        <div class="bg-white rounded-lg shadow-sm p-4">
+          <h2 class="text-lg font-medium mb-2">Darrell Grissen's Team Leaderboard</h2>
+          <p class="text-sm text-gray-500 mb-4">Calls During Last 7 Days</p>
+          
+          <div class="space-y-4">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 mr-3 text-gray-500 font-medium">
+                #1
+              </div>
+              
+              <div 
+                class="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium"
+                style="background-color: #00BCD4;"
+              >
+                BS
+              </div>
+              
+              <div class="ml-3 flex-1">
+                <div class="font-medium">Brahmjot Singh Kohli</div>
+                <div class="text-sm text-gray-500">4 calls</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 pt-4 border-t border-gray-100">
+            <div class="flex items-center justify-center py-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              </svg>
+              <p class="text-sm text-gray-500">
+                Make more calls to appear on the leaderboard
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // User dropdown toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const userMenuButton = document.getElementById('user-menu-button');
+      const userDropdown = document.getElementById('user-dropdown');
+      
+      // Toggle dropdown when clicking the user menu button
+      userMenuButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        userDropdown.classList.toggle('active');
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+          userDropdown.classList.remove('active');
+        }
+      });
+    });
+
+    // Meeting navigation functionality
+    function openMeeting(meetingId) {
+      // For now, all meetings redirect to the same meeting detail page
+      // In a real application, you would pass the meeting ID as a parameter
+      window.location.href = 'meeting.html';
+    }
+  </script>
+</body>
+</html>
