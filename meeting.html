@@ -3,215 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smartsheet/ZoomInfo: QBR + Roadmap - Chorus by ZoomInfo</title>
+  <title>Salesforce Discovery Call - Data Quality Initiative - Chorus by ZoomInfo</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="js/meeting-functions.js"></script>
+  <link rel="stylesheet" href="css/meeting-styles.css">
   <style>
-    /* Custom styles */
-    .chorus-logo {
-      color: #1976D2;
-    }
-    
-    .chorus-waveform {
-      fill: #1976D2;
-    }
-    
-    /* Enhanced tab styles */
-    .tab-button {
-      padding: 1rem 1.25rem;
-      border-bottom: 3px solid transparent;
-      color: #6B7280;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-size: 0.875rem;
-      position: relative;
-    }
-
-    .tab-button.active {
-      color: #1976D2;
-      border-bottom-color: #1976D2;
-      background: linear-gradient(to bottom, transparent 0%, rgba(25, 118, 210, 0.05) 100%);
-    }
-
-    .tab-button:hover:not(.active) {
-      color: #374151;
-      background: rgba(0, 0, 0, 0.02);
-    }
-
-    .action-assignee {
-      font-weight: 600;
-      color: #1976D2;
-    }
-
-    /* Expandable Panel Styles */
-    .expandable-panel {
-      border: 1px solid #E5E7EB;
-      border-radius: 0.5rem;
-      margin-bottom: 1rem;
-      overflow: hidden;
-      transition: all 0.2s ease;
-    }
-
-    .expandable-panel:hover {
-      border-color: #D1D5DB;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem;
-      background: #F9FAFB;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border-bottom: 1px solid transparent;
-    }
-
-    .panel-header:hover {
-      background: #F3F4F6;
-    }
-
-    .panel-header.expanded {
-      border-bottom-color: #E5E7EB;
-      background: #F3F4F6;
-    }
-
-    .panel-title {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #111827;
-      display: flex;
-      align-items: center;
-    }
-
-    .panel-chevron {
-      width: 16px;
-      height: 16px;
-      color: #6B7280;
-      transition: transform 0.2s ease;
-    }
-
-    .panel-chevron.expanded {
-      transform: rotate(90deg);
-    }
-
-    .panel-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-    }
-
-    .panel-content.expanded {
-      max-height: 2000px;
-    }
-
-    .panel-content-inner {
-      padding: 1rem;
-      background: white;
-      position: relative;
-    }
-
-    /* Copy button styles */
-    .copy-button {
-      position: absolute;
-      top: 0.75rem;
-      right: 0.75rem;
-      width: 32px;
-      height: 32px;
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid #E5E7EB;
-      border-radius: 0.375rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      opacity: 0;
-      transition: all 0.2s ease;
-      z-index: 10;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .copy-button:hover {
-      background: white;
-      border-color: #1976D2;
-      transform: scale(1.05);
-    }
-
-    .copy-button.copied {
-      background: #10B981;
-      border-color: #10B981;
-    }
-
-    .copy-button.copied svg {
-      color: white;
-    }
-
-    .panel-content-inner:hover .copy-button {
-      opacity: 1;
-    }
-
-    .copy-icon {
-      width: 16px;
-      height: 16px;
-      color: #6B7280;
-      transition: color 0.2s ease;
-    }
-
-    .copy-button:hover .copy-icon {
-      color: #1976D2;
-    }
-
-    /* Conversation metrics styles */
-    .metric-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid #F3F4F6;
-    }
-
-    .metric-item:last-child {
-      border-bottom: none;
-    }
-
-    .metric-label {
-      display: flex;
-      align-items: center;
-      font-size: 0.875rem;
-      color: #374151;
-    }
-
-    .metric-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-right: 0.75rem;
-    }
-
-    .metric-dot.green {
-      background-color: #10B981;
-    }
-
-    .metric-dot.red {
-      background-color: #EF4444;
-    }
-
-    .metric-value {
-      font-weight: 600;
-      font-size: 0.875rem;
-      color: #111827;
-    }
-
-    .info-icon {
-      width: 16px;
-      height: 16px;
-      margin-left: 0.5rem;
-      color: #9CA3AF;
-      cursor: help;
-    }
-
     /* User dropdown styles */
     .user-dropdown {
       position: absolute;
@@ -221,11 +16,10 @@
       width: 240px;
       background-color: white;
       border-radius: 0.5rem;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       z-index: 50;
       overflow: hidden;
       display: none;
-      border: 1px solid #E5E7EB;
     }
     
     .user-dropdown.active {
@@ -235,7 +29,6 @@
     .user-dropdown-header {
       padding: 1rem;
       border-bottom: 1px solid #E5E7EB;
-      background-color: #F9FAFB;
     }
     
     .user-dropdown-item {
@@ -243,118 +36,29 @@
       align-items: center;
       padding: 0.75rem 1rem;
       color: #374151;
-      transition: all 0.2s ease;
-      text-decoration: none;
+      transition: background-color 0.2s;
     }
     
     .user-dropdown-item:hover {
       background-color: #F3F4F6;
-      color: #1976D2;
     }
     
     .user-dropdown-item svg {
       margin-right: 0.75rem;
-      transition: color 0.2s ease;
     }
-
-    /* Hide scrollbar for tabs */
-    .scrollbar-hide {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    
+    .chorus-logo {
+      color: #1976D2;
     }
-    .scrollbar-hide::-webkit-scrollbar {
-      display: none;
+    
+    .chorus-waveform {
+      fill: #1976D2;
     }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-  <!-- Header -->
-  <header class="border-b border-gray-200 bg-white">
-    <div class="flex items-center justify-between px-4 py-2">
-      <div class="flex items-center">
-        <a href="index.html" class="flex items-center mr-8">
-          <svg width="24" height="24" viewBox="0 0 24 24" class="chorus-waveform">
-            <path d="M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z" fill="none" stroke="currentColor" stroke-width="2" />
-            <path d="M7 14C7 14 8.5 16 12 16C15.5 16 17 14 17 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M7 10C7 10 8.5 8 12 8C15.5 8 17 10 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M12 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-          </svg>
-          <span class="ml-2 text-xl font-semibold chorus-logo">Chorus</span>
-        </a>
-        
-        <nav class="hidden md:flex space-x-8">
-          <a href="index.html" class="text-gray-600 hover:text-blue-600 py-4 font-medium">Home</a>
-          <a href="#" class="text-blue-600 border-b-2 border-blue-600 py-4 font-medium">Engagements</a>
-          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">Deals</a>
-          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">Playlists</a>
-          <div class="relative group">
-            <button class="text-gray-600 hover:text-blue-600 py-4 font-medium flex items-center">
-              More
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-          </div>
-        </nav>
-      </div>
-      
-      <div class="flex items-center">
-        <div class="relative mr-4">
-          <div class="flex items-center border rounded-md px-3 py-1.5 bg-gray-50">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search in Chorus"
-              class="ml-2 bg-transparent outline-none text-sm w-40 md:w-60"
-            />
-            <button class="ml-2 text-gray-400 border-l pl-2">
-              Options
-            </button>
-          </div>
-        </div>
-        
-        <div class="flex items-center relative">
-          <button id="user-menu-button" class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-medium text-white">
-            GP
-          </button>
-          
-          <!-- User dropdown menu -->
-          <div id="user-dropdown" class="user-dropdown">
-            <div class="user-dropdown-header">
-              <div class="font-medium">Gabe Pirela</div>
-            </div>
-            <a href="settings/personal-settings.html" class="user-dropdown-item">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              Settings
-            </a>
-            <a href="#" class="user-dropdown-item">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
-              Help Center
-            </a>
-            <a href="#" class="user-dropdown-item">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              Live Chat
-            </a>
-            <a href="#" class="user-dropdown-item">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              Log Out
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
+  <!-- Header Component -->
+  <div id="header-placeholder"></div>
 
   <!-- Meeting Header -->
   <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
@@ -364,7 +68,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
-      <h1 class="text-xl font-semibold text-gray-900">Smartsheet/ZoomInfo: QBR + Roadmap</h1>
+      <h1 class="text-xl font-semibold text-gray-900">Salesforce Discovery Call - Data Quality Initiative</h1>
     </div>
   </div>
 
@@ -372,10 +76,62 @@
   <div class="flex min-h-screen">
     <!-- Video Section -->
     <div class="flex-1 p-6">
-      <div class="bg-gray-900 rounded-lg aspect-video flex items-center justify-center">
-        <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-             alt="Meeting participants" 
-             class="w-full h-full object-cover rounded-lg">
+      <div class="video-container">
+        <div class="w-full h-full bg-gray-900 rounded-lg flex items-center justify-center relative">
+          <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+               alt="Meeting participants" 
+               class="w-full h-full object-cover rounded-lg">
+          
+          <!-- Video Controls -->
+          <div class="video-controls">
+            <button class="play-button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5,3 19,12 5,21"/>
+              </svg>
+            </button>
+            
+            <div class="flex items-center text-white text-sm">
+              <span>1.5x</span>
+            </div>
+            
+            <div class="flex items-center text-white text-sm">
+              <span>15</span>
+            </div>
+            
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+            
+            <div class="flex items-center text-white text-sm">
+              <span>00:00 / 01:02:47</span>
+            </div>
+            
+            <div class="flex items-center text-white text-sm">
+              <span>1.25x</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Speaker Timeline -->
+      <div class="speaker-timeline-container">
+        <div class="text-center text-gray-500 text-sm mb-4">
+          Speaker Separation Unavailable
+        </div>
+        
+        <div class="speaker-info">
+          <div class="speaker-avatar" style="background-color: #EF4444;">
+            D
+          </div>
+          <div class="flex-1">
+            <div class="font-medium text-gray-900">Deck</div>
+          </div>
+          <div class="speaker-percentage" style="color: #EF4444;">65%</div>
+        </div>
+        
+        <div class="speaker-timeline">
+          <div class="speaker-segment" style="left: 0%; width: 65%; background: linear-gradient(90deg, #EF4444 0%, #DC2626 100%);"></div>
+        </div>
       </div>
     </div>
 
@@ -402,18 +158,23 @@
             <div class="space-y-3">
               <div>
                 <span class="text-sm font-medium text-gray-700">Meeting Date:</span>
-                <span class="text-sm text-gray-900 ml-2">May 16, 2025</span>
+                <span class="text-sm text-gray-900 ml-2">May 29, 2025</span>
+              </div>
+              
+              <div>
+                <span class="text-sm font-medium text-gray-700">Time:</span>
+                <span class="text-sm text-gray-900 ml-2">9:00 AM - 9:45 AM (45 mins)</span>
               </div>
               
               <div>
                 <span class="text-sm font-medium text-gray-700">Participants:</span>
-                <span class="text-sm text-gray-900 ml-2">Krista Hatem</span>
-                <span class="text-sm text-blue-600 ml-1">+6</span>
+                <span class="text-sm text-gray-900 ml-2">Sarah Martinez</span>
+                <span class="text-sm text-blue-600 ml-1">+4</span>
               </div>
               
               <div>
                 <span class="text-sm font-medium text-gray-700">Account:</span>
-                <a href="#" class="text-sm text-blue-600 ml-2 hover:underline">Smartsheet Inc</a>
+                <a href="#" class="text-sm text-blue-600 ml-2 hover:underline">Salesforce Inc</a>
               </div>
             </div>
           </div>
@@ -424,17 +185,22 @@
             
             <div class="space-y-3">
               <div>
-                <a href="#" class="text-sm text-blue-600 hover:underline">Smartsheet Bulk Credit Processing Issue Refund</a>
+                <a href="#" class="text-sm text-blue-600 hover:underline">Salesforce Data Quality & Intelligence Initiative</a>
               </div>
               
               <div>
                 <span class="text-sm text-gray-700">Stage at time of call:</span>
-                <span class="text-sm font-medium text-gray-900 ml-2">Stage 4: Negotiate</span>
+                <span class="text-sm font-medium text-gray-900 ml-2">Stage 2: Discovery</span>
               </div>
               
               <div>
-                <span class="text-sm text-gray-700">Close date:</span>
-                <span class="text-sm text-gray-900 ml-2">May 29, 2025</span>
+                <span class="text-sm text-gray-700">Target close date:</span>
+                <span class="text-sm text-gray-900 ml-2">July 30, 2025</span>
+              </div>
+              
+              <div>
+                <span class="text-sm text-gray-700">Deal size:</span>
+                <span class="text-sm text-gray-900 ml-2">Enterprise ($500K+ ARR)</span>
               </div>
             </div>
           </div>
@@ -448,15 +214,15 @@
               <div>
                 <h4 class="text-sm font-medium text-gray-900 mb-3"># Action Items</h4>
                 <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-                  <p>1. <span class="action-assignee">Gabe</span> to schedule a follow-up meeting with Chad to discuss how ZoomInfo features can align with Smartsheet's upcoming account planning and Vista value selling initiatives</p>
+                  <p>1. <span class="action-assignee">Gabe</span> to schedule technical demo focused on data enrichment and intent data capabilities for Sarah's team next week</p>
                   
-                  <p>2. <span class="action-assignee">Gabe</span> to provide recommended custom prompts for account insight summaries</p>
+                  <p>2. <span class="action-assignee">Sarah</span> to provide current data quality metrics and lead scoring challenges for ROI analysis</p>
                   
-                  <p>3. <span class="action-assignee">Krista and Thor</span> to work on updating ROI metrics to focus more on revenue sourced metrics rather than time savings</p>
+                  <p>3. <span class="action-assignee">Gabe</span> to connect Sarah with ZoomInfo customer success team for Salesforce integration best practices</p>
                   
-                  <p>4. <span class="action-assignee">ZoomInfo team</span> to provide more detailed metrics with speaker notes in future presentations</p>
+                  <p>4. <span class="action-assignee">Sarah</span> to introduce Gabe to VP of Sales Operations (Michael Chen) for stakeholder alignment</p>
                   
-                  <p>5. <span class="action-assignee">ZoomInfo team</span> to support Chad with enablement for sellers to increase platform adoption</p>
+                  <p>5. <span class="action-assignee">Gabe</span> to prepare custom ROI analysis based on Salesforce's current data challenges and team size</p>
                 </div>
               </div>
 
@@ -464,356 +230,136 @@
               <div>
                 <h4 class="text-sm font-medium text-gray-900 mb-3"># Meeting Summary</h4>
                 <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-                  <p>1. This was an introductory meeting between ZoomInfo and Smartsheet teams, with a focus on introducing Chad Dyar (new Director of Sales Enablement at Smartsheet) to the partnership.</p>
+                  <p>1. Discovery call with Salesforce to understand their data quality challenges and explore ZoomInfo's sales intelligence platform as a solution for their lead generation and account targeting initiatives.</p>
                   
-                  <p>2. Smartsheet recently renewed a 2-year agreement with ZoomInfo (expires April 2027) and has a separate Chorus agreement (expires October 2026).</p>
+                  <p>2. Sarah Martinez (Director of Sales Operations) outlined current pain points including inconsistent lead scoring, outdated contact data, and lack of intent signals for their 450+ person sales team.</p>
                   
-                  <p>3. Smartsheet is using multiple ZoomInfo products including Co-Pilot, contact/company data, form completion, MarketingOS, and RingLead cleanse for data hygiene.</p>
+                  <p>3. Salesforce currently uses a mix of internal tools and third-party data providers but struggles with data accuracy (estimated 30% decay rate) and integration challenges across their tech stack.</p>
                   
-                  <p>4. Usage metrics showed opportunities for improvement - only 56% of users are active in the last 30 days, and there's lower than expected engagement with features like intent searches and scoops.</p>
+                  <p>4. Key requirements identified: real-time data enrichment, intent data for account prioritization, seamless Salesforce integration, and advanced lead scoring capabilities for their enterprise and mid-market segments.</p>
                   
-                  <p>5. Chad expressed interest in focusing on revenue-sourced metrics rather than time-saving metrics for ROI calculations.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Conversation Metrics -->
-          <div>
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Conversation Metrics</h3>
-            
-            <div class="space-y-1">
-              <div class="metric-item">
-                <div class="metric-label">
-                  <div class="metric-dot green"></div>
-                  Team Talk Time: 49%
-                  <svg xmlns="http://www.w3.org/2000/svg" class="info-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-              
-              <div class="metric-item">
-                <div class="metric-label">
-                  <div class="metric-dot red"></div>
-                  Longest Monologue: 7:00 min
-                  <svg xmlns="http://www.w3.org/2000/svg" class="info-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-              
-              <div class="metric-item">
-                <div class="metric-label">
-                  <div class="metric-dot green"></div>
-                  Filler Words per Minute: 5
-                  <svg xmlns="http://www.w3.org/2000/svg" class="info-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-              
-              <div class="metric-item">
-                <div class="metric-label">
-                  <div class="metric-dot green"></div>
-                  Engaging Questions: 9
-                  <svg xmlns="http://www.w3.org/2000/svg" class="info-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-              
-              <div class="metric-item">
-                <div class="metric-label">
-                  <div class="metric-dot red"></div>
-                  Next Steps: 0
-                  <svg xmlns="http://www.w3.org/2000/svg" class="info-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <p>5. Strong interest expressed in ZoomInfo's AI-powered features and conversation intelligence capabilities, with budget allocated for Q3 implementation targeting $500K+ annual investment.</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Detailed Tab with ALL 8 Expandable Panels -->
+        <!-- Sandler Methodology Analysis Tab -->
         <div id="highlights-tab" class="hidden">
-          <!-- 1. Executive Summary Panel -->
-          <div class="expandable-panel">
-            <div class="panel-header expanded" onclick="togglePanel('executive-summary')">
-              <div class="panel-title">Executive Summary</div>
-              <svg class="panel-chevron expanded" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
+          <!-- Pain Development Analysis -->
+          <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Pain Development Analysis</h3>
+            <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
+              <p><strong>Surface Pain Identified:</strong> Sarah mentioned "Our lead scoring is inconsistent and we're struggling with data accuracy" indicating immediate operational challenges.</p>
+              
+              <p><strong>Underlying Business Impact:</strong> The conversation revealed a 30% data decay rate affecting their 450+ person sales team, causing missed opportunities and wasted sales effort. Sarah expressed frustration: "We're flying blind on which accounts to prioritize."</p>
+              
+              <p><strong>Pain Ownership:</strong> Sarah acknowledged direct responsibility for solving this challenge and demonstrated strong ownership of the problem.</p>
+              
+              <p><strong>Urgency Assessment:</strong> High urgency driven by Q3 implementation timeline and board pressure on pipeline quality improvements.</p>
             </div>
-            <div class="panel-content expanded" id="executive-summary-content">
-              <div class="panel-content-inner">
-                <button class="copy-button" onclick="copyPanelContent('executive-summary-content')" title="Copy to clipboard">
-                  <svg class="copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                  </svg>
-                </button>
-                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-                  <p>This meeting served as an introductory QBR between ZoomInfo and Smartsheet, with a particular focus on introducing Chad Dyar, the new Director of Sales Enablement at Smartsheet, to the partnership. The session was intentionally kept high-level as a precursor to a more formal business review in the future. The ZoomInfo team presented an overview of how Smartsheet is currently utilizing their platform, reviewed the recently renewed contract, discussed current usage metrics, and shared upcoming product roadmap details with emphasis on AI-powered features and account intelligence capabilities.</p>
-                  
-                  <p>The meeting revealed significant opportunities for Smartsheet to better leverage their ZoomInfo investment, as usage metrics showed lower-than-expected engagement. As Chad noted, "It's lower than I was expecting for the size of our sales organization," indicating room for improvement in adoption. The conversation concluded with Gabe's detailed roadmap presentation, which generated considerable interest from Chad regarding AI-powered account insights, potential integration with Smartsheet's upcoming account planning initiatives, and the newly announced Account AI API. The overall sentiment was positive and forward-looking, with both parties expressing interest in deeper strategic collaboration.</p>
-                </div>
+          </div>
+
+          <!-- Budget Qualification Analysis -->
+          <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Budget Qualification Analysis</h3>
+            <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
+              <p><strong>Budget Discussion Status:</strong> Partially qualified. Sarah mentioned "budget allocated for Q3" but no specific range was discussed during the call.</p>
+              
+              <p><strong>Investment Mentality:</strong> Positive indicators - conversation focused on ROI and team efficiency gains rather than cost concerns.</p>
+              
+              <p><strong>Authority Assessment:</strong> Sarah has technical decision influence but indicated CFO approval required for investments over $500K. Currently spending on "mix of internal tools and third-party providers."</p>
+              
+              <p><strong>Next Steps Required:</strong> Schedule budget conversation with finance stakeholders to complete qualification.</p>
+            </div>
+          </div>
+
+          <!-- Decision Process Mapping -->
+          <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Decision Process Mapping</h3>
+            <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
+              <p><strong>Primary Decision Maker:</strong> Sarah Martinez (Director of Sales Operations) holds technical decision authority.</p>
+              
+              <p><strong>Economic Buyer:</strong> Michael Chen (VP of Sales Operations) identified as budget approval authority.</p>
+              
+              <p><strong>Key Influencers:</strong> Sales team leads, IT integration team, and Finance department (CFO approval required for final decision).</p>
+              
+              <p><strong>Decision Criteria:</strong> Salesforce integration capabilities, data accuracy improvement, and team adoption ease were highlighted as primary evaluation factors.</p>
+              
+              <p><strong>Timeline:</strong> Q3 implementation target with decision needed by July 30, 2025. Evaluation process: Technical demo → ROI analysis → Stakeholder alignment → Budget approval.</p>
+            </div>
+          </div>
+
+          <!-- Sandler Opportunity Assessment -->
+          <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Sandler Opportunity Assessment</h3>
+            
+            <div class="mb-4">
+              <p class="text-sm font-medium text-gray-900 mb-2">Qualification Status: Partially Qualified (2 of 3 criteria met)</p>
+              <div class="space-y-2 text-sm text-gray-700">
+                <p><strong>Pain:</strong> Qualified - Strong business pain identified with emotional impact and clear ownership</p>
+                <p><strong>Budget:</strong> Partial - Need specific range and approval process details</p>
+                <p><strong>Decision:</strong> Qualified - Key stakeholders mapped with clear timeline</p>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <p class="text-sm font-medium text-gray-900 mb-2">Opportunity Strength: Medium-High</p>
+              <div class="space-y-3 text-sm text-gray-700">
+                <p><strong>Competitive Advantages:</strong> Strong technical fit with existing Salesforce infrastructure, compelling ROI case with quantifiable pain (30% data decay), favorable timing aligned with Q3 budget cycle, and champion (Sarah) with direct responsibility and influence.</p>
+                
+                <p><strong>Risk Factors:</strong> Budget authority not yet engaged (Michael Chen), multiple stakeholders could slow decision process, and existing vendor relationships may create switching resistance.</p>
               </div>
             </div>
           </div>
 
-          <!-- 2. Customer/Prospect Context Panel -->
-          <div class="expandable-panel">
-            <div class="panel-header" onclick="togglePanel('customer-context')">
-              <div class="panel-title">Customer/Prospect Context</div>
-              <svg class="panel-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </div>
-            <div class="panel-content" id="customer-context-content">
-              <div class="panel-content-inner">
-                <button class="copy-button" onclick="copyPanelContent('customer-context-content')" title="Copy to clipboard">
-                  <svg class="copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                  </svg>
-                </button>
-                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-                  <p>Smartsheet recently renewed their contract with ZoomInfo for a 2-year term ending in April 2027. They are utilizing multiple ZoomInfo products including Co-Pilot (the AI-enhanced version of ZoomInfo), ZoomInfo Marketing, RingLead Cleanse for data hygiene, and Chorus for conversation intelligence (under a separate agreement expiring October 2026). The company has approximately 900 total licenses across these products.</p>
-                  
-                  <p>Smartsheet is currently focused on enhancing their outbound prospecting efforts, with Chad mentioning, "We're looking to unlock some outbound prospecting efforts that we have coming up." They are also in the process of implementing a new coaching platform and planning to launch a "value selling" methodology in the coming quarter, replacing their current MEDIC qualification framework. Additionally, they're planning to implement an account planning tool, which presents integration opportunities with ZoomInfo's account intelligence capabilities.</p>
-                  
-                  <p>The company is undergoing several strategic initiatives including territory design and segmentation under a newly hired director (Bill Mel), who will be managing a team of data stewards. As Thor mentioned, "He's responsible for territory design and segmentation... he's doing a look at the account data within ZoomInfo and evaluating it and determining his plan." This indicates Smartsheet is looking to enhance their data governance and GTM alignment strategies.</p>
+          <!-- Strategic Recommendations -->
+          <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Strategic Recommendations</h3>
+            
+            <div class="space-y-4">
+              <div>
+                <p class="text-sm font-medium text-gray-900 mb-2">Immediate Priority: Complete Budget Qualification</p>
+                <div class="text-sm text-gray-700 leading-relaxed">
+                  <p>Schedule meeting with Michael Chen (VP Sales Ops) to discuss budget parameters, prepare ROI analysis showing cost of current data decay vs. ZoomInfo investment, and understand CFO approval process and timeline requirements.</p>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <!-- 3. Key Discussion Points Panel -->
-          <div class="expandable-panel">
-            <div class="panel-header" onclick="togglePanel('discussion-points')">
-              <div class="panel-title">Key Discussion Points</div>
-              <svg class="panel-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </div>
-            <div class="panel-content" id="discussion-points-content">
-              <div class="panel-content-inner">
-                <button class="copy-button" onclick="copyPanelContent('discussion-points-content')" title="Copy to clipboard">
-                  <svg class="copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                  </svg>
-                </button>
-                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-                  <p>The meeting began with team introductions, with Krista explaining that the session would be "pretty high level" as requested by Thor, with a more formal business review to be scheduled later. Chad expressed his primary interest in learning about ZoomInfo's roadmap, stating he was "very interested in what you're doing roadmap-wise" as it had been "a couple of years" since he'd received updates from ZoomInfo.</p>
-                  
-                  <p>The discussion then moved to how Smartsheet is currently using ZoomInfo. Krista outlined that they're using the Salesforce integration for contact and company data, enriching records, using Form Complete for website forms, leveraging MarketingOS for advertising, and utilizing automation with intent and website signal features. She noted that "pretty much everything that we offer here, your team is taking advantage of in some capacity."</p>
-                  
-                  <p>Josh provided a contract overview, explaining that Smartsheet recently signed a 2-year agreement for ZoomInfo Co-Pilot licenses, bulk credits for account and contact enrichment, ZoomInfo Marketing, and RingLead Cleanse for data hygiene. He mentioned there's "definitely some room for improvement" regarding monthly usage of the 900 total licenses.</p>
-                  
-                  <p>A significant portion of the conversation focused on potential use cases and opportunities. Thor mentioned they had recently hired Bill Mel as director of GTM alignment who would be managing data stewards and handling territory design and segmentation. Chad expressed particular interest in account planning and prioritization, stating, "We're talking a lot about internally and activate through a series of tools. So I'm curious to see what role ZoomInfo would play in that."</p>
-                  
-                  <p>The team also discussed ROI measurement, with Chad indicating a preference for revenue-based metrics over time savings: "I am not as keen on time saving metric because I am in Revenue sourced metrics... I would do source and I would do growth." This led to a discussion about improving how they measure ZoomInfo's impact on the business.</p>
+              <div>
+                <p class="text-sm font-medium text-gray-900 mb-2">Secondary Focus: Stakeholder Alignment</p>
+                <div class="text-sm text-gray-700 leading-relaxed">
+                  <p>Conduct technical demo for Sarah's team focused on Salesforce integration, connect with IT team to address integration requirements, and identify and engage additional decision influencers.</p>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <!-- 4. Product/Solution Details Panel -->
-          <div class="expandable-panel">
-            <div class="panel-header" onclick="togglePanel('product-details')">
-              <div class="panel-title">Product/Solution Details</div>
-              <svg class="panel-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </div>
-            <div class="panel-content" id="product-details-content">
-              <div class="panel-content-inner">
-                <button class="copy-button" onclick="copyPanelContent('product-details-content')" title="Copy to clipboard">
-                  <svg class="copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                  </svg>
-                </button>
-                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-                  <p>The meeting included a detailed presentation of ZoomInfo's product roadmap by Gabe Pirela, focusing on three key pillars: powering productivity, providing complete account intelligence, and unlocking strategic go-to-market insights. Gabe explained that when thinking about AI, they try to stay grounded on the jobs that sales teams need to do and how to make those more efficient.</p>
-                  
-                  <p>For productivity enhancements, Gabe described upcoming features that would allow customization of meeting summaries and automatic extraction of qualification framework components (like MEDIC) from calls. These could then be automatically pushed to the CRM. Chad mentioned they were moving from MEDIC to "value selling" and asked about the timeline, with Gabe targeting "sometime this summer, so like July August."</p>
-                  
-                  <p>Regarding account intelligence, Gabe explained they're building bridges between their products to provide comprehensive account insights. He demonstrated the Account AI API that can generate account summaries, competitive intelligence, and strategic recommendations. Chad showed particular interest in this capability, asking about custom prompts and integration possibilities with Smartsheet's upcoming account planning initiatives.</p>
-                  
-                  <p>The strategic insights pillar focuses on helping sales teams understand market trends and competitive positioning. Gabe mentioned new features for territory planning, account prioritization, and market analysis that would be particularly relevant to Smartsheet's current initiatives with their new GTM alignment director.</p>
+              <div>
+                <p class="text-sm font-medium text-gray-900 mb-2">Sandler Methodology Guidance</p>
+                <div class="text-sm text-gray-700 leading-relaxed">
+                  <p><strong>Submarine Position:</strong> Advance from Pain (Compartment 3) to Budget (Compartment 5). <strong>Up-Front Contract:</strong> Establish clear agenda for Michael Chen meeting. <strong>Mutual Commitment:</strong> Secure Sarah's commitment to facilitate stakeholder introductions. <strong>Process Control:</strong> Maintain control by setting specific next meeting objectives.</p>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <!-- 5. Competitive Intelligence Panel -->
-          <div class="expandable-panel">
-            <div class="panel-header" onclick="togglePanel('competitive-intelligence')">
-              <div class="panel-title">Competitive Intelligence</div>
-              <svg class="panel-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </div>
-            <div class="panel-content" id="competitive-intelligence-content">
-              <div class="panel-content-inner">
-                <button class="copy-button" onclick="copyPanelContent('competitive-intelligence-content')" title="Copy to clipboard">
-                  <svg class="copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                  </svg>
-                </button>
-                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-                  <p>While competitive intelligence wasn't a primary focus of this introductory meeting, there were subtle references to the competitive landscape. Chad mentioned that Smartsheet is evaluating various tools for their upcoming account planning and value selling initiatives, indicating they're considering multiple vendors for different aspects of their sales technology stack.</p>
-                  
-                  <p>The discussion around ROI measurement and metrics suggests that Smartsheet is likely comparing ZoomInfo's value proposition against other sales intelligence and conversation intelligence platforms. Chad's emphasis on revenue-sourced metrics rather than time-saving metrics indicates they're looking for more concrete business impact measurements.</p>
-                  
-                  <p>Gabe's roadmap presentation appeared to be strategically positioned to address potential competitive concerns, particularly around AI capabilities and account intelligence features that differentiate ZoomInfo from other players in the market. The Account AI API and custom prompt capabilities were highlighted as unique differentiators.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 6. Pain Points & Challenges Panel -->
-          <div class="expandable-panel">
-            <div class="panel-header" onclick="togglePanel('pain-points')">
-              <div class="panel-title">Pain Points & Challenges</div>
-              <svg class="panel-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </div>
-            <div class="panel-content" id="pain-points-content">
-              <div class="panel-content-inner">
-                <button class="copy-button" onclick="copyPanelContent('pain-points-content')" title="Copy to clipboard">
-                  <svg class="copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                  </svg>
-                </button>
-                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-                  <p>The most significant challenge identified was underutilization of ZoomInfo's platform. With only 56% of users active in the last 30 days and lower-than-expected engagement with key features like intent searches and scoops, Smartsheet is not maximizing their investment. As Chad noted, "It's lower than I was expecting for the size of our sales organization."</p>
-                  
-                  <p>Smartsheet is facing challenges with their current qualification methodology (MEDIC) and is planning to transition to a "value selling" approach. This transition represents both a challenge and an opportunity for better integration with ZoomInfo's capabilities, particularly around conversation intelligence and automated qualification extraction.</p>
-                  
-                  <p>The company is also dealing with data governance and territory management challenges, which is why they hired Bill Mel as director of GTM alignment. Thor mentioned that Bill is "doing a look at the account data within ZoomInfo and evaluating it and determining his plan," indicating data quality and segmentation issues.</p>
-                  
-                  <p>Chad expressed frustration with current ROI measurement approaches, specifically mentioning he's "not as keen on time saving metrics" and prefers "revenue sourced metrics." This suggests their current measurement framework isn't providing the business impact visibility they need.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 7. Opportunities & Recommendations Panel -->
-          <div class="expandable-panel">
-            <div class="panel-header" onclick="togglePanel('opportunities')">
-              <div class="panel-title">Opportunities & Recommendations</div>
-              <svg class="panel-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </div>
-            <div class="panel-content" id="opportunities-content">
-              <div class="panel-content-inner">
-                <button class="copy-button" onclick="copyPanelContent('opportunities-content')" title="Copy to clipboard">
-                  <svg class="copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                  </svg>
-                </button>
-                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-                  <p>The primary opportunity lies in improving platform adoption and engagement. With significant room for improvement in user activation and feature utilization, there's potential to dramatically increase the value Smartsheet derives from their ZoomInfo investment through targeted enablement and training programs.</p>
-                  
-                  <p>Smartsheet's transition to "value selling" methodology presents a perfect opportunity to integrate ZoomInfo's conversation intelligence capabilities more deeply. The upcoming custom qualification framework extraction features could be tailored specifically to Smartsheet's new value selling approach, providing automated insights that align with their methodology.</p>
-                  
-                  <p>The Account AI API and custom prompt capabilities offer significant opportunities for integration with Smartsheet's planned account planning tool. This could provide a competitive advantage by combining ZoomInfo's data intelligence with Smartsheet's workflow and project management capabilities.</p>
-                  
-                  <p>Chad's interest in revenue-sourced metrics opens an opportunity to develop more sophisticated ROI measurement frameworks that track actual revenue impact rather than just time savings. This could include attribution modeling for deals influenced by ZoomInfo data and insights.</p>
-                  
-                  <p>The territory design and segmentation work being done by Bill Mel's team presents an opportunity to leverage ZoomInfo's account intelligence for more strategic territory planning and account prioritization, potentially improving overall sales efficiency and effectiveness.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 8. Next Steps & Follow-ups Panel -->
-          <div class="expandable-panel">
-            <div class="panel-header" onclick="togglePanel('next-steps')">
-              <div class="panel-title">Next Steps & Follow-ups</div>
-              <svg class="panel-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </div>
-            <div class="panel-content" id="next-steps-content">
-              <div class="panel-content-inner">
-                <button class="copy-button" onclick="copyPanelContent('next-steps-content')" title="Copy to clipboard">
-                  <svg class="copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                  </svg>
-                </button>
-                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-                  <p><strong>Immediate Actions (Next 2 weeks):</strong></p>
-                  <ul class="list-disc list-inside space-y-1 ml-4">
-                    <li>Gabe to schedule follow-up meeting with Chad to discuss ZoomInfo feature alignment with account planning initiatives</li>
-                    <li>Gabe to provide recommended custom prompts for account insight summaries</li>
-                    <li>ZoomInfo team to prepare more detailed usage metrics with speaker notes for future presentations</li>
-                  </ul>
-                  
-                  <p><strong>Short-term Goals (Next 30-60 days):</strong></p>
-                  <ul class="list-disc list-inside space-y-1 ml-4">
-                    <li>Krista and Thor to develop new ROI measurement framework focusing on revenue-sourced metrics</li>
-                    <li>ZoomInfo team to create enablement plan for increasing platform adoption among Smartsheet sellers</li>
-                    <li>Explore integration possibilities between ZoomInfo Account AI and Smartsheet's planned account planning tool</li>
-                  </ul>
-                  
-                  <p><strong>Long-term Strategic Initiatives (Next Quarter):</strong></p>
-                  <ul class="list-disc list-inside space-y-1 ml-4">
-                    <li>Align ZoomInfo conversation intelligence with Smartsheet's new "value selling" methodology rollout</li>
-                    <li>Collaborate with Bill Mel's team on territory design and account segmentation optimization</li>
-                    <li>Schedule formal business review to assess progress and plan strategic expansion</li>
-                  </ul>
+              <div>
+                <p class="text-sm font-medium text-gray-900 mb-2">Recommended Timeline</p>
+                <div class="text-sm text-gray-700 leading-relaxed">
+                  <p><strong>Next 7 days:</strong> Technical demo with Sarah's team. <strong>Next 14 days:</strong> Budget conversation with Michael Chen. <strong>Next 30 days:</strong> Complete stakeholder mapping and ROI presentation. <strong>Target Close:</strong> July 30, 2025 (aligned with Q3 implementation goal).</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- Comments Tab -->
-        <div id="comments-tab" class="hidden">
-          <div class="text-center py-8">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-            <p class="text-gray-500">No comments yet</p>
-          </div>
-        </div>
-
-        <!-- Transcript Tab -->
-        <div id="transcript-tab" class="hidden">
-          <div class="text-center py-8">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            <p class="text-gray-500">No transcript available</p>
-          </div>
-        </div>
+        <div id="comments-tab" class="hidden"></div>
+        <div id="transcript-tab" class="hidden"></div>
       </div>
     </div>
   </div>
 
-  <script>
-    // User dropdown toggle functionality
-    document.addEventListener('DOMContentLoaded', function() {
-      const userMenuButton = document.getElementById('user-menu-button');
-      const userDropdown = document.getElementById('user-dropdown');
-      
-      // Toggle dropdown when clicking the user menu button
-      userMenuButton.addEventListener('click', function(e) {
-        e.stopPropagation();
-        userDropdown.classList.toggle('active');
-      });
-      
-      // Close dropdown when clicking outside
-      document.addEventListener('click', function(e) {
-        if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
-          userDropdown.classList.remove('active');
-        }
-      });
-    });
-  </script>
+  <!-- Load Header Component -->
+  <script src="js/header-loader.js"></script>
+  
+  <!-- Scripts -->
+  <script src="js/meeting-data.js"></script>
+  <script src="js/meeting-functions.js"></script>
 </body>
 </html>

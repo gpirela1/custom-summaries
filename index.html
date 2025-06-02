@@ -94,101 +94,8 @@
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-  <!-- Header -->
-  <header class="border-b border-gray-200 bg-white">
-    <div class="flex items-center justify-between px-4 py-2">
-      <div class="flex items-center">
-        <a href="index.html" class="flex items-center mr-8">
-          <svg width="24" height="24" viewBox="0 0 24 24" class="chorus-waveform">
-            <path d="M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z" fill="none" stroke="currentColor" stroke-width="2" />
-            <path d="M7 14C7 14 8.5 16 12 16C15.5 16 17 14 17 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M7 10C7 10 8.5 8 12 8C15.5 8 17 10 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M12 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-          </svg>
-          <span class="ml-2 text-xl font-semibold chorus-logo">Chorus</span>
-        </a>
-        
-        <nav class="hidden md:flex space-x-8">
-          <a href="#" class="text-blue-600 border-b-2 border-blue-600 py-4 font-medium">
-            Home
-          </a>
-          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
-            Engagements
-          </a>
-          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
-            Deals
-          </a>
-          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
-            Playlists
-          </a>
-          <div class="relative group">
-            <button class="text-gray-600 hover:text-blue-600 py-4 font-medium flex items-center">
-              More
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-          </div>
-        </nav>
-      </div>
-      
-      <div class="flex items-center">
-        <div class="relative mr-4">
-          <div class="flex items-center border rounded-md px-3 py-1.5 bg-gray-50">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search in Chorus"
-              class="ml-2 bg-transparent outline-none text-sm w-40 md:w-60"
-            />
-            <button class="ml-2 text-gray-400 border-l pl-2">
-              Options
-            </button>
-          </div>
-        </div>
-        
-        <div class="flex items-center relative">
-          <button id="user-menu-button" class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-medium text-white">
-            GP
-          </button>
-          
-          <!-- User dropdown menu -->
-          <div id="user-dropdown" class="user-dropdown">
-            <div class="user-dropdown-header">
-              <div class="font-medium">Gabe Pirela</div>
-            </div>
-            <a href="settings/personal-settings.html" class="user-dropdown-item">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              Settings
-            </a>
-            <a href="#" class="user-dropdown-item">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
-              Help Center
-            </a>
-            <a href="#" class="user-dropdown-item">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              Live Chat
-            </a>
-            <a href="#" class="user-dropdown-item">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              Log Out
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
+  <!-- Header Component -->
+  <div id="header-placeholder"></div>
 
   <!-- Main Content -->
   <main class="p-4">
@@ -272,29 +179,12 @@
           
           <div class="border-t mt-2">
             <div class="p-4">
-              <div class="flex items-center mb-4">
-                <div class="bg-blue-100 p-2 rounded-md">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <div class="ml-4">
-                  <h3 class="font-medium">Connect your calendar</h3>
-                  <p class="text-sm text-gray-500">
-                    Until you connect, you will see only some meetings you attended with team members that were recorded.
-                  </p>
-                </div>
-                <button class="ml-auto px-4 py-2 bg-blue-600 text-white rounded-md font-medium">
-                  Connect
-                </button>
-              </div>
-              
-              <div class="space-y-3 mt-6">
-                <!-- Meeting 1 -->
+              <div class="space-y-3">
+                <!-- Meeting 1 - Discovery Call -->
                 <div class="chorus-meeting-item cursor-pointer" onclick="openMeeting('meeting1')">
                   <div class="flex">
                     <div class="w-16 text-gray-500 font-medium">
-                      9:56
+                      9:00
                       <div class="text-xs mt-1">
                         AM
                       </div>
@@ -303,11 +193,12 @@
                     <div class="flex-1">
                       <div class="flex justify-between">
                         <div>
-                          <h4 class="font-medium">Record Demos + Sprint planning + kick off</h4>
+                          <h4 class="font-medium">Salesforce Discovery Call - Data Quality Initiative</h4>
+                          <p class="text-sm text-gray-500">Enterprise Account - Stage 2: Discovery</p>
                         </div>
                         
                         <div class="text-sm text-gray-500">
-                          36 Mins
+                          45 Mins
                         </div>
                       </div>
                       
@@ -320,64 +211,38 @@
                         </div>
                         
                         <div class="flex items-center">
-                          <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-xs text-white">
-                            PD
+                          <div class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-xs text-white">
+                            SM
                           </div>
-                          <span class="ml-2 text-sm">Pargles Da Costa</span>
+                          <span class="ml-2 text-sm">Sarah Martinez</span>
+                          <span class="ml-1 text-xs text-gray-400">• Salesforce</span>
                           
-                          <span class="ml-2 text-xs text-blue-600">+13</span>
+                          <span class="ml-2 text-xs text-blue-600">+4</span>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 
-                <!-- Meeting 2 -->
-                <div class="chorus-meeting-item">
+                <!-- Meeting 2 - Demo Call -->
+                <div class="chorus-meeting-item cursor-pointer" onclick="openMeeting('meeting2')">
                   <div class="flex">
                     <div class="w-16 text-gray-500 font-medium">
-                      12:00
+                      11:30
                       <div class="text-xs mt-1">
-                        PM
+                        AM
                       </div>
                     </div>
                     
                     <div class="flex-1">
                       <div class="flex justify-between">
                         <div>
-                          <h4 class="font-medium">AI Emailer Intro</h4>
+                          <h4 class="font-medium">HubSpot Demo: Intent Data & Lead Scoring</h4>
+                          <p class="text-sm text-gray-500">Mid-Market Prospect - Stage 3: Demo</p>
                         </div>
-                      </div>
-                      
-                      <div class="flex items-center mt-2">
-                        <div class="flex items-center">
-                          <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-xs text-white">
-                            CD
-                          </div>
-                          <span class="ml-2 text-sm">Chris Dalia</span>
-                          
-                          <span class="ml-2 text-xs text-blue-600">+3</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Meeting 3 -->
-                <div class="chorus-meeting-item">
-                  <div class="flex">
-                    <div class="w-16 text-gray-500 font-medium">
-                      12:58
-                      <div class="text-xs mt-1">
-                        PM
-                      </div>
-                    </div>
-                    
-                    <div class="flex-1">
-                      <div class="flex justify-between">
-                        <div>
-                          <h4 class="font-medium">Adobe Systems</h4>
-                          <p class="text-sm text-gray-500">no show Zoominfo/Adobe Systems</p>
+                        
+                        <div class="text-sm text-gray-500">
+                          60 Mins
                         </div>
                       </div>
                       
@@ -386,27 +251,28 @@
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                           </svg>
-                          <span class="text-xs text-blue-600">Meeting Brief</span>
+                          <span class="text-xs text-blue-600">Meeting Recap</span>
                         </div>
                         
                         <div class="flex items-center">
-                          <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-xs text-white">
-                            DT
+                          <div class="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-xs text-white">
+                            MJ
                           </div>
-                          <span class="ml-2 text-sm">Donny Thomas</span>
+                          <span class="ml-2 text-sm">Mike Johnson</span>
+                          <span class="ml-1 text-xs text-gray-400">• HubSpot</span>
                           
-                          <span class="ml-2 text-xs text-blue-600">+5</span>
+                          <span class="ml-2 text-xs text-blue-600">+2</span>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 
-                <!-- Meeting 4 -->
-                <div class="chorus-meeting-item">
+                <!-- Meeting 3 - Negotiation Call -->
+                <div class="chorus-meeting-item cursor-pointer" onclick="openMeeting('meeting3')">
                   <div class="flex">
                     <div class="w-16 text-gray-500 font-medium">
-                      2:00
+                      1:00
                       <div class="text-xs mt-1">
                         PM
                       </div>
@@ -415,18 +281,156 @@
                     <div class="flex-1">
                       <div class="flex justify-between">
                         <div>
-                          <h4 class="font-medium">Copilot CI E2E Eng & Integrations Sync</h4>
+                          <h4 class="font-medium">Microsoft Contract Negotiation - Enterprise Package</h4>
+                          <p class="text-sm text-gray-500">Stage 4: Negotiate • Close Date: June 15, 2025</p>
+                        </div>
+                        
+                        <div class="text-sm text-gray-500">
+                          30 Mins
+                        </div>
+                      </div>
+                      
+                      <div class="flex items-center mt-2">
+                        <div class="flex items-center mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          <span class="text-xs text-blue-600">Meeting Brief</span>
+                        </div>
+                        
+                        <div class="flex items-center">
+                          <div class="w-6 h-6 rounded-full bg-green-600 flex items-center justify-center text-xs text-white">
+                            AC
+                          </div>
+                          <span class="ml-2 text-sm">Amanda Chen</span>
+                          <span class="ml-1 text-xs text-gray-400">• Microsoft</span>
+                          
+                          <span class="ml-2 text-xs text-blue-600">+3</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Meeting 4 - Customer Expansion -->
+                <div class="chorus-meeting-item cursor-pointer" onclick="openMeeting('meeting4')">
+                  <div class="flex">
+                    <div class="w-16 text-gray-500 font-medium">
+                      2:30
+                      <div class="text-xs mt-1">
+                        PM
+                      </div>
+                    </div>
+                    
+                    <div class="flex-1">
+                      <div class="flex justify-between">
+                        <div>
+                          <h4 class="font-medium">Zoom Expansion Discussion - Marketing Intelligence Add-on</h4>
+                          <p class="text-sm text-gray-500">Existing Customer • Renewal + Expansion Opportunity</p>
+                        </div>
+                        
+                        <div class="text-sm text-gray-500">
+                          45 Mins
+                        </div>
+                      </div>
+                      
+                      <div class="flex items-center mt-2">
+                        <div class="flex items-center mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                          </svg>
+                          <span class="text-xs text-blue-600">Meeting Recap</span>
+                        </div>
+                        
+                        <div class="flex items-center">
+                          <div class="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-xs text-white">
+                            DL
+                          </div>
+                          <span class="ml-2 text-sm">David Liu</span>
+                          <span class="ml-1 text-xs text-gray-400">• Zoom</span>
+                          
+                          <span class="ml-2 text-xs text-blue-600">+2</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Meeting 5 - Prospecting Call -->
+                <div class="chorus-meeting-item cursor-pointer" onclick="openMeeting('meeting5')">
+                  <div class="flex">
+                    <div class="w-16 text-gray-500 font-medium">
+                      4:00
+                      <div class="text-xs mt-1">
+                        PM
+                      </div>
+                    </div>
+                    
+                    <div class="flex-1">
+                      <div class="flex justify-between">
+                        <div>
+                          <h4 class="font-medium">Stripe Initial Outreach - Sales Intelligence Platform</h4>
+                          <p class="text-sm text-gray-500">New Prospect • Stage 1: Prospecting</p>
+                        </div>
+                        
+                        <div class="text-sm text-gray-500">
+                          30 Mins
+                        </div>
+                      </div>
+                      
+                      <div class="flex items-center mt-2">
+                        <div class="flex items-center mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          <span class="text-xs text-blue-600">Meeting Brief</span>
+                        </div>
+                        
+                        <div class="flex items-center">
+                          <div class="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-xs text-white">
+                            RK
+                          </div>
+                          <span class="ml-2 text-sm">Rachel Kim</span>
+                          <span class="ml-1 text-xs text-gray-400">• Stripe</span>
+                          
+                          <span class="ml-2 text-xs text-blue-600">+1</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Meeting 6 - Internal Strategy -->
+                <div class="chorus-meeting-item">
+                  <div class="flex">
+                    <div class="w-16 text-gray-500 font-medium">
+                      5:30
+                      <div class="text-xs mt-1">
+                        PM
+                      </div>
+                    </div>
+                    
+                    <div class="flex-1">
+                      <div class="flex justify-between">
+                        <div>
+                          <h4 class="font-medium">Internal: Q2 Pipeline Review & Account Strategy</h4>
+                          <p class="text-sm text-gray-500">Team Meeting • Forecast Planning</p>
+                        </div>
+                        
+                        <div class="text-sm text-gray-500">
+                          60 Mins
                         </div>
                       </div>
                       
                       <div class="flex items-center mt-2">
                         <div class="flex items-center">
-                          <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-xs text-white">
-                            AE
+                          <div class="w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center text-xs text-white">
+                            JW
                           </div>
-                          <span class="ml-2 text-sm">Arelai Ephraim</span>
+                          <span class="ml-2 text-sm">Jennifer Walsh</span>
+                          <span class="ml-1 text-xs text-gray-400">• Sales Manager</span>
                           
-                          <span class="ml-2 text-xs text-blue-600">+9</span>
+                          <span class="ml-2 text-xs text-blue-600">+5</span>
                         </div>
                       </div>
                     </div>
@@ -505,26 +509,10 @@
     </div>
   </main>
 
+  <!-- Load Header Component -->
+  <script src="js/header-loader.js"></script>
+  
   <script>
-    // User dropdown toggle functionality
-    document.addEventListener('DOMContentLoaded', function() {
-      const userMenuButton = document.getElementById('user-menu-button');
-      const userDropdown = document.getElementById('user-dropdown');
-      
-      // Toggle dropdown when clicking the user menu button
-      userMenuButton.addEventListener('click', function(e) {
-        e.stopPropagation();
-        userDropdown.classList.toggle('active');
-      });
-      
-      // Close dropdown when clicking outside
-      document.addEventListener('click', function(e) {
-        if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
-          userDropdown.classList.remove('active');
-        }
-      });
-    });
-
     // Meeting navigation functionality
     function openMeeting(meetingId) {
       // For now, all meetings redirect to the same meeting detail page

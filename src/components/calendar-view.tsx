@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Search, Filter, Calendar, Mic } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, Filter, Mic } from "lucide-react";
 import { format, addDays, startOfWeek } from "date-fns";
 
 // Mock data for meetings
@@ -116,22 +116,7 @@ export function CalendarView() {
       
       <div className="border-t mt-2">
         <div className="p-4">
-          <div className="flex items-center mb-4">
-            <div className="bg-blue-100 p-2 rounded-md">
-              <Calendar className="h-5 w-5 text-blue-600" />
-            </div>
-            <div className="ml-4">
-              <h3 className="font-medium">Connect your calendar</h3>
-              <p className="text-sm text-gray-500">
-                Until you connect, you will see only some meetings you attended with team members that were recorded.
-              </p>
-            </div>
-            <button className="ml-auto px-4 py-2 bg-blue-600 text-white rounded-md font-medium">
-              Connect
-            </button>
-          </div>
-          
-          <div className="space-y-3 mt-6">
+          <div className="space-y-3">
             {MEETINGS.map((meeting) => (
               <div key={meeting.id} className="chorus-meeting-item">
                 <div className="flex">

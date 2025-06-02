@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting Review Panel - Chorus by ZoomInfo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/meeting-styles.css">
+  <style>
+    /* Meeting Review Panel Specific Styles */
+    .meeting-review-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .meeting-review-panel {
+      background: white;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 1200px;
+      height: 90vh;
+      display: flex;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    .panel-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #E5E7EB;
+    }
+
+    .panel-right {
+      width: 400px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .panel-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid #E5E7EB;
+      display: flex;
+      align-items: center;
+      justify-content: between;
+    }
+
+    .panel-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #111827;
+      flex: 1;
+    }
+
+    .close-button {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: none;
+      background: #F3F4F6;
+      color: #6B7280;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .close-button:hover {
+      background: #E5E7EB;
+      color: #374151;
+    }
+
+    .tab-navigation {
+      display: flex;
+      border-bottom: 1px solid #E5E7EB;
+      background: #F9FAFB;
+    }
+
+    .tab-nav-button {
+      flex: 1;
+      padding: 1rem 1.5rem;
+      border: none;
+      background: transparent;
+      color: #6B7280;
+      font-weight: 500;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .tab-nav-button.active {
+      color: #111827;
+      background: white;
+      border-bottom: 3px solid #DC2626;
+    }
+
+    .tab-nav-button:hover:not(.active) {
+      color: #374151;
+      background: #F3F4F6;
+    }
+
+    .panel-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem;
+      max-height: calc(90vh - 140px);
+    }
+
+    .summary-section {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .summary-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .summary-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .collapse-button {
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: transparent;
+      color: #6B7280;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .collapse-button:hover {
+      background: #E5E7EB;
+      color: #374151;
+    }
+
+    .meeting-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .meeting-date {
+      color: #6B7280;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+
+    .meeting-link {
+      color: #2563EB;
+      text-decoration: underline;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .meeting-description {
+      color: #374151;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+
+    .pre-meeting-link {
+      color: #2563EB;
+      text-decoration: underline;
+      font-size: 0.875rem;
+    }
+
+    .expandable-section {
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .section-header {
+      padding: 1rem 1.5rem;
+      background: #F9FAFB;
+      border-bottom: 1px solid #E5E7EB;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .section-header:hover {
+      background: #F3F4F6;
+    }
+
+    .section-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .expand-icon {
+      width: 16px;
+      height: 16px;
+      color: #6B7280;
+      transition: transform 0.2s ease;
+    }
+
+    .expand-icon.expanded {
+      transform: rotate(90deg);
+    }
+
+    .video-section {
+      padding: 1.5rem;
+    }
+
+    .video-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .video-title {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #6B7280;
+    }
+
+    .link-icon {
+      width: 20px;
+      height: 20px;
+      color: #6B7280;
+      cursor: pointer;
+    }
+
+    .video-player {
+      background: #6B7280;
+      border-radius: 8px;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .play-button-large {
+      width: 64px;
+      height: 64px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s ease;
+    }
+
+    .play-button-large:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .participants-section {
+      margin-bottom: 2rem;
+    }
+
+    .participants-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .participants-subtitle {
+      font-size: 0.875rem;
+      color: #6B7280;
+      margin-bottom: 1.5rem;
+    }
+
+    .participant-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .participant-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #E5E7EB;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #6B7280;
+      margin-right: 0.75rem;
+    }
+
+    .participant-info {
+      flex: 1;
+      margin-right: 1rem;
+    }
+
+    .participant-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #111827;
+      text-decoration: underline;
+      margin-bottom: 0.25rem;
+    }
+
+    .participant-role {
+      font-size: 0.75rem;
+      color: #6B7280;
+    }
+
+    .participant-percentage {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .participant-timeline {
+      height: 8px;
+      background: #E5E7EB;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .timeline-segment {
+      height: 100%;
+      border-radius: 4px;
+      position: absolute;
+      top: 0;
+    }
+
+    .team-divider {
+      border-top: 1px solid #E5E7EB;
+      margin: 1.5rem 0 1rem 0;
+      padding-top: 1rem;
+    }
+
+    .team-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #6B7280;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <!-- Meeting Review Overlay -->
+  <div class="meeting-review-overlay">
+    <div class="meeting-review-panel">
+      <!-- Left Panel -->
+      <div class="panel-left">
+        <!-- Header -->
+        <div class="panel-header">
+          <h2 class="panel-title">Meeting review</h2>
+          <button class="close-button" onclick="closeMeetingReview()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+          <button class="tab-nav-button active" onclick="switchTab('overview')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"></polygon>
+            </svg>
+            Overview
+          </button>
+          <button class="tab-nav-button" onclick="switchTab('transcript')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14,2 14,8 20,8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10,9 9,9 8,9"></polyline>
+            </svg>
+            Transcript
+          </button>
+        </div>
+
+        <!-- Panel Content -->
+        <div class="panel-content">
+          <!-- Summary Section -->
+          <div class="summary-section">
+            <div class="summary-header">
+              <h3 class="summary-title">Summary</h3>
+              <button class="collapse-button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="meeting-title">Smartsheet Cross-sell-07-29-21-looong meeting name</div>
+            <div class="meeting-date">Jan 31, 2024, at 18:15 pm</div>
+            <a href="#" class="meeting-link">Smartsheet</a>
+            
+            <div class="meeting-description">
+              The team reviewed a prototype of the end-to-end flow from workbooks to workspaces to profile, demonstrating key functionality.
+            </div>
+            
+            <a href="#" class="pre-meeting-link">Pre-meeting brief</a>
+          </div>
+
+          <!-- Action Items Section -->
+          <div class="expandable-section">
+            <div class="section-header" onclick="toggleSection('action-items')">
+              <h3 class="section-title">Action items</h3>
+              <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9,18 15,12 9,6"></polyline>
+              </svg>
+            </div>
+            <div class="section-content" style="padding: 1rem; background: white; display: none;">
+              <p style="font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem;">• Follow up with technical team on integration requirements</p>
+              <p style="font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem;">• Schedule demo for next week</p>
+              <p style="font-size: 0.875rem; color: #374151;">• Send pricing proposal by Friday</p>
+            </div>
+          </div>
+
+          <!-- Meeting Topics Section -->
+          <div class="expandable-section">
+            <div class="section-header" onclick="toggleSection('meeting-topics')">
+              <h3 class="section-title">Meeting topics</h3>
+              <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9,18 15,12 9,6"></polyline>
+              </svg>
+            </div>
+            <div class="section-content" style="padding: 1rem; background: white; display: none;">
+              <p style="font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem;">• Product roadmap discussion</p>
+              <p style="font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem;">• Integration capabilities</p>
+              <p style="font-size: 0.875rem; color: #374151;">• Timeline and next steps</p>
+            </div>
+          </div>
+
+          <!-- Deals and Opportunities Section -->
+          <div class="expandable-section">
+            <div class="section-header" onclick="toggleSection('deals-opportunities')">
+              <h3 class="section-title">Deals and opportunities</h3>
+              <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9,18 15,12 9,6"></polyline>
+              </svg>
+            </div>
+            <div class="section-content" style="padding: 1rem; background: white; display: none;">
+              <p style="font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem;">• Enterprise license upgrade opportunity</p>
+              <p style="font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem;">• Additional module sales potential</p>
+              <p style="font-size: 0.875rem; color: #374151;">• Multi-year contract discussion</p>
+            </div>
+          </div>
+
+          <!-- Additional Content for Testing Scroll -->
+          <div class="expandable-section">
+            <div class="section-header" onclick="toggleSection('additional-notes')">
+              <h3 class="section-title">Additional notes</h3>
+              <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9,18 15,12 9,6"></polyline>
+              </svg>
+            </div>
+            <div class="section-content" style="padding: 1rem; background: white; display: none;">
+              <p style="font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem;">• Client expressed strong interest in the solution</p>
+              <p style="font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem;">• Budget approval expected within 2 weeks</p>
+              <p style="font-size: 0.875rem; color: #374151;">• Decision maker will be included in next meeting</p>
+            </div>
+          </div>
+
+          <div class="expandable-section">
+            <div class="section-header" onclick="toggleSection('follow-up')">
+              <h3 class="section-title">Follow-up items</h3>
+              <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9,18 15,12 9,6"></polyline>
+              </svg>
+            </div>
+            <div class="section-content" style="padding: 1rem; background: white; display: none;">
+              <p style="font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem;">• Send meeting recap within 24 hours</p>
+              <p style="font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem;">• Schedule technical deep-dive session</p>
+              <p style="font-size: 0.875rem; color: #374151;">• Prepare customized proposal</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel -->
+      <div class="panel-right">
+        <!-- Video Section -->
+        <div class="video-section">
+          <div class="video-header">
+            <h3 class="video-title">Video recording</h3>
+            <svg class="link-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          </div>
+          
+          <div class="video-player">
+            <button class="play-button-large">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5,3 19,12 5,21"></polygon>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Participants Section -->
+        <div class="participants-section">
+          <h3 class="participants-title">Participants</h3>
+          <div class="participants-subtitle">Smartsheet team</div>
+          
+          <!-- Stanley Johnston -->
+          <div class="participant-item">
+            <div class="participant-avatar" style="background-color: #F3E8FF; color: #7C3AED;">SJ</div>
+            <div class="participant-info">
+              <div class="participant-name">Stanley Johnston</div>
+              <div class="participant-role">Sales executive</div>
+            </div>
+            <div style="width: 60px;">
+              <div class="participant-percentage">27%</div>
+              <div class="participant-timeline">
+                <div class="timeline-segment" style="left: 0%; width: 27%; background: #3B82F6;"></div>
+                <div class="timeline-segment" style="left: 40%; width: 15%; background: #3B82F6;"></div>
+                <div class="timeline-segment" style="left: 70%; width: 30%; background: #3B82F6;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Henry Collins -->
+          <div class="participant-item">
+            <div class="participant-avatar" style="background-color: #FEF3C7; color: #D97706;">EC</div>
+            <div class="participant-info">
+              <div class="participant-name">Henry Collins</div>
+              <div class="participant-role">Sales executive</div>
+            </div>
+            <div style="width: 60px;">
+              <div class="participant-percentage">17%</div>
+              <div class="participant-timeline">
+                <div class="timeline-segment" style="left: 20%; width: 17%; background: #3B82F6;"></div>
+                <div class="timeline-segment" style="left: 60%; width: 20%; background: #3B82F6;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Eddie Halstead -->
+          <div class="participant-item">
+            <div class="participant-avatar" style="background-color: #ECFDF5; color: #059669;">EH</div>
+            <div class="participant-info">
+              <div class="participant-name">Eddie Halstead</div>
+              <div class="participant-role">Global sales executive</div>
+            </div>
+            <div style="width: 60px;">
+              <div class="participant-percentage">6%</div>
+              <div class="participant-timeline">
+                <div class="timeline-segment" style="left: 30%; width: 6%; background: #3B82F6;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Team Divider -->
+          <div class="team-divider">
+            <div class="team-label">Our team</div>
+          </div>
+
+          <!-- JP Ward -->
+          <div class="participant-item">
+            <div class="participant-avatar" style="background-color: #FEE2E2; color: #DC2626;">JW</div>
+            <div class="participant-info">
+              <div class="participant-name">JP Ward</div>
+              <div class="participant-role">New business account executive</div>
+            </div>
+            <div style="width: 60px;">
+              <div class="participant-percentage">59%</div>
+              <div class="participant-timeline">
+                <div class="timeline-segment" style="left: 5%; width: 25%; background: #3B82F6;"></div>
+                <div class="timeline-segment" style="left: 35%; width: 20%; background: #3B82F6;"></div>
+                <div class="timeline-segment" style="left: 60%; width: 35%; background: #3B82F6;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Susie Glass -->
+          <div class="participant-item">
+            <div class="participant-avatar" style="background-color: #E0E7FF; color: #4338CA;">SG</div>
+            <div class="participant-info">
+              <div class="participant-name">Susie Glass</div>
+              <div class="participant-role">New business account executive</div>
+            </div>
+            <div style="width: 60px;">
+              <div class="participant-percentage">12%</div>
+              <div class="participant-timeline">
+                <div class="timeline-segment" style="left: 10%; width: 12%; background: #3B82F6;"></div>
+                <div class="timeline-segment" style="left: 80%; width: 8%; background: #3B82F6;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function closeMeetingReview() {
+      // Close the meeting review panel
+      document.querySelector('.meeting-review-overlay').style.display = 'none';
+    }
+
+    function switchTab(tabName) {
+      // Remove active class from all tabs
+      document.querySelectorAll('.tab-nav-button').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Add active class to clicked tab
+      event.target.classList.add('active');
+      
+      // Here you would typically load different content based on the tab
+      console.log('Switched to tab:', tabName);
+    }
+
+    function toggleSection(sectionName) {
+      const header = event.currentTarget;
+      const icon = header.querySelector('.expand-icon');
+      const section = header.parentElement;
+      const content = section.querySelector('.section-content');
+      
+      // Toggle the expanded class
+      icon.classList.toggle('expanded');
+      
+      // Toggle content visibility
+      if (content.style.display === 'none' || content.style.display === '') {
+        content.style.display = 'block';
+      } else {
+        content.style.display = 'none';
+      }
+      
+      console.log('Toggled section:', sectionName);
+    }
+
+    // Close panel when clicking outside
+    document.querySelector('.meeting-review-overlay').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeMeetingReview();
+      }
+    });
+
+    // Prevent closing when clicking inside the panel
+    document.querySelector('.meeting-review-panel').addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+  </script>
+</body>
+</html>

@@ -393,27 +393,88 @@
     <div class="flex items-center justify-between px-4 py-2">
       <div class="flex items-center">
         <a href="index.html" class="flex items-center mr-8">
-          <svg width="24" height="24" viewBox="0 0 24 24" class="chorus-waveform">
-            <path d="M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z" fill="none" stroke="currentColor" stroke-width="2" />
-            <path d="M7 14C7 14 8.5 16 12 16C15.5 16 17 14 17 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M7 10C7 10 8.5 8 12 8C15.5 8 17 10 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M12 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-          </svg>
+          <img src="public/chorus-logo.svg" class="chorus-waveform" width="24" height="24" alt="Chorus">
           <span class="ml-2 text-xl font-semibold chorus-logo">Chorus</span>
         </a>
         
         <nav class="hidden md:flex space-x-8">
-          <a href="index.html" class="text-gray-600 hover:text-blue-600 py-4 font-medium">Home</a>
-          <a href="#" class="text-blue-600 border-b-2 border-blue-600 py-4 font-medium">Engagements</a>
-          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">Deals</a>
-          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">Playlists</a>
+          <a href="index.html" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Home
+          </a>
+          <a href="#" class="text-blue-600 border-b-2 border-blue-600 py-4 font-medium">
+            Engagements
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Deals
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Playlists
+          </a>
+          <div class="relative group">
+            <button class="text-gray-600 hover:text-blue-600 py-4 font-medium flex items-center">
+              More
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
         </nav>
       </div>
       
-      <div class="flex items-center relative">
-        <button id="user-menu-button" class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-medium text-white">
-          GP
-        </button>
+      <div class="flex items-center">
+        <div class="relative mr-4">
+          <div class="flex items-center border rounded-md px-3 py-1.5 bg-gray-50">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search in Chorus"
+              class="ml-2 bg-transparent outline-none text-sm w-40 md:w-60"
+            />
+            <button class="ml-2 text-gray-400 border-l pl-2">
+              Options
+            </button>
+          </div>
+        </div>
+        
+        <div class="flex items-center relative">
+          <button id="user-menu-button" class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-medium text-white">
+            GP
+          </button>
+          
+          <!-- User dropdown menu -->
+          <div id="user-dropdown" class="user-dropdown">
+            <div class="user-dropdown-header">
+              <div class="font-medium">Gabe Pirela</div>
+            </div>
+            <a href="public/settings/personal-settings.html" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Settings
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              Help Center
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              Live Chat
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Log Out
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </header>
