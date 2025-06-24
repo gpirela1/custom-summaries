@@ -408,3 +408,137 @@
   width: 16px;
   height: 16px;
 }
+
+/* Expandable Sidebar Styles */
+.sidebar-container {
+  position: relative;
+  width: 60px;
+  background: white;
+  border-right: 1px solid #E5E7EB;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  z-index: 20;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-container.expanded {
+  width: 280px;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  right: -12px;
+  width: 32px;
+  height: 32px;
+  background: white;
+  border: 2px solid #1976D2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 30;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-toggle:hover {
+  background: #F9FAFB;
+  border-color: #D1D5DB;
+  transform: scale(1.1);
+}
+
+.sidebar-toggle-icon {
+  width: 12px;
+  height: 12px;
+  color: #6B7280;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-container.expanded .sidebar-toggle-icon {
+  transform: rotate(180deg);
+}
+
+.sidebar-content {
+  padding: 1.5rem 1rem;
+  height: 100vh;
+  overflow-y: auto;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.1s;
+}
+
+.sidebar-container.expanded .sidebar-content {
+  opacity: 1;
+}
+
+.sidebar-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.sidebar-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.sidebar-section {
+  margin-bottom: 2rem;
+}
+
+.sidebar-section-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.sidebar-section-content {
+  min-height: 60px;
+  background: #F9FAFB;
+  border: 1px dashed #D1D5DB;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9CA3AF;
+  font-size: 0.875rem;
+  position: relative;
+}
+
+.sidebar-section-content::after {
+  content: 'Content placeholder';
+  position: absolute;
+  font-style: italic;
+}
+
+/* Main content adjustment */
+.main-content {
+  transition: margin-left 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .sidebar-container.expanded {
+    width: 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-container {
+    position: absolute;
+    height: 100vh;
+    z-index: 40;
+  }
+  
+  .sidebar-container.expanded {
+    width: 280px;
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
+  }
+}

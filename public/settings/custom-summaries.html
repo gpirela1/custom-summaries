@@ -454,6 +454,127 @@
       background-color: #D1D5DB;
       cursor: not-allowed;
     }
+
+    /* Trigger condition styles */
+    .trigger-condition {
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .trigger-condition-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .trigger-condition-title {
+      font-weight: 500;
+      color: #374151;
+      font-size: 0.875rem;
+    }
+
+    .trigger-remove-btn {
+      background: #FEE2E2;
+      color: #DC2626;
+      border: 1px solid #FECACA;
+      border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .trigger-remove-btn:hover {
+      background: #FECACA;
+    }
+
+    .trigger-condition-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 2fr;
+      gap: 0.75rem;
+      align-items: end;
+    }
+
+    .trigger-logic-operator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0.5rem 0;
+      gap: 0.5rem;
+    }
+
+    .logic-operator-btn {
+      background: #F3F4F6;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.25rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .logic-operator-btn.active {
+      background: #1976D2;
+      color: white;
+      border-color: #1976D2;
+    }
+
+    .logic-operator-btn:hover:not(.active) {
+      background: #E5E7EB;
+    }
+
+    .trigger-empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #6B7280;
+      background: #F9FAFB;
+      border: 2px dashed #D1D5DB;
+      border-radius: 0.5rem;
+    }
+
+    .trigger-empty-state-icon {
+      width: 32px;
+      height: 32px;
+      margin: 0 auto 0.5rem;
+      color: #D1D5DB;
+    }
+
+    .form-input-small {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-input-small:focus {
+      outline: none;
+      border-color: #1976D2;
+      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+    }
+
+    .form-select-small {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      background: white;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-select-small:focus {
+      outline: none;
+      border-color: #1976D2;
+      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+    }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -555,9 +676,6 @@
       <div class="settings-nav-item">
         <a href="personal-settings.html" class="block w-full">Personal Settings</a>
       </div>
-      <div class="settings-nav-item active">
-        <a href="custom-summaries.html" class="block w-full">Custom Summaries</a>
-      </div>
       <div class="settings-nav-item">
         User Management
       </div>
@@ -582,6 +700,9 @@
       <div class="settings-nav-item">
         Signals
       </div>
+      <div class="settings-nav-item active">
+        <a href="custom-summaries.html" class="block w-full">Custom Summaries</a>
+      </div>
     </div>
 
     <!-- Settings Content -->
@@ -594,9 +715,9 @@
             Create custom AI-powered summaries for your meetings. Define specific prompts to extract the information that matters most to your team and workflow.
           </p>
         </div>
-        <button class="create-button" onclick="openCreateModal()">
+        <a href="create-custom-summary.html" class="create-button" style="text-decoration: none; display: inline-block;">
           Create Custom Summary
-        </button>
+        </a>
       </div>
 
       <!-- Custom Summaries Table -->
@@ -740,6 +861,28 @@
               <option value="">Select Field</option>
             </select>
           </div>
+
+          <!-- Triggers Section -->
+          <div class="form-group">
+            <label class="form-label">Triggers</label>
+            <p class="text-sm text-gray-600 mb-3">Configure when this custom summary should run based on CRM data conditions.</p>
+            
+            <div id="triggersContainer">
+              <div class="triggers-header mb-3">
+                <button type="button" class="btn-secondary" onclick="addTriggerCondition()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  Add Trigger Condition
+                </button>
+              </div>
+              
+              <div id="triggerConditions">
+                <!-- Trigger conditions will be dynamically added here -->
+              </div>
+            </div>
+          </div>
         </form>
       </div>
 
@@ -778,6 +921,7 @@
    - Information requested by prospect`,
         salesforceObject: 'Opportunity',
         salesforceField: 'Description',
+        slackDelivery: true,
         active: true
       },
       6: {
@@ -827,6 +971,41 @@ Evaluate qualification status using Sandler standards, assess relationship stren
 Evaluate every interaction through the Sandler submarine framework, focus on qualification over presentation, assess emotional and logical pain development, and provide coaching recommendations for methodology improvement.`,
         salesforceObject: 'Opportunity',
         salesforceField: 'Meeting_Summary__c',
+        structuredOutputs: [
+          {
+            name: 'Pain',
+            extractionPrompt: 'Extract pain points, challenges, and problems that need solving. Focus on emotional and business impact, urgency, and consequences of inaction using Sandler pain development principles.',
+            object: 'Opportunity',
+            field: 'Pain_Points__c',
+            writebackMode: 'append',
+            overwriteBehavior: 'always'
+          },
+          {
+            name: 'Budget',
+            extractionPrompt: 'Identify budget discussions, financial capacity, and investment appetite. Include budget ranges, funding availability, and financial decision-making process using Sandler money conversation techniques.',
+            object: 'Opportunity',
+            field: 'Budget_Info__c',
+            writebackMode: 'append',
+            overwriteBehavior: 'always'
+          },
+          {
+            name: 'Decision',
+            extractionPrompt: 'Extract decision-making process, criteria, and stakeholders involved. Include who makes decisions, evaluation criteria, and approval process using Sandler decision qualification methods.',
+            object: 'Opportunity',
+            field: 'Decision_Process__c',
+            writebackMode: 'append',
+            overwriteBehavior: 'always'
+          },
+          {
+            name: 'Timeline',
+            extractionPrompt: 'Identify timeline expectations, deadlines, and urgency indicators. Include decision timeline, implementation schedule, and time-sensitive factors using Sandler qualification principles.',
+            object: 'Opportunity',
+            field: 'Timeline__c',
+            writebackMode: 'append',
+            overwriteBehavior: 'always'
+          }
+        ],
+        slackDelivery: true,
         active: true
       }
     };
@@ -880,6 +1059,11 @@ Evaluate every interaction through the Sandler submarine framework, focus on qua
         setTimeout(() => {
           document.getElementById('salesforceField').value = summaryData.salesforceField || '';
         }, 100);
+        
+        // Load trigger conditions
+        setTimeout(() => {
+          setTriggerConditions(summaryData.triggers || []);
+        }, 200);
       } else {
         // Create mode
         modalTitle.textContent = 'Create Custom Summary';
@@ -889,6 +1073,9 @@ Evaluate every interaction through the Sandler submarine framework, focus on qua
         // Reset form
         document.getElementById('createSummaryForm').reset();
         document.getElementById('salesforceFieldGroup').style.display = 'none';
+        
+        // Reset triggers
+        setTriggerConditions([]);
       }
       
       document.getElementById('testResults').classList.remove('active');
@@ -898,7 +1085,10 @@ Evaluate every interaction through the Sandler submarine framework, focus on qua
     function editSummary(summaryId) {
       const summaryData = summaries[summaryId];
       if (summaryData) {
-        openCreateModal(summaryData);
+        // Store the summary data in localStorage for the edit page
+        localStorage.setItem('editingSummary', JSON.stringify(summaryData));
+        // Redirect to the create page in edit mode
+        window.location.href = `create-custom-summary.html?edit=${summaryId}`;
       } else {
         alert('Summary not found.');
       }
@@ -972,6 +1162,7 @@ Evaluate every interaction through the Sandler submarine framework, focus on qua
       const prompt = document.getElementById('customPrompt').value;
       const salesforceObject = document.getElementById('salesforceObject').value;
       const salesforceField = document.getElementById('salesforceField').value;
+      const triggers = getTriggerConditions();
       
       // Validate required fields
       if (!name.trim() || !description.trim() || !prompt.trim()) {
@@ -996,7 +1187,8 @@ Evaluate every interaction through the Sandler submarine framework, focus on qua
             description: description.trim(),
             prompt: prompt.trim(),
             salesforceObject: salesforceObject,
-            salesforceField: salesforceField
+            salesforceField: salesforceField,
+            triggers: triggers
           };
           
           // Update the table row
@@ -1006,6 +1198,9 @@ Evaluate every interaction through the Sandler submarine framework, focus on qua
           let successMessage = 'Custom summary updated successfully!';
           if (salesforceObject && salesforceField) {
             successMessage += ` It will write to ${salesforceObject}.${salesforceField}.`;
+          }
+          if (triggers.length > 0) {
+            successMessage += ` Configured with ${triggers.length} trigger condition${triggers.length > 1 ? 's' : ''}.`;
           }
           alert(successMessage);
         }
@@ -1018,6 +1213,7 @@ Evaluate every interaction through the Sandler submarine framework, focus on qua
           prompt: prompt.trim(),
           salesforceObject: salesforceObject,
           salesforceField: salesforceField,
+          triggers: triggers,
           active: true,
           id: newId
         };
@@ -1032,6 +1228,9 @@ Evaluate every interaction through the Sandler submarine framework, focus on qua
         let successMessage = 'Custom summary created successfully!';
         if (salesforceObject && salesforceField) {
           successMessage += ` It will write to ${salesforceObject}.${salesforceField}.`;
+        }
+        if (triggers.length > 0) {
+          successMessage += ` Configured with ${triggers.length} trigger condition${triggers.length > 1 ? 's' : ''}.`;
         }
         alert(successMessage);
       }
@@ -1145,6 +1344,324 @@ Evaluate every interaction through the Sandler submarine framework, focus on qua
         fieldSelect.innerHTML = '<option value="">Select Field</option>';
       }
     }
+
+    // Trigger condition management
+    let triggerConditionCounter = 0;
+
+    // Operator options for different field types
+    const operatorOptions = {
+      'text': [
+        { value: 'equals', label: 'Equals' },
+        { value: 'not_equals', label: 'Not Equals' },
+        { value: 'contains', label: 'Contains' },
+        { value: 'not_contains', label: 'Does Not Contain' },
+        { value: 'starts_with', label: 'Starts With' },
+        { value: 'ends_with', label: 'Ends With' }
+      ],
+      'number': [
+        { value: 'equals', label: 'Equals' },
+        { value: 'not_equals', label: 'Not Equals' },
+        { value: 'greater_than', label: 'Greater Than' },
+        { value: 'less_than', label: 'Less Than' },
+        { value: 'greater_equal', label: 'Greater Than or Equal' },
+        { value: 'less_equal', label: 'Less Than or Equal' }
+      ],
+      'boolean': [
+        { value: 'equals', label: 'Equals' }
+      ],
+      'date': [
+        { value: 'equals', label: 'Equals' },
+        { value: 'not_equals', label: 'Not Equals' },
+        { value: 'after', label: 'After' },
+        { value: 'before', label: 'Before' }
+      ]
+    };
+
+    // Add trigger condition
+    function addTriggerCondition() {
+      const conditionsContainer = document.getElementById('triggerConditions');
+      const conditionId = ++triggerConditionCounter;
+      
+      // Check if this is the first condition
+      const isFirstCondition = conditionsContainer.children.length === 0;
+      
+      // Create condition HTML
+      const conditionHTML = `
+        <div class="trigger-condition" data-condition-id="${conditionId}">
+          <div class="trigger-condition-header">
+            <span class="trigger-condition-title">Condition ${conditionId}</span>
+            <button type="button" class="trigger-remove-btn" onclick="removeTriggerCondition(${conditionId})">
+              Remove
+            </button>
+          </div>
+          
+          <div class="trigger-condition-row">
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">CRM Object</label>
+              <select class="form-select-small" onchange="updateTriggerFields(${conditionId})">
+                <option value="">Select Object</option>
+                <option value="Account">Account</option>
+                <option value="Opportunity">Opportunity</option>
+                <option value="Event">Event</option>
+                <option value="Task">Task</option>
+                <option value="Contact">Contact</option>
+                <option value="Lead">Lead</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">Field</label>
+              <select class="form-select-small trigger-field-select" onchange="updateTriggerOperators(${conditionId})">
+                <option value="">Select Field</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">Operator</label>
+              <select class="form-select-small trigger-operator-select">
+                <option value="">Select Operator</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">Value</label>
+              <input type="text" class="form-input-small trigger-value-input" placeholder="Enter value">
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Add logic operator before this condition (if not first)
+      if (!isFirstCondition) {
+        const logicOperatorHTML = `
+          <div class="trigger-logic-operator">
+            <button type="button" class="logic-operator-btn active" onclick="toggleLogicOperator(this)">AND</button>
+            <button type="button" class="logic-operator-btn" onclick="toggleLogicOperator(this)">OR</button>
+          </div>
+        `;
+        conditionsContainer.insertAdjacentHTML('beforeend', logicOperatorHTML);
+      }
+      
+      // Add the condition
+      conditionsContainer.insertAdjacentHTML('beforeend', conditionHTML);
+      
+      // Remove empty state since we now have conditions
+      const emptyState = conditionsContainer.querySelector('.trigger-empty-state');
+      if (emptyState) {
+        emptyState.remove();
+      }
+    }
+
+    // Remove trigger condition
+    function removeTriggerCondition(conditionId) {
+      const conditionsContainer = document.getElementById('triggerConditions');
+      const condition = document.querySelector(`[data-condition-id="${conditionId}"]`);
+      
+      if (condition) {
+        // Find and remove the logic operator before this condition (if exists)
+        const prevElement = condition.previousElementSibling;
+        if (prevElement && prevElement.classList.contains('trigger-logic-operator')) {
+          prevElement.remove();
+        }
+        
+        // Remove the condition
+        condition.remove();
+        
+        // If this was the last condition and there's a logic operator left, remove it
+        const remainingConditions = conditionsContainer.querySelectorAll('.trigger-condition');
+        const remainingOperators = conditionsContainer.querySelectorAll('.trigger-logic-operator');
+        
+        if (remainingConditions.length === 1 && remainingOperators.length > 0) {
+          remainingOperators[0].remove();
+        }
+        
+        // Update empty state
+        updateTriggerEmptyState();
+      }
+    }
+
+    // Toggle logic operator (AND/OR)
+    function toggleLogicOperator(button) {
+      const container = button.parentElement;
+      const buttons = container.querySelectorAll('.logic-operator-btn');
+      
+      // Remove active class from all buttons
+      buttons.forEach(btn => btn.classList.remove('active'));
+      
+      // Add active class to clicked button
+      button.classList.add('active');
+    }
+
+    // Update trigger fields based on selected object
+    function updateTriggerFields(conditionId) {
+      const condition = document.querySelector(`[data-condition-id="${conditionId}"]`);
+      const objectSelect = condition.querySelector('select');
+      const fieldSelect = condition.querySelector('.trigger-field-select');
+      const operatorSelect = condition.querySelector('.trigger-operator-select');
+      
+      const selectedObject = objectSelect.value;
+      
+      // Clear field and operator selections
+      fieldSelect.innerHTML = '<option value="">Select Field</option>';
+      operatorSelect.innerHTML = '<option value="">Select Operator</option>';
+      
+      if (selectedObject && salesforceFieldMappings[selectedObject]) {
+        // Add fields for selected object
+        salesforceFieldMappings[selectedObject].forEach(field => {
+          const option = document.createElement('option');
+          option.value = field.value;
+          option.textContent = field.label;
+          fieldSelect.appendChild(option);
+        });
+      }
+    }
+
+    // Update trigger operators based on selected field
+    function updateTriggerOperators(conditionId) {
+      const condition = document.querySelector(`[data-condition-id="${conditionId}"]`);
+      const fieldSelect = condition.querySelector('.trigger-field-select');
+      const operatorSelect = condition.querySelector('.trigger-operator-select');
+      
+      const selectedField = fieldSelect.value;
+      
+      // Clear operator selection
+      operatorSelect.innerHTML = '<option value="">Select Operator</option>';
+      
+      if (selectedField) {
+        // Determine field type based on field name (simplified logic)
+        let fieldType = 'text'; // default
+        
+        if (selectedField.includes('Amount') || selectedField.includes('Count') || selectedField.includes('Number')) {
+          fieldType = 'number';
+        } else if (selectedField.includes('Date') || selectedField.includes('Time')) {
+          fieldType = 'date';
+        } else if (selectedField.includes('Active') || selectedField.includes('Closed') || selectedField.includes('Won')) {
+          fieldType = 'boolean';
+        }
+        
+        // Add operators for field type
+        operatorOptions[fieldType].forEach(operator => {
+          const option = document.createElement('option');
+          option.value = operator.value;
+          option.textContent = operator.label;
+          operatorSelect.appendChild(option);
+        });
+      }
+    }
+
+    // Update trigger empty state
+    function updateTriggerEmptyState() {
+      const conditionsContainer = document.getElementById('triggerConditions');
+      const conditions = conditionsContainer.querySelectorAll('.trigger-condition');
+      
+      if (conditions.length === 0) {
+        conditionsContainer.innerHTML = `
+          <div class="trigger-empty-state">
+            <svg class="trigger-empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <p>No trigger conditions configured</p>
+            <p class="text-xs text-gray-500 mt-1">Add conditions to specify when this summary should run</p>
+          </div>
+        `;
+      }
+    }
+
+    // Get trigger conditions data
+    function getTriggerConditions() {
+      const conditionsContainer = document.getElementById('triggerConditions');
+      const conditions = [];
+      const elements = conditionsContainer.children;
+      
+      let currentLogicOperator = 'AND'; // default
+      
+      for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+        
+        if (element.classList.contains('trigger-logic-operator')) {
+          // Get the active logic operator
+          const activeBtn = element.querySelector('.logic-operator-btn.active');
+          currentLogicOperator = activeBtn ? activeBtn.textContent : 'AND';
+        } else if (element.classList.contains('trigger-condition')) {
+          // Get condition data
+          const objectSelect = element.querySelector('select');
+          const fieldSelect = element.querySelector('.trigger-field-select');
+          const operatorSelect = element.querySelector('.trigger-operator-select');
+          const valueInput = element.querySelector('.trigger-value-input');
+          
+          if (objectSelect.value && fieldSelect.value && operatorSelect.value && valueInput.value.trim()) {
+            conditions.push({
+              object: objectSelect.value,
+              field: fieldSelect.value,
+              operator: operatorSelect.value,
+              value: valueInput.value.trim(),
+              logicOperator: conditions.length > 0 ? currentLogicOperator : null
+            });
+          }
+        }
+      }
+      
+      return conditions;
+    }
+
+    // Set trigger conditions data (for editing)
+    function setTriggerConditions(triggers) {
+      const conditionsContainer = document.getElementById('triggerConditions');
+      conditionsContainer.innerHTML = '';
+      triggerConditionCounter = 0;
+      
+      if (!triggers || triggers.length === 0) {
+        updateTriggerEmptyState();
+        return;
+      }
+      
+      triggers.forEach((trigger, index) => {
+        addTriggerCondition();
+        
+        // Get the last added condition
+        const conditions = conditionsContainer.querySelectorAll('.trigger-condition');
+        const condition = conditions[conditions.length - 1];
+        
+        // Set values
+        const objectSelect = condition.querySelector('select');
+        const fieldSelect = condition.querySelector('.trigger-field-select');
+        const operatorSelect = condition.querySelector('.trigger-operator-select');
+        const valueInput = condition.querySelector('.trigger-value-input');
+        
+        objectSelect.value = trigger.object;
+        updateTriggerFields(triggerConditionCounter);
+        
+        setTimeout(() => {
+          fieldSelect.value = trigger.field;
+          updateTriggerOperators(triggerConditionCounter);
+          
+          setTimeout(() => {
+            operatorSelect.value = trigger.operator;
+            valueInput.value = trigger.value;
+          }, 50);
+        }, 50);
+        
+        // Set logic operator if not first condition
+        if (index > 0 && trigger.logicOperator) {
+          const logicOperators = conditionsContainer.querySelectorAll('.trigger-logic-operator');
+          const lastOperator = logicOperators[logicOperators.length - 1];
+          if (lastOperator) {
+            const buttons = lastOperator.querySelectorAll('.logic-operator-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            const targetBtn = Array.from(buttons).find(btn => btn.textContent === trigger.logicOperator);
+            if (targetBtn) {
+              targetBtn.classList.add('active');
+            }
+          }
+        }
+      });
+    }
+
+    // Initialize trigger empty state
+    document.addEventListener('DOMContentLoaded', function() {
+      updateTriggerEmptyState();
+    });
   </script>
 </body>
 </html>

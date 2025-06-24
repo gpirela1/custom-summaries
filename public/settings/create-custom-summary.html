@@ -1,0 +1,2751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Custom Summary - Chorus by ZoomInfo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom styles */
+    .chorus-logo {
+      color: #1976D2;
+    }
+    
+    .chorus-waveform {
+      fill: #1976D2;
+    }
+    
+    /* User dropdown styles */
+    .user-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5rem;
+      width: 240px;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      z-index: 50;
+      overflow: hidden;
+      display: none;
+    }
+    
+    .user-dropdown.active {
+      display: block;
+    }
+    
+    .user-dropdown-header {
+      padding: 1rem;
+      border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .user-dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      color: #374151;
+      transition: background-color 0.2s;
+    }
+    
+    .user-dropdown-item:hover {
+      background-color: #F3F4F6;
+    }
+    
+    .user-dropdown-item svg {
+      margin-right: 0.75rem;
+    }
+
+    /* Settings sidebar styles */
+    .settings-sidebar {
+      width: 250px;
+      border-right: 1px solid #E5E7EB;
+    }
+
+    .settings-nav-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      color: #374151;
+      transition: background-color 0.2s;
+      border-radius: 0.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .settings-nav-item:hover {
+      background-color: #F3F4F6;
+    }
+
+    .settings-nav-item.active {
+      background-color: #E3F2FD;
+      color: #1976D2;
+      font-weight: 500;
+    }
+
+    .settings-nav-item-child {
+      padding-left: 2.5rem;
+    }
+
+    /* Stepper styles */
+    .stepper {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 1.5rem 0;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      position: relative;
+    }
+
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 0;
+      left: 60px;
+      height: 2px;
+      background: #E5E7EB;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    .step.completed:not(:last-child)::after {
+      background: #1976D2;
+    }
+
+    .step-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      background: #F3F4F6;
+      color: #6B7280;
+      border: 2px solid #E5E7EB;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step.active .step-circle {
+      background: #1976D2;
+      color: white;
+      border-color: #1976D2;
+    }
+
+    .step.completed .step-circle {
+      background: #1976D2;
+      color: white;
+      border-color: #1976D2;
+    }
+
+    .step-label {
+      margin-left: 0.75rem;
+      font-weight: 500;
+      color: #6B7280;
+      font-size: 0.875rem;
+    }
+
+    .step.active .step-label {
+      color: #1976D2;
+    }
+
+    .step.completed .step-label {
+      color: #374151;
+    }
+
+    /* Step content styles */
+    .step-content {
+      display: none;
+      min-height: 400px;
+    }
+
+    .step-content.active {
+      display: block;
+    }
+
+    .step-header {
+      margin-bottom: 2rem;
+    }
+
+    .step-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-description {
+      color: #6B7280;
+      font-size: 1rem;
+    }
+
+    /* Form styles */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #1976D2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    }
+
+    .form-textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      min-height: 120px;
+      resize: vertical;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-textarea:focus {
+      outline: none;
+      border-color: #1976D2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    }
+
+    .form-textarea.large {
+      min-height: 200px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      background: white;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-select:focus {
+      outline: none;
+      border-color: #1976D2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    }
+
+    /* Navigation buttons */
+    .step-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid #E5E7EB;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      font-size: 0.875rem;
+    }
+
+    .btn-secondary {
+      background-color: #F3F4F6;
+      color: #374151;
+      border: 1px solid #D1D5DB;
+    }
+
+    .btn-secondary:hover {
+      background-color: #E5E7EB;
+    }
+
+    .btn-primary {
+      background-color: #1976D2;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #1565C0;
+    }
+
+    .btn-primary:disabled {
+      background-color: #D1D5DB;
+      cursor: not-allowed;
+    }
+
+    /* Trigger condition styles */
+    .trigger-condition {
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+      cursor: move;
+      transition: all 0.2s ease;
+    }
+
+    .trigger-condition:hover {
+      border-color: #D1D5DB;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .trigger-condition.dragging {
+      opacity: 0.5;
+      transform: rotate(2deg);
+    }
+
+    .trigger-condition-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .trigger-condition-title {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      color: #374151;
+      font-size: 0.875rem;
+    }
+
+    .drag-handle {
+      margin-right: 0.5rem;
+      color: #9CA3AF;
+      cursor: move;
+    }
+
+    .drag-handle:hover {
+      color: #6B7280;
+    }
+
+    .trigger-condition-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .trigger-remove-btn {
+      background: #FEE2E2;
+      color: #DC2626;
+      border: 1px solid #FECACA;
+      border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .trigger-remove-btn:hover {
+      background: #FECACA;
+    }
+
+    .trigger-condition-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 2fr;
+      gap: 0.75rem;
+      align-items: end;
+    }
+
+    .trigger-logic-operator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0.5rem 0;
+      gap: 0.5rem;
+    }
+
+    .logic-operator-btn {
+      background: #F3F4F6;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.25rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .logic-operator-btn.active {
+      background: #1976D2;
+      color: white;
+      border-color: #1976D2;
+    }
+
+    .logic-operator-btn:hover:not(.active) {
+      background: #E5E7EB;
+    }
+
+    .trigger-empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: #6B7280;
+      background: #F9FAFB;
+      border: 2px dashed #D1D5DB;
+      border-radius: 0.5rem;
+    }
+
+    .trigger-empty-state-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 1rem;
+      color: #D1D5DB;
+    }
+
+    .add-condition-inline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      background: #F8FAFC;
+      border: 1px dashed #CBD5E1;
+      border-radius: 0.375rem;
+      color: #64748B;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .add-condition-inline:hover {
+      background: #F1F5F9;
+      border-color: #94A3B8;
+      color: #475569;
+    }
+
+    .add-condition-inline svg {
+      margin-right: 0.5rem;
+    }
+
+    .trigger-conditions-container {
+      min-height: 60px;
+    }
+
+    .drop-zone {
+      border: 2px dashed #1976D2;
+      background: #E3F2FD;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .drop-zone.active {
+      opacity: 1;
+    }
+
+    /* Structured output styles */
+    .structured-output {
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+      cursor: move;
+      transition: all 0.2s ease;
+    }
+
+    .structured-output:hover {
+      border-color: #D1D5DB;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .structured-output.dragging {
+      opacity: 0.5;
+      transform: rotate(2deg);
+    }
+
+    .structured-output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .structured-output-title {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      color: #374151;
+      font-size: 0.875rem;
+    }
+
+    .structured-output-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .structured-output-remove-btn {
+      background: #FEE2E2;
+      color: #DC2626;
+      border: 1px solid #FECACA;
+      border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .structured-output-remove-btn:hover {
+      background: #FECACA;
+    }
+
+    .structured-output-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .structured-output-full-row {
+      grid-column: 1 / -1;
+    }
+
+    .structured-empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: #6B7280;
+      background: #F9FAFB;
+      border: 2px dashed #D1D5DB;
+      border-radius: 0.5rem;
+    }
+
+    .structured-empty-state-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 1rem;
+      color: #D1D5DB;
+    }
+
+    .add-output-inline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      background: #F8FAFC;
+      border: 1px dashed #CBD5E1;
+      border-radius: 0.375rem;
+      color: #64748B;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .add-output-inline:hover {
+      background: #F1F5F9;
+      border-color: #94A3B8;
+      color: #475569;
+    }
+
+    .add-output-inline svg {
+      margin-right: 0.5rem;
+    }
+
+    /* Template button styles */
+    .template-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: white;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .template-btn:hover {
+      background: #F9FAFB;
+      border-color: #1976D2;
+      color: #1976D2;
+    }
+
+    .template-btn svg {
+      margin-right: 0.5rem;
+    }
+
+    .template-btn:active {
+      transform: translateY(1px);
+    }
+
+    .form-input-small {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-input-small:focus {
+      outline: none;
+      border-color: #1976D2;
+      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+    }
+
+    .form-select-small {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      background: white;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-select-small:focus {
+      outline: none;
+      border-color: #1976D2;
+      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+    }
+
+    .test-prompt-section {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .test-button {
+      background-color: #F3F4F6;
+      color: #374151;
+      padding: 0.75rem 1rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .test-button:hover {
+      background-color: #E5E7EB;
+    }
+
+    .test-results {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      color: #374151;
+      display: none;
+    }
+
+    .test-results.active {
+      display: block;
+    }
+
+    .character-count {
+      font-size: 0.75rem;
+      color: #6B7280;
+      text-align: right;
+      margin-top: 0.25rem;
+    }
+
+    .skip-step {
+      color: #6B7280;
+      font-size: 0.875rem;
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .skip-step:hover {
+      color: #374151;
+    }
+
+    /* Section styles */
+    .section-header {
+      border-bottom: 1px solid #E5E7EB;
+      padding-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-description {
+      color: #6B7280;
+      font-size: 0.875rem;
+    }
+
+    /* Two-column prompt layout styles */
+    .prompt-two-column-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .prompt-left-column {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .prompt-right-column {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .prompt-textarea-full {
+      flex: 1;
+      min-height: 300px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      resize: vertical;
+    }
+
+    .prompt-preview-panel {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.375rem;
+      background: #F9FAFB;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .prompt-preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid #E5E7EB;
+      background: white;
+      border-radius: 0.375rem 0.375rem 0 0;
+    }
+
+    .prompt-preview-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #374151;
+      margin: 0;
+    }
+
+    .test-button-new {
+      background-color: #1976D2;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .test-button-new:hover {
+      background-color: #1565C0;
+    }
+
+    .test-results-new {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      min-height: 200px;
+    }
+
+    .test-output-content {
+      font-size: 0.875rem;
+      color: #6B7280;
+      line-height: 1.5;
+    }
+
+    /* Prompt bottom row styles */
+    .prompt-bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    .test-button-integrated {
+      background-color: #1976D2;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .test-button-integrated:hover {
+      background-color: #1565C0;
+    }
+
+    /* Prompt test button container styles */
+    .prompt-test-button-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.75rem;
+    }
+
+    /* Responsive design for smaller screens */
+    @media (max-width: 768px) {
+      .prompt-two-column-layout {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .prompt-textarea-full {
+        min-height: 200px;
+      }
+      
+      .test-results-new {
+        min-height: 150px;
+      }
+
+      .prompt-bottom-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Header -->
+  <header class="border-b border-gray-200 bg-white">
+    <div class="flex items-center justify-between px-4 py-2">
+      <div class="flex items-center">
+        <a href="/" class="flex items-center mr-8">
+          <img src="/public/chorus-logo.svg" class="chorus-waveform" width="24" height="24" alt="Chorus">
+          <span class="ml-2 text-xl font-semibold chorus-logo">Chorus</span>
+        </a>
+        
+        <nav class="hidden md:flex space-x-8">
+          <a href="/" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Home
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Engagements
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Deals
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Playlists
+          </a>
+          <div class="relative group">
+            <button class="text-gray-600 hover:text-blue-600 py-4 font-medium flex items-center">
+              More
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+        </nav>
+      </div>
+      
+      <div class="flex items-center">
+        <div class="relative mr-4">
+          <div class="flex items-center border rounded-md px-3 py-1.5 bg-gray-50">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search in Chorus"
+              class="ml-2 bg-transparent outline-none text-sm w-40 md:w-60"
+            />
+            <button class="ml-2 text-gray-400 border-l pl-2">
+              Options
+            </button>
+          </div>
+        </div>
+        
+        <div class="flex items-center relative">
+          <button id="user-menu-button" class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-medium text-white">
+            GP
+          </button>
+          
+          <!-- User dropdown menu -->
+          <div id="user-dropdown" class="user-dropdown">
+            <div class="user-dropdown-header">
+              <div class="font-medium">Gabe Pirela</div>
+            </div>
+            <a href="personal-settings.html" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Settings
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              Help Center
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              Live Chat
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Log Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="flex min-h-screen">
+    <!-- Settings Sidebar -->
+    <div class="settings-sidebar p-4 bg-white">
+      <div class="settings-nav-item">
+        <a href="personal-settings.html" class="block w-full">Personal Settings</a>
+      </div>
+      <div class="settings-nav-item">
+        User Management
+      </div>
+      <div class="settings-nav-item-child">
+        Users
+      </div>
+      <div class="settings-nav-item-child">
+        Teams and Data Access
+      </div>
+      <div class="settings-nav-item-child">
+        Roles and Permissions
+      </div>
+      <div class="settings-nav-item">
+        Integrations
+      </div>
+      <div class="settings-nav-item">
+        Organization Settings
+      </div>
+      <div class="settings-nav-item">
+        Trackers
+      </div>
+      <div class="settings-nav-item">
+        Signals
+      </div>
+      <div class="settings-nav-item active">
+        <a href="custom-summaries.html" class="block w-full">Custom Summaries</a>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 p-8 max-w-4xl">
+      <!-- Header -->
+      <div class="mb-8">
+        <div class="flex items-center mb-4">
+          <a href="custom-summaries.html" class="text-blue-600 hover:text-blue-700 mr-4">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </a>
+          <h1 class="text-2xl font-semibold text-gray-900">Create Custom Summary</h1>
+        </div>
+        <p class="text-gray-600">
+          Follow the steps below to create a custom AI-powered summary for your meetings.
+        </p>
+      </div>
+
+      <!-- Form Content -->
+      <form id="createSummaryForm" class="space-y-8">
+        <!-- Section 1: Basic Information -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="section-header mb-6">
+            <h2 class="section-title">1. Basic Information</h2>
+            <p class="section-description">Provide the name and description for your custom summary.</p>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="summaryName">Summary Name *</label>
+            <input 
+              type="text" 
+              id="summaryName" 
+              class="form-input" 
+              placeholder="e.g., Sales Discovery Summary, Technical Requirements Analysis"
+              maxlength="100"
+              oninput="updateCharacterCount('summaryName', 'nameCount')"
+              required
+            >
+            <div class="character-count">
+              <span id="nameCount">0</span>/100 characters
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="summaryDescription">Description *</label>
+            <textarea 
+              id="summaryDescription" 
+              class="form-textarea" 
+              placeholder="Describe what information this summary will extract from meetings. For example: 'Extracts key pain points, budget information, decision-making process, and next steps from sales discovery calls.'"
+              maxlength="500"
+              oninput="updateCharacterCount('summaryDescription', 'descriptionCount')"
+              required
+            ></textarea>
+            <div class="character-count">
+              <span id="descriptionCount">0</span>/500 characters
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Triggers -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="section-header mb-6">
+            <h2 class="section-title">2. Triggers <span class="text-sm font-normal text-gray-500">(Optional)</span></h2>
+            <p class="section-description">Configure when this custom summary should automatically run based on CRM data conditions.</p>
+          </div>
+
+          <div class="mb-4">
+            <div id="triggerConditions">
+              <!-- Trigger conditions will be dynamically added here -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Section 3: Custom Prompt -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="section-header mb-6">
+            <h2 class="section-title">3. Custom Prompt</h2>
+            <p class="section-description">Define the AI prompt that will analyze your meetings and generate the summary.</p>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="customPrompt">Custom Prompt *</label>
+            <div class="prompt-two-column-layout">
+              <div class="prompt-left-column">
+                <textarea 
+                  id="customPrompt" 
+                  class="form-textarea prompt-textarea-full" 
+                  placeholder="Analyze this meeting and provide:
+
+1. **Key Topics Discussed:**
+   - List the main topics covered
+   - Include specific details mentioned
+
+2. **Action Items:**
+   - Who is responsible for what
+   - Timeline for completion
+
+3. **Next Steps:**
+   - Follow-up meetings scheduled
+   - Decisions that need to be made"
+                  oninput="updateCharacterCount('customPrompt', 'promptCount')"
+                  required
+                ></textarea>
+                <div class="character-count">
+                  <span id="promptCount">0</span> characters
+                </div>
+              </div>
+              
+              <div class="prompt-right-column">
+                <div class="prompt-preview-panel">
+                  <div id="testResults" class="test-results-new">
+                    <div id="testOutput" class="test-output-content">Click "Test Prompt" to see how your prompt works with sample meeting data.</div>
+                  </div>
+                </div>
+                <div class="prompt-test-button-container">
+                  <button type="button" class="btn btn-secondary" onclick="testPrompt()">Test Prompt</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Salesforce Integration -->
+          <div class="form-group">
+            <label class="form-label" for="salesforceObject">Salesforce Object (Optional)</label>
+            <select id="salesforceObject" class="form-select" onchange="updateSalesforceFields()">
+              <option value="">Select Salesforce Object (Optional)</option>
+              <option value="Account">Account</option>
+              <option value="Opportunity">Opportunity</option>
+              <option value="Event">Event</option>
+              <option value="Task">Task</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="salesforceFieldGroup" style="display: none;">
+            <label class="form-label" for="salesforceField">Salesforce Field</label>
+            <select id="salesforceField" class="form-select">
+              <option value="">Select Field</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Section 4: Structured Outputs -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="section-header mb-6">
+            <h2 class="section-title">4. Structured Outputs <span class="text-sm font-normal text-gray-500">(Optional)</span></h2>
+            <p class="section-description">Define specific data extraction points that write to CRM fields independently.</p>
+          </div>
+
+          <!-- Quick Start Templates -->
+          <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 class="font-medium text-blue-900 mb-3">Quick Start Templates</h3>
+            <p class="text-sm text-blue-700 mb-4">Apply pre-configured structured outputs for popular deal qualification frameworks.</p>
+            <div class="flex flex-wrap gap-3">
+              <button type="button" class="template-btn" onclick="applyTemplate('meddic')">
+                MEDDIC (6 outputs)
+              </button>
+              <button type="button" class="template-btn" onclick="applyTemplate('bant')">
+                BANT (4 outputs)
+              </button>
+              <button type="button" class="template-btn" onclick="applyTemplate('sandler')">
+                Sandler (4 outputs)
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div id="structuredOutputs">
+              <!-- Structured outputs will be dynamically added here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: Actions & Delivery -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="section-header mb-6">
+            <h2 class="section-title">5. Actions & Delivery</h2>
+            <p class="section-description">Configure how insights are delivered to your team.</p>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Email Delivery -->
+            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+              <div class="flex items-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-3 text-gray-500">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <div>
+                  <h3 class="font-medium text-gray-900">Email</h3>
+                  <p class="text-sm text-gray-500">Send insights via email</p>
+                </div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="emailDelivery" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
+
+            <!-- Slack Delivery -->
+            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+              <div class="flex items-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-3 text-gray-500">
+                  <path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/>
+                  <path d="M20.5 10H16"/>
+                  <path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/>
+                  <path d="M3.5 14H8"/>
+                  <path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/>
+                  <path d="M14 8V3.5"/>
+                  <path d="M10 9.5c0 .83-.67 1.5-1.5 1.5h-5C2.67 11 2 10.33 2 9.5S2.67 8 3.5 8h5c.83 0 1.5.67 1.5 1.5z"/>
+                  <path d="M10 20v-4.5"/>
+                </svg>
+                <div>
+                  <h3 class="font-medium text-gray-900">Slack</h3>
+                  <p class="text-sm text-gray-500">Send insights to Slack channels</p>
+                </div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="slackDelivery" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
+
+            <!-- Microsoft Teams Delivery -->
+            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+              <div class="flex items-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-3 text-gray-500">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                <div>
+                  <h3 class="font-medium text-gray-900">Microsoft Teams</h3>
+                  <p class="text-sm text-gray-500">Send insights to Teams channels</p>
+                </div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="teamsDelivery" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="flex justify-between items-center">
+            <a href="custom-summaries.html" class="btn btn-secondary">
+              ← Cancel
+            </a>
+            <button type="submit" class="btn btn-primary" onclick="createSummary(); return false;">
+              Create Custom Summary
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let currentStep = 1;
+    let triggerConditionCounter = 0;
+    let structuredOutputCounter = 0;
+    const totalSteps = 4;
+
+    // Form data storage
+    let formData = {
+      name: '',
+      description: '',
+      triggers: [],
+      prompt: '',
+      salesforceObject: '',
+      salesforceField: ''
+    };
+
+    // Salesforce field mappings
+    const salesforceFieldMappings = {
+      'Account': [
+        { value: 'Description', label: 'Description' },
+        { value: 'Notes__c', label: 'Notes' },
+        { value: 'Meeting_Summary__c', label: 'Meeting Summary' },
+        { value: 'Last_Call_Notes__c', label: 'Last Call Notes' }
+      ],
+      'Opportunity': [
+        { value: 'Description', label: 'Description' },
+        { value: 'Next_Steps__c', label: 'Next Steps' },
+        { value: 'Meeting_Summary__c', label: 'Meeting Summary' },
+        { value: 'Call_Notes__c', label: 'Call Notes' }
+      ],
+      'Event': [
+        { value: 'Description', label: 'Description' },
+        { value: 'Comments__c', label: 'Comments' },
+        { value: 'Meeting_Notes__c', label: 'Meeting Notes' },
+        { value: 'Summary__c', label: 'Summary' }
+      ],
+      'Task': [
+        { value: 'Description', label: 'Description' },
+        { value: 'Comments__c', label: 'Comments' },
+        { value: 'Call_Summary__c', label: 'Call Summary' },
+        { value: 'Notes__c', label: 'Notes' }
+      ]
+    };
+
+    // Operator options for different field types
+    const operatorOptions = {
+      'text': [
+        { value: 'equals', label: 'Equals' },
+        { value: 'not_equals', label: 'Not Equals' },
+        { value: 'contains', label: 'Contains' },
+        { value: 'not_contains', label: 'Does Not Contain' },
+        { value: 'starts_with', label: 'Starts With' },
+        { value: 'ends_with', label: 'Ends With' }
+      ],
+      'number': [
+        { value: 'equals', label: 'Equals' },
+        { value: 'not_equals', label: 'Not Equals' },
+        { value: 'greater_than', label: 'Greater Than' },
+        { value: 'less_than', label: 'Less Than' },
+        { value: 'greater_equal', label: 'Greater Than or Equal' },
+        { value: 'less_equal', label: 'Less Than or Equal' }
+      ],
+      'boolean': [
+        { value: 'equals', label: 'Equals' }
+      ],
+      'date': [
+        { value: 'equals', label: 'Equals' },
+        { value: 'not_equals', label: 'Not Equals' },
+        { value: 'after', label: 'After' },
+        { value: 'before', label: 'Before' }
+      ]
+    };
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      // User dropdown functionality
+      const userMenuButton = document.getElementById('user-menu-button');
+      const userDropdown = document.getElementById('user-dropdown');
+      
+      userMenuButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        userDropdown.classList.toggle('active');
+      });
+      
+      document.addEventListener('click', function(e) {
+        if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+          userDropdown.classList.remove('active');
+        }
+      });
+
+      // Check if we're in edit mode
+      const urlParams = new URLSearchParams(window.location.search);
+      const editId = urlParams.get('edit');
+      
+      if (editId) {
+        // Edit mode - load existing summary data
+        loadSummaryForEdit(editId);
+      } else {
+        // Create mode - initialize empty states
+        updateTriggerEmptyState();
+        updateStructuredOutputsEmptyState();
+      }
+    });
+
+    // Character count update
+    function updateCharacterCount(inputId, countId) {
+      const input = document.getElementById(inputId);
+      const count = document.getElementById(countId);
+      count.textContent = input.value.length;
+    }
+
+    // Step navigation
+    function nextStep() {
+      if (validateCurrentStep()) {
+        saveCurrentStepData();
+        
+        if (currentStep < totalSteps) {
+          currentStep++;
+          updateStepDisplay();
+        } else {
+          // Final step - create summary
+          createSummary();
+        }
+      }
+    }
+
+    function previousStep() {
+      if (currentStep > 1) {
+        saveCurrentStepData();
+        currentStep--;
+        updateStepDisplay();
+      }
+    }
+
+    function updateStepDisplay() {
+      // Update stepper visual state
+      document.querySelectorAll('.step').forEach((step, index) => {
+        const stepNumber = index + 1;
+        step.classList.remove('active', 'completed');
+        
+        if (stepNumber === currentStep) {
+          step.classList.add('active');
+        } else if (stepNumber < currentStep) {
+          step.classList.add('completed');
+        }
+      });
+
+      // Update step content
+      document.querySelectorAll('.step-content').forEach((content, index) => {
+        const stepNumber = index + 1;
+        content.classList.remove('active');
+        
+        if (stepNumber === currentStep) {
+          content.classList.add('active');
+        }
+      });
+
+      // Update navigation buttons
+      const backBtn = document.getElementById('backBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      
+      backBtn.style.display = currentStep > 1 ? 'block' : 'none';
+      nextBtn.textContent = currentStep === totalSteps ? 'Create Summary' : 'Next →';
+    }
+
+    function validateCurrentStep() {
+      switch (currentStep) {
+        case 1:
+          const name = document.getElementById('summaryName').value.trim();
+          if (!name) {
+            alert('Please enter a summary name.');
+            return false;
+          }
+          return true;
+        
+        case 2:
+          const description = document.getElementById('summaryDescription').value.trim();
+          if (!description) {
+            alert('Please enter a description.');
+            return false;
+          }
+          return true;
+        
+        case 3:
+          // Triggers are optional
+          return true;
+        
+        case 4:
+          const prompt = document.getElementById('customPrompt').value.trim();
+          if (!prompt) {
+            alert('Please enter a custom prompt.');
+            return false;
+          }
+          
+          const salesforceObject = document.getElementById('salesforceObject').value;
+          const salesforceField = document.getElementById('salesforceField').value;
+          
+          if (salesforceObject && !salesforceField) {
+            alert('Please select a Salesforce field for the selected object.');
+            return false;
+          }
+          return true;
+        
+        default:
+          return true;
+      }
+    }
+
+    function saveCurrentStepData() {
+      switch (currentStep) {
+        case 1:
+          formData.name = document.getElementById('summaryName').value.trim();
+          break;
+        
+        case 2:
+          formData.description = document.getElementById('summaryDescription').value.trim();
+          break;
+        
+        case 3:
+          formData.triggers = getTriggerConditions();
+          break;
+        
+        case 4:
+          formData.prompt = document.getElementById('customPrompt').value.trim();
+          formData.salesforceObject = document.getElementById('salesforceObject').value;
+          formData.salesforceField = document.getElementById('salesforceField').value;
+          break;
+      }
+    }
+
+    // Trigger functionality
+    function addTriggerCondition(insertAfterConditionId = null) {
+      const conditionsContainer = document.getElementById('triggerConditions');
+      const conditionId = ++triggerConditionCounter;
+      
+      // Check if this is the first condition
+      const isFirstCondition = conditionsContainer.children.length === 0 || 
+                               conditionsContainer.querySelector('.trigger-empty-state');
+      
+      // Create condition HTML with drag handle and improved structure
+      const conditionHTML = `
+        <div class="trigger-condition" data-condition-id="${conditionId}" draggable="true">
+          <div class="trigger-condition-header">
+            <span class="trigger-condition-title">
+              <svg class="drag-handle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 9h6v6H9z"/>
+                <path d="M9 3h6v6H9z"/>
+                <path d="M9 15h6v6H9z"/>
+              </svg>
+              Condition ${conditionId}
+            </span>
+            <div class="trigger-condition-actions">
+              <button type="button" class="trigger-remove-btn" onclick="removeTriggerCondition(${conditionId})">
+                Remove
+              </button>
+            </div>
+          </div>
+          
+          <div class="trigger-condition-row">
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">CRM Object</label>
+              <select class="form-select-small" onchange="updateTriggerFields(${conditionId})">
+                <option value="">Select Object</option>
+                <option value="Account">Account</option>
+                <option value="Opportunity">Opportunity</option>
+                <option value="Event">Event</option>
+                <option value="Task">Task</option>
+                <option value="Contact">Contact</option>
+                <option value="Lead">Lead</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">Field</label>
+              <select class="form-select-small trigger-field-select" onchange="updateTriggerOperators(${conditionId})">
+                <option value="">Select Field</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">Operator</label>
+              <select class="form-select-small trigger-operator-select">
+                <option value="">Select Operator</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">Value</label>
+              <input type="text" class="form-input-small trigger-value-input" placeholder="Enter value">
+            </div>
+          </div>
+          
+          <!-- Inline Add Condition Button -->
+          <div class="add-condition-inline" onclick="addTriggerCondition(${conditionId})">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add another condition
+          </div>
+        </div>
+      `;
+      
+      // Remove empty state since we now have conditions
+      const emptyState = conditionsContainer.querySelector('.trigger-empty-state');
+      if (emptyState) {
+        emptyState.remove();
+      }
+      
+      if (insertAfterConditionId) {
+        // Insert after specific condition
+        const targetCondition = document.querySelector(`[data-condition-id="${insertAfterConditionId}"]`);
+        if (targetCondition) {
+          // Add logic operator first
+          const logicOperatorHTML = `
+            <div class="trigger-logic-operator">
+              <button type="button" class="logic-operator-btn active" onclick="toggleLogicOperator(this)">AND</button>
+              <button type="button" class="logic-operator-btn" onclick="toggleLogicOperator(this)">OR</button>
+            </div>
+          `;
+          targetCondition.insertAdjacentHTML('afterend', logicOperatorHTML);
+          
+          // Then add the condition
+          targetCondition.nextElementSibling.insertAdjacentHTML('afterend', conditionHTML);
+        }
+      } else {
+        // Add logic operator before this condition (if not first)
+        if (!isFirstCondition) {
+          const logicOperatorHTML = `
+            <div class="trigger-logic-operator">
+              <button type="button" class="logic-operator-btn active" onclick="toggleLogicOperator(this)">AND</button>
+              <button type="button" class="logic-operator-btn" onclick="toggleLogicOperator(this)">OR</button>
+            </div>
+          `;
+          conditionsContainer.insertAdjacentHTML('beforeend', logicOperatorHTML);
+        }
+        
+        // Add the condition
+        conditionsContainer.insertAdjacentHTML('beforeend', conditionHTML);
+      }
+      
+      // Initialize drag and drop for the new condition
+      initializeDragAndDrop();
+    }
+
+    function removeTriggerCondition(conditionId) {
+      const conditionsContainer = document.getElementById('triggerConditions');
+      const condition = document.querySelector(`[data-condition-id="${conditionId}"]`);
+      
+      if (condition) {
+        // Find and remove the logic operator before this condition (if exists)
+        const prevElement = condition.previousElementSibling;
+        if (prevElement && prevElement.classList.contains('trigger-logic-operator')) {
+          prevElement.remove();
+        }
+        
+        // Remove the condition
+        condition.remove();
+        
+        // If this was the last condition and there's a logic operator left, remove it
+        const remainingConditions = conditionsContainer.querySelectorAll('.trigger-condition');
+        const remainingOperators = conditionsContainer.querySelectorAll('.trigger-logic-operator');
+        
+        if (remainingConditions.length === 1 && remainingOperators.length > 0) {
+          remainingOperators[0].remove();
+        }
+        
+        // Update empty state
+        updateTriggerEmptyState();
+      }
+    }
+
+    function toggleLogicOperator(button) {
+      const container = button.parentElement;
+      const buttons = container.querySelectorAll('.logic-operator-btn');
+      
+      // Remove active class from all buttons
+      buttons.forEach(btn => btn.classList.remove('active'));
+      
+      // Add active class to clicked button
+      button.classList.add('active');
+    }
+
+    function updateTriggerFields(conditionId) {
+      const condition = document.querySelector(`[data-condition-id="${conditionId}"]`);
+      const objectSelect = condition.querySelector('select');
+      const fieldSelect = condition.querySelector('.trigger-field-select');
+      const operatorSelect = condition.querySelector('.trigger-operator-select');
+      
+      const selectedObject = objectSelect.value;
+      
+      // Clear field and operator selections
+      fieldSelect.innerHTML = '<option value="">Select Field</option>';
+      operatorSelect.innerHTML = '<option value="">Select Operator</option>';
+      
+      if (selectedObject && salesforceFieldMappings[selectedObject]) {
+        // Add fields for selected object
+        salesforceFieldMappings[selectedObject].forEach(field => {
+          const option = document.createElement('option');
+          option.value = field.value;
+          option.textContent = field.label;
+          fieldSelect.appendChild(option);
+        });
+      }
+    }
+
+    function updateTriggerOperators(conditionId) {
+      const condition = document.querySelector(`[data-condition-id="${conditionId}"]`);
+      const fieldSelect = condition.querySelector('.trigger-field-select');
+      const operatorSelect = condition.querySelector('.trigger-operator-select');
+      
+      const selectedField = fieldSelect.value;
+      
+      // Clear operator selection
+      operatorSelect.innerHTML = '<option value="">Select Operator</option>';
+      
+      if (selectedField) {
+        // Determine field type based on field name (simplified logic)
+        let fieldType = 'text'; // default
+        
+        if (selectedField.includes('Amount') || selectedField.includes('Count') || selectedField.includes('Number')) {
+          fieldType = 'number';
+        } else if (selectedField.includes('Date') || selectedField.includes('Time')) {
+          fieldType = 'date';
+        } else if (selectedField.includes('Active') || selectedField.includes('Closed') || selectedField.includes('Won')) {
+          fieldType = 'boolean';
+        }
+        
+        // Add operators for field type
+        operatorOptions[fieldType].forEach(operator => {
+          const option = document.createElement('option');
+          option.value = operator.value;
+          option.textContent = operator.label;
+          operatorSelect.appendChild(option);
+        });
+      }
+    }
+
+    function updateTriggerEmptyState() {
+      const conditionsContainer = document.getElementById('triggerConditions');
+      const conditions = conditionsContainer.querySelectorAll('.trigger-condition');
+      
+      if (conditions.length === 0) {
+        conditionsContainer.innerHTML = `
+          <div class="trigger-empty-state">
+            <svg class="trigger-empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <p class="font-medium mb-3">No trigger conditions configured</p>
+            <button type="button" class="btn btn-primary mb-3" onclick="addTriggerCondition()" style="display: inline-flex; align-items: center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add Trigger Condition
+            </button>
+            <p class="text-sm text-gray-500">Add conditions to specify when this summary should run, or skip this step to run on all meetings.</p>
+          </div>
+        `;
+      }
+    }
+
+    function getTriggerConditions() {
+      const conditionsContainer = document.getElementById('triggerConditions');
+      const conditions = [];
+      const elements = conditionsContainer.children;
+      
+      let currentLogicOperator = 'AND'; // default
+      
+      for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+        
+        if (element.classList.contains('trigger-logic-operator')) {
+          // Get the active logic operator
+          const activeBtn = element.querySelector('.logic-operator-btn.active');
+          currentLogicOperator = activeBtn ? activeBtn.textContent : 'AND';
+        } else if (element.classList.contains('trigger-condition')) {
+          // Get condition data
+          const objectSelect = element.querySelector('select');
+          const fieldSelect = element.querySelector('.trigger-field-select');
+          const operatorSelect = element.querySelector('.trigger-operator-select');
+          const valueInput = element.querySelector('.trigger-value-input');
+          
+          if (objectSelect.value && fieldSelect.value && operatorSelect.value && valueInput.value.trim()) {
+            conditions.push({
+              object: objectSelect.value,
+              field: fieldSelect.value,
+              operator: operatorSelect.value,
+              value: valueInput.value.trim(),
+              logicOperator: conditions.length > 0 ? currentLogicOperator : null
+            });
+          }
+        }
+      }
+      
+      return conditions;
+    }
+
+    function skipTriggers() {
+      formData.triggers = [];
+      nextStep();
+    }
+
+    // Deal qualification framework templates
+    const qualificationTemplates = {
+      meddic: {
+        name: 'MEDDIC',
+        outputs: [
+          {
+            name: 'Metrics',
+            extractionPrompt: 'Extract specific metrics, KPIs, or measurable outcomes discussed that demonstrate ROI or success. Include quantifiable benefits, performance indicators, and success criteria mentioned.',
+            object: 'Opportunity',
+            field: 'Metrics__c'
+          },
+          {
+            name: 'Economic Buyer',
+            extractionPrompt: 'Identify who has budget authority and final decision-making power for this purchase. Include names, titles, and their level of influence in the buying process.',
+            object: 'Opportunity',
+            field: 'Economic_Buyer__c'
+          },
+          {
+            name: 'Decision Criteria',
+            extractionPrompt: 'Extract the criteria, requirements, and evaluation factors they will use to select a solution. Include technical requirements, business needs, and selection criteria.',
+            object: 'Opportunity',
+            field: 'Decision_Criteria__c'
+          },
+          {
+            name: 'Decision Process',
+            extractionPrompt: 'Identify their decision-making process, timeline, approval steps, and stakeholders involved. Include procurement process, approval workflow, and key milestones.',
+            object: 'Opportunity',
+            field: 'Decision_Process__c'
+          },
+          {
+            name: 'Identify Pain',
+            extractionPrompt: 'Extract specific pain points, challenges, and problems that need to be solved. Include business impact, urgency, and consequences of not solving these issues.',
+            object: 'Opportunity',
+            field: 'Pain_Points__c'
+          },
+          {
+            name: 'Champion',
+            extractionPrompt: 'Identify internal advocates, champions, or supporters who will help drive the deal forward. Include their influence, motivation, and commitment level.',
+            object: 'Opportunity',
+            field: 'Champion__c'
+          }
+        ]
+      },
+      bant: {
+        name: 'BANT',
+        outputs: [
+          {
+            name: 'Budget',
+            extractionPrompt: 'Extract budget information, ranges, or financial constraints discussed. Include specific amounts, budget ranges, funding sources, and financial decision-making authority.',
+            object: 'Opportunity',
+            field: 'Budget_Info__c'
+          },
+          {
+            name: 'Authority',
+            extractionPrompt: 'Identify decision makers, influencers, and approval process. Include who has authority to make purchasing decisions and the approval hierarchy.',
+            object: 'Opportunity',
+            field: 'Authority__c'
+          },
+          {
+            name: 'Need',
+            extractionPrompt: 'Extract specific needs, requirements, and use cases mentioned. Include business needs, technical requirements, and desired outcomes.',
+            object: 'Opportunity',
+            field: 'Need__c'
+          },
+          {
+            name: 'Timeline',
+            extractionPrompt: 'Extract timeline information, deadlines, and implementation dates. Include decision timeline, implementation schedule, and key milestones.',
+            object: 'Opportunity',
+            field: 'Timeline__c'
+          }
+        ]
+      },
+      sandler: {
+        name: 'Sandler',
+        outputs: [
+          {
+            name: 'Pain',
+            extractionPrompt: 'Extract pain points, challenges, and problems that need solving. Focus on emotional and business impact, urgency, and consequences of inaction.',
+            object: 'Opportunity',
+            field: 'Pain_Points__c'
+          },
+          {
+            name: 'Budget',
+            extractionPrompt: 'Identify budget discussions, financial capacity, and investment appetite. Include budget ranges, funding availability, and financial decision-making process.',
+            object: 'Opportunity',
+            field: 'Budget_Info__c'
+          },
+          {
+            name: 'Decision',
+            extractionPrompt: 'Extract decision-making process, criteria, and stakeholders involved. Include who makes decisions, evaluation criteria, and approval process.',
+            object: 'Opportunity',
+            field: 'Decision_Process__c'
+          },
+          {
+            name: 'Timeline',
+            extractionPrompt: 'Identify timeline expectations, deadlines, and urgency indicators. Include decision timeline, implementation schedule, and time-sensitive factors.',
+            object: 'Opportunity',
+            field: 'Timeline__c'
+          }
+        ]
+      }
+    };
+
+    // Apply qualification framework template
+    function applyTemplate(templateName) {
+      const template = qualificationTemplates[templateName];
+      if (!template) {
+        alert('Template not found.');
+        return;
+      }
+
+      // Clear existing structured outputs
+      const outputsContainer = document.getElementById('structuredOutputs');
+      outputsContainer.innerHTML = '';
+      structuredOutputCounter = 0;
+
+      // Add each template output
+      template.outputs.forEach((templateOutput, index) => {
+        const outputId = ++structuredOutputCounter;
+        
+        // Writeback mode options
+        const writebackModes = [
+          { value: 'append', label: 'Append' },
+          { value: 'replace', label: 'Replace' },
+          { value: 'prepend', label: 'Prepend' }
+        ];
+        
+        // Overwrite behavior options
+        const overwriteBehaviors = [
+          { value: 'always', label: 'Always overwrite' },
+          { value: 'if_empty', label: 'Only if empty' },
+          { value: 'ask', label: 'Ask before overwriting' }
+        ];
+
+        const outputHTML = `
+          <div class="structured-output" data-output-id="${outputId}" draggable="true">
+            <div class="structured-output-header">
+              <span class="structured-output-title">
+                <svg class="drag-handle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 9h6v6H9z"/>
+                  <path d="M9 3h6v6H9z"/>
+                  <path d="M9 15h6v6H9z"/>
+                </svg>
+                ${templateOutput.name}
+              </span>
+              <div class="structured-output-actions">
+                <button type="button" class="structured-output-remove-btn" onclick="removeStructuredOutput(${outputId})">
+                  Remove
+                </button>
+              </div>
+            </div>
+            
+            <div class="structured-output-row">
+              <div>
+                <label class="form-label" style="margin-bottom: 0.25rem;">Name *</label>
+                <input type="text" class="form-input-small output-name-input" value="${templateOutput.name}">
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom: 0.25rem;">CRM Object *</label>
+                <select class="form-select-small output-object-select" onchange="updateOutputFields(${outputId})">
+                  <option value="">Select Object</option>
+                  <option value="Account" ${templateOutput.object === 'Account' ? 'selected' : ''}>Account</option>
+                  <option value="Opportunity" ${templateOutput.object === 'Opportunity' ? 'selected' : ''}>Opportunity</option>
+                  <option value="Event" ${templateOutput.object === 'Event' ? 'selected' : ''}>Event</option>
+                  <option value="Task" ${templateOutput.object === 'Task' ? 'selected' : ''}>Task</option>
+                  <option value="Contact" ${templateOutput.object === 'Contact' ? 'selected' : ''}>Contact</option>
+                  <option value="Lead" ${templateOutput.object === 'Lead' ? 'selected' : ''}>Lead</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="structured-output-row">
+              <div>
+                <label class="form-label" style="margin-bottom: 0.25rem;">CRM Field *</label>
+                <select class="form-select-small output-field-select">
+                  <option value="">Select Field</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom: 0.25rem;">Writeback Mode *</label>
+                <select class="form-select-small output-writeback-select">
+                  ${writebackModes.map(mode => `<option value="${mode.value}">${mode.label}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            
+            <div class="structured-output-row">
+              <div class="structured-output-full-row">
+                <label class="form-label" style="margin-bottom: 0.25rem;">Overwrite Behavior *</label>
+                <select class="form-select-small output-overwrite-select">
+                  ${overwriteBehaviors.map(behavior => `<option value="${behavior.value}">${behavior.label}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            
+            <div class="structured-output-row">
+              <div class="structured-output-full-row">
+                <label class="form-label" style="margin-bottom: 0.25rem;">Extraction Prompt *</label>
+                <textarea class="form-textarea output-prompt-textarea" style="min-height: 80px;">${templateOutput.extractionPrompt}</textarea>
+              </div>
+            </div>
+            
+            <!-- Inline Add Output Button -->
+            <div class="add-output-inline" onclick="addStructuredOutput(${outputId})">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add another output
+            </div>
+          </div>
+        `;
+
+        outputsContainer.insertAdjacentHTML('beforeend', outputHTML);
+
+        // Populate the CRM field dropdown for this output
+        setTimeout(() => updateOutputFields(outputId), 100);
+      });
+
+      // Initialize drag and drop for all outputs
+      setTimeout(() => initializeOutputDragAndDrop(), 200);
+    }
+
+    // Structured outputs functionality
+    function addStructuredOutput(insertAfterOutputId = null) {
+      const outputsContainer = document.getElementById('structuredOutputs');
+      const outputId = ++structuredOutputCounter;
+      
+      // Check if this is the first output
+      const isFirstOutput = outputsContainer.children.length === 0 || 
+                           outputsContainer.querySelector('.structured-empty-state');
+      
+      // Writeback mode options
+      const writebackModes = [
+        { value: 'append', label: 'Append' },
+        { value: 'replace', label: 'Replace' },
+        { value: 'prepend', label: 'Prepend' }
+      ];
+      
+      // Overwrite behavior options
+      const overwriteBehaviors = [
+        { value: 'always', label: 'Always overwrite' },
+        { value: 'if_empty', label: 'Only if empty' },
+        { value: 'ask', label: 'Ask before overwriting' }
+      ];
+      
+      // Create output HTML with drag handle and improved structure
+      const outputHTML = `
+        <div class="structured-output" data-output-id="${outputId}" draggable="true">
+          <div class="structured-output-header">
+            <span class="structured-output-title">
+              <svg class="drag-handle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 9h6v6H9z"/>
+                <path d="M9 3h6v6H9z"/>
+                <path d="M9 15h6v6H9z"/>
+              </svg>
+              Output ${outputId}
+            </span>
+            <div class="structured-output-actions">
+              <button type="button" class="structured-output-remove-btn" onclick="removeStructuredOutput(${outputId})">
+                Remove
+              </button>
+            </div>
+          </div>
+          
+          <div class="structured-output-row">
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">Name *</label>
+              <input type="text" class="form-input-small output-name-input" placeholder="e.g., Budget Information">
+            </div>
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">CRM Object *</label>
+              <select class="form-select-small output-object-select" onchange="updateOutputFields(${outputId})">
+                <option value="">Select Object</option>
+                <option value="Account">Account</option>
+                <option value="Opportunity">Opportunity</option>
+                <option value="Event">Event</option>
+                <option value="Task">Task</option>
+                <option value="Contact">Contact</option>
+                <option value="Lead">Lead</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="structured-output-row">
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">CRM Field *</label>
+              <select class="form-select-small output-field-select">
+                <option value="">Select Field</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">Writeback Mode *</label>
+              <select class="form-select-small output-writeback-select">
+                ${writebackModes.map(mode => `<option value="${mode.value}">${mode.label}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          
+          <div class="structured-output-row">
+            <div class="structured-output-full-row">
+              <label class="form-label" style="margin-bottom: 0.25rem;">Overwrite Behavior *</label>
+              <select class="form-select-small output-overwrite-select">
+                ${overwriteBehaviors.map(behavior => `<option value="${behavior.value}">${behavior.label}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          
+          <div class="structured-output-row">
+            <div class="structured-output-full-row">
+              <label class="form-label" style="margin-bottom: 0.25rem;">Extraction Prompt *</label>
+              <textarea class="form-textarea output-prompt-textarea" placeholder="Extract the budget information discussed in this meeting. Include specific amounts, budget ranges, and any constraints mentioned." style="min-height: 80px;"></textarea>
+            </div>
+          </div>
+          
+          <!-- Inline Add Output Button -->
+          <div class="add-output-inline" onclick="addStructuredOutput(${outputId})">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add another output
+          </div>
+        </div>
+      `;
+      
+      // Remove empty state since we now have outputs
+      const emptyState = outputsContainer.querySelector('.structured-empty-state');
+      if (emptyState) {
+        emptyState.remove();
+      }
+      
+      if (insertAfterOutputId) {
+        // Insert after specific output
+        const targetOutput = document.querySelector(`[data-output-id="${insertAfterOutputId}"]`);
+        if (targetOutput) {
+          targetOutput.insertAdjacentHTML('afterend', outputHTML);
+        }
+      } else {
+        // Add the output
+        outputsContainer.insertAdjacentHTML('beforeend', outputHTML);
+      }
+      
+      // Initialize drag and drop for structured outputs
+      initializeOutputDragAndDrop();
+    }
+
+    function removeStructuredOutput(outputId) {
+      const outputsContainer = document.getElementById('structuredOutputs');
+      const output = document.querySelector(`[data-output-id="${outputId}"]`);
+      
+      if (output) {
+        // Remove the output
+        output.remove();
+        
+        // Update empty state
+        updateStructuredOutputsEmptyState();
+      }
+    }
+
+    function updateOutputFields(outputId) {
+      const output = document.querySelector(`[data-output-id="${outputId}"]`);
+      const objectSelect = output.querySelector('.output-object-select');
+      const fieldSelect = output.querySelector('.output-field-select');
+      
+      const selectedObject = objectSelect.value;
+      
+      // Clear field selection
+      fieldSelect.innerHTML = '<option value="">Select Field</option>';
+      
+      if (selectedObject && salesforceFieldMappings[selectedObject]) {
+        // Add fields for selected object
+        salesforceFieldMappings[selectedObject].forEach(field => {
+          const option = document.createElement('option');
+          option.value = field.value;
+          option.textContent = field.label;
+          fieldSelect.appendChild(option);
+        });
+      }
+    }
+
+    function updateStructuredOutputsEmptyState() {
+      const outputsContainer = document.getElementById('structuredOutputs');
+      const outputs = outputsContainer.querySelectorAll('.structured-output');
+      
+      if (outputs.length === 0) {
+        outputsContainer.innerHTML = `
+          <div class="structured-empty-state">
+            <svg class="structured-empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+            </svg>
+            <p class="font-medium mb-3">No structured outputs configured</p>
+            <button type="button" class="btn btn-primary mb-3" onclick="addStructuredOutput()" style="display: inline-flex; align-items: center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add Structured Output
+            </button>
+            <p class="text-sm text-gray-500">Add structured outputs to extract specific data points to CRM fields independently.</p>
+          </div>
+        `;
+      }
+    }
+
+    function getStructuredOutputs() {
+      const outputsContainer = document.getElementById('structuredOutputs');
+      const outputs = [];
+      const outputElements = outputsContainer.querySelectorAll('.structured-output');
+      
+      outputElements.forEach(element => {
+        const nameInput = element.querySelector('.output-name-input');
+        const objectSelect = element.querySelector('.output-object-select');
+        const fieldSelect = element.querySelector('.output-field-select');
+        const writebackSelect = element.querySelector('.output-writeback-select');
+        const overwriteSelect = element.querySelector('.output-overwrite-select');
+        const promptTextarea = element.querySelector('.output-prompt-textarea');
+        
+        if (nameInput.value.trim() && objectSelect.value && fieldSelect.value && 
+            writebackSelect.value && overwriteSelect.value && promptTextarea.value.trim()) {
+          outputs.push({
+            name: nameInput.value.trim(),
+            object: objectSelect.value,
+            field: fieldSelect.value,
+            writebackMode: writebackSelect.value,
+            overwriteBehavior: overwriteSelect.value,
+            extractionPrompt: promptTextarea.value.trim()
+          });
+        }
+      });
+      
+      return outputs;
+    }
+
+    // Drag and drop functionality for structured outputs
+    function initializeOutputDragAndDrop() {
+      const outputs = document.querySelectorAll('.structured-output');
+      
+      outputs.forEach(output => {
+        output.addEventListener('dragstart', handleOutputDragStart);
+        output.addEventListener('dragover', handleOutputDragOver);
+        output.addEventListener('drop', handleOutputDrop);
+        output.addEventListener('dragend', handleOutputDragEnd);
+        output.addEventListener('dragenter', handleOutputDragEnter);
+        output.addEventListener('dragleave', handleOutputDragLeave);
+      });
+    }
+
+    function handleOutputDragStart(e) {
+      draggedElement = this;
+      draggedElementId = this.getAttribute('data-output-id');
+      this.classList.add('dragging');
+      
+      // Set drag effect
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', this.outerHTML);
+    }
+
+    function handleOutputDragOver(e) {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+      
+      e.dataTransfer.dropEffect = 'move';
+      return false;
+    }
+
+    function handleOutputDragEnter(e) {
+      if (this !== draggedElement) {
+        this.classList.add('drag-over');
+      }
+    }
+
+    function handleOutputDragLeave(e) {
+      this.classList.remove('drag-over');
+    }
+
+    function handleOutputDrop(e) {
+      if (e.stopPropagation) {
+        e.stopPropagation();
+      }
+      
+      if (draggedElement !== this) {
+        // Get the container
+        const container = document.getElementById('structuredOutputs');
+        const allOutputs = Array.from(container.querySelectorAll('.structured-output'));
+        const draggedIndex = allOutputs.indexOf(draggedElement);
+        const targetIndex = allOutputs.indexOf(this);
+        
+        // Remove dragged element
+        draggedElement.remove();
+        
+        // Insert at new position
+        if (targetIndex < draggedIndex) {
+          // Moving up
+          this.parentNode.insertBefore(draggedElement, this);
+        } else {
+          // Moving down
+          this.parentNode.insertBefore(draggedElement, this.nextSibling);
+        }
+        
+        // Re-initialize drag and drop
+        initializeOutputDragAndDrop();
+      }
+      
+      return false;
+    }
+
+    function handleOutputDragEnd(e) {
+      this.classList.remove('dragging');
+      
+      // Clean up all drag-over classes
+      document.querySelectorAll('.structured-output').forEach(output => {
+        output.classList.remove('drag-over');
+      });
+      
+      draggedElement = null;
+      draggedElementId = null;
+    }
+
+    // Drag and drop functionality
+    let draggedElement = null;
+    let draggedElementId = null;
+
+    function initializeDragAndDrop() {
+      const conditions = document.querySelectorAll('.trigger-condition');
+      
+      conditions.forEach(condition => {
+        condition.addEventListener('dragstart', handleDragStart);
+        condition.addEventListener('dragover', handleDragOver);
+        condition.addEventListener('drop', handleDrop);
+        condition.addEventListener('dragend', handleDragEnd);
+        condition.addEventListener('dragenter', handleDragEnter);
+        condition.addEventListener('dragleave', handleDragLeave);
+      });
+    }
+
+    function handleDragStart(e) {
+      draggedElement = this;
+      draggedElementId = this.getAttribute('data-condition-id');
+      this.classList.add('dragging');
+      
+      // Set drag effect
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', this.outerHTML);
+    }
+
+    function handleDragOver(e) {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+      
+      e.dataTransfer.dropEffect = 'move';
+      return false;
+    }
+
+    function handleDragEnter(e) {
+      if (this !== draggedElement) {
+        this.classList.add('drag-over');
+      }
+    }
+
+    function handleDragLeave(e) {
+      this.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+      if (e.stopPropagation) {
+        e.stopPropagation();
+      }
+      
+      if (draggedElement !== this) {
+        // Get the container
+        const container = document.getElementById('triggerConditions');
+        const allConditions = Array.from(container.querySelectorAll('.trigger-condition'));
+        const draggedIndex = allConditions.indexOf(draggedElement);
+        const targetIndex = allConditions.indexOf(this);
+        
+        // Remove dragged element and its associated logic operator
+        const draggedLogicOperator = draggedElement.previousElementSibling;
+        if (draggedLogicOperator && draggedLogicOperator.classList.contains('trigger-logic-operator')) {
+          draggedLogicOperator.remove();
+        }
+        draggedElement.remove();
+        
+        // Insert at new position
+        if (targetIndex < draggedIndex) {
+          // Moving up
+          this.parentNode.insertBefore(draggedElement, this);
+          
+          // Add logic operator if not the first condition
+          if (this !== container.firstElementChild) {
+            const logicOperatorHTML = `
+              <div class="trigger-logic-operator">
+                <button type="button" class="logic-operator-btn active" onclick="toggleLogicOperator(this)">AND</button>
+                <button type="button" class="logic-operator-btn" onclick="toggleLogicOperator(this)">OR</button>
+              </div>
+            `;
+            draggedElement.insertAdjacentHTML('beforebegin', logicOperatorHTML);
+          }
+        } else {
+          // Moving down
+          this.parentNode.insertBefore(draggedElement, this.nextSibling);
+          
+          // Add logic operator before the moved element
+          const logicOperatorHTML = `
+            <div class="trigger-logic-operator">
+              <button type="button" class="logic-operator-btn active" onclick="toggleLogicOperator(this)">AND</button>
+              <button type="button" class="logic-operator-btn" onclick="toggleLogicOperator(this)">OR</button>
+            </div>
+          `;
+          draggedElement.insertAdjacentHTML('beforebegin', logicOperatorHTML);
+        }
+        
+        // Clean up any orphaned logic operators
+        cleanupLogicOperators();
+        
+        // Re-initialize drag and drop
+        initializeDragAndDrop();
+      }
+      
+      return false;
+    }
+
+    function handleDragEnd(e) {
+      this.classList.remove('dragging');
+      
+      // Clean up all drag-over classes
+      document.querySelectorAll('.trigger-condition').forEach(condition => {
+        condition.classList.remove('drag-over');
+      });
+      
+      draggedElement = null;
+      draggedElementId = null;
+    }
+
+    function cleanupLogicOperators() {
+      const container = document.getElementById('triggerConditions');
+      const conditions = container.querySelectorAll('.trigger-condition');
+      const operators = container.querySelectorAll('.trigger-logic-operator');
+      
+      // Remove logic operator before first condition if it exists
+      if (conditions.length > 0) {
+        const firstCondition = conditions[0];
+        const prevElement = firstCondition.previousElementSibling;
+        if (prevElement && prevElement.classList.contains('trigger-logic-operator')) {
+          prevElement.remove();
+        }
+      }
+      
+      // Ensure we have the right number of operators (conditions - 1)
+      const expectedOperators = Math.max(0, conditions.length - 1);
+      const currentOperators = container.querySelectorAll('.trigger-logic-operator').length;
+      
+      if (currentOperators > expectedOperators) {
+        // Remove excess operators
+        const excessOperators = container.querySelectorAll('.trigger-logic-operator');
+        for (let i = expectedOperators; i < excessOperators.length; i++) {
+          excessOperators[i].remove();
+        }
+      }
+    }
+
+    // Salesforce functionality
+    function updateSalesforceFields() {
+      const objectSelect = document.getElementById('salesforceObject');
+      const fieldSelect = document.getElementById('salesforceField');
+      const fieldGroup = document.getElementById('salesforceFieldGroup');
+      
+      const selectedObject = objectSelect.value;
+      
+      if (selectedObject && salesforceFieldMappings[selectedObject]) {
+        // Show the field group
+        fieldGroup.style.display = 'block';
+        
+        // Clear existing options
+        fieldSelect.innerHTML = '<option value="">Select Field</option>';
+        
+        // Add fields for selected object
+        salesforceFieldMappings[selectedObject].forEach(field => {
+          const option = document.createElement('option');
+          option.value = field.value;
+          option.textContent = field.label;
+          fieldSelect.appendChild(option);
+        });
+      } else {
+        // Hide the field group
+        fieldGroup.style.display = 'none';
+        fieldSelect.innerHTML = '<option value="">Select Field</option>';
+      }
+    }
+
+    // Test prompt functionality
+    function testPrompt() {
+      const prompt = document.getElementById('customPrompt').value;
+      const testResults = document.getElementById('testResults');
+      const testOutput = document.getElementById('testOutput');
+      
+      if (!prompt.trim()) {
+        alert('Please enter a custom prompt first.');
+        return;
+      }
+      
+      // Show loading state
+      testOutput.innerHTML = 'Testing prompt with sample meeting data...';
+      testResults.classList.add('active');
+      
+      // Simulate API call with sample data
+      setTimeout(() => {
+        const sampleResult = `
+<strong>Sample Output:</strong><br><br>
+
+<strong>1. Key Topics Discussed:</strong><br>
+• Product roadmap and upcoming features<br>
+• Integration requirements with existing systems<br>
+• Pricing structure for enterprise package<br>
+• Timeline for implementation (Q2 2024)<br><br>
+
+<strong>2. Action Items:</strong><br>
+• John Smith to send technical specifications by Friday<br>
+• Sarah Johnson to prepare pricing proposal by next week<br>
+• Schedule follow-up demo for decision makers<br><br>
+
+<strong>3. Next Steps:</strong><br>
+• Technical deep-dive meeting scheduled for March 15th<br>
+• Budget approval needed from finance team<br>
+• Final decision expected by end of month<br><br>
+
+<em>Note: This is a sample output based on your prompt structure. Actual results will vary based on meeting content.</em>
+        `;
+        
+        testOutput.innerHTML = sampleResult;
+      }, 1500);
+    }
+
+    // Load summary for editing
+    function loadSummaryForEdit(editId) {
+      // Get summary data from localStorage
+      const editingSummary = localStorage.getItem('editingSummary');
+      if (!editingSummary) {
+        alert('Summary data not found. Redirecting to custom summaries page.');
+        window.location.href = 'custom-summaries.html';
+        return;
+      }
+      
+      const summaryData = JSON.parse(editingSummary);
+      
+      // Update page title and button text for edit mode
+      document.title = 'Edit Custom Summary - Chorus by ZoomInfo';
+      document.querySelector('h1').textContent = 'Edit Custom Summary';
+      document.querySelector('.btn-primary').textContent = 'Update Custom Summary';
+      
+      // Pre-fill form with existing data
+      document.getElementById('summaryName').value = summaryData.name || '';
+      document.getElementById('summaryDescription').value = summaryData.description || '';
+      document.getElementById('customPrompt').value = summaryData.prompt || '';
+      document.getElementById('salesforceObject').value = summaryData.salesforceObject || '';
+      
+      // Update character counts
+      updateCharacterCount('summaryName', 'nameCount');
+      updateCharacterCount('summaryDescription', 'descriptionCount');
+      updateCharacterCount('customPrompt', 'promptCount');
+      
+      // Trigger field update for Salesforce fields
+      updateSalesforceFields();
+      
+      // Set Salesforce field after fields are populated
+      setTimeout(() => {
+        document.getElementById('salesforceField').value = summaryData.salesforceField || '';
+      }, 100);
+      
+      // Initialize empty states for triggers and structured outputs
+      updateTriggerEmptyState();
+      updateStructuredOutputsEmptyState();
+      
+      // Load structured outputs if they exist
+      if (summaryData.structuredOutputs && summaryData.structuredOutputs.length > 0) {
+        setTimeout(() => {
+          loadStructuredOutputs(summaryData.structuredOutputs);
+        }, 200);
+      }
+      
+      // Load delivery settings if they exist
+      if (summaryData.slackDelivery) {
+        setTimeout(() => {
+          const slackCheckbox = document.getElementById('slackDelivery');
+          if (slackCheckbox) {
+            slackCheckbox.checked = true;
+          }
+        }, 100);
+      }
+      
+      // Store the edit ID for later use
+      window.editingSummaryId = editId;
+      
+      // Clean up localStorage
+      localStorage.removeItem('editingSummary');
+    }
+
+    // Load structured outputs for editing
+    function loadStructuredOutputs(structuredOutputs) {
+      const outputsContainer = document.getElementById('structuredOutputs');
+      outputsContainer.innerHTML = '';
+      structuredOutputCounter = 0;
+      
+      structuredOutputs.forEach((output, index) => {
+        const outputId = ++structuredOutputCounter;
+        
+        // Writeback mode options
+        const writebackModes = [
+          { value: 'append', label: 'Append' },
+          { value: 'replace', label: 'Replace' },
+          { value: 'prepend', label: 'Prepend' }
+        ];
+        
+        // Overwrite behavior options
+        const overwriteBehaviors = [
+          { value: 'always', label: 'Always overwrite' },
+          { value: 'if_empty', label: 'Only if empty' },
+          { value: 'ask', label: 'Ask before overwriting' }
+        ];
+
+        const outputHTML = `
+          <div class="structured-output" data-output-id="${outputId}" draggable="true">
+            <div class="structured-output-header">
+              <span class="structured-output-title">
+                <svg class="drag-handle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 9h6v6H9z"/>
+                  <path d="M9 3h6v6H9z"/>
+                  <path d="M9 15h6v6H9z"/>
+                </svg>
+                ${output.name}
+              </span>
+              <div class="structured-output-actions">
+                <button type="button" class="structured-output-remove-btn" onclick="removeStructuredOutput(${outputId})">
+                  Remove
+                </button>
+              </div>
+            </div>
+            
+            <div class="structured-output-row">
+              <div>
+                <label class="form-label" style="margin-bottom: 0.25rem;">Name *</label>
+                <input type="text" class="form-input-small output-name-input" value="${output.name}">
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom: 0.25rem;">CRM Object *</label>
+                <select class="form-select-small output-object-select" onchange="updateOutputFields(${outputId})">
+                  <option value="">Select Object</option>
+                  <option value="Account" ${output.object === 'Account' ? 'selected' : ''}>Account</option>
+                  <option value="Opportunity" ${output.object === 'Opportunity' ? 'selected' : ''}>Opportunity</option>
+                  <option value="Event" ${output.object === 'Event' ? 'selected' : ''}>Event</option>
+                  <option value="Task" ${output.object === 'Task' ? 'selected' : ''}>Task</option>
+                  <option value="Contact" ${output.object === 'Contact' ? 'selected' : ''}>Contact</option>
+                  <option value="Lead" ${output.object === 'Lead' ? 'selected' : ''}>Lead</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="structured-output-row">
+              <div>
+                <label class="form-label" style="margin-bottom: 0.25rem;">CRM Field *</label>
+                <select class="form-select-small output-field-select">
+                  <option value="">Select Field</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom: 0.25rem;">Writeback Mode *</label>
+                <select class="form-select-small output-writeback-select">
+                  ${writebackModes.map(mode => `<option value="${mode.value}" ${output.writebackMode === mode.value ? 'selected' : ''}>${mode.label}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            
+            <div class="structured-output-row">
+              <div class="structured-output-full-row">
+                <label class="form-label" style="margin-bottom: 0.25rem;">Overwrite Behavior *</label>
+                <select class="form-select-small output-overwrite-select">
+                  ${overwriteBehaviors.map(behavior => `<option value="${behavior.value}" ${output.overwriteBehavior === behavior.value ? 'selected' : ''}>${behavior.label}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            
+            <div class="structured-output-row">
+              <div class="structured-output-full-row">
+                <label class="form-label" style="margin-bottom: 0.25rem;">Extraction Prompt *</label>
+                <textarea class="form-textarea output-prompt-textarea" style="min-height: 80px;">${output.extractionPrompt}</textarea>
+              </div>
+            </div>
+            
+            <!-- Inline Add Output Button -->
+            <div class="add-output-inline" onclick="addStructuredOutput(${outputId})">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add another output
+            </div>
+          </div>
+        `;
+
+        outputsContainer.insertAdjacentHTML('beforeend', outputHTML);
+
+        // Populate the CRM field dropdown for this output
+        setTimeout(() => {
+          updateOutputFields(outputId);
+          // Set the field value after fields are populated
+          setTimeout(() => {
+            const fieldSelect = document.querySelector(`[data-output-id="${outputId}"] .output-field-select`);
+            if (fieldSelect) {
+              fieldSelect.value = output.field;
+            }
+          }, 50);
+        }, 100);
+      });
+
+      // Initialize drag and drop for all outputs
+      setTimeout(() => initializeOutputDragAndDrop(), 300);
+    }
+
+    // Create or update summary
+    function createSummary() {
+      // Get form data directly from inputs
+      const name = document.getElementById('summaryName').value.trim();
+      const description = document.getElementById('summaryDescription').value.trim();
+      const prompt = document.getElementById('customPrompt').value.trim();
+      const salesforceObject = document.getElementById('salesforceObject').value;
+      const salesforceField = document.getElementById('salesforceField').value;
+      const triggers = getTriggerConditions();
+      
+      // Validate required fields
+      if (!name) {
+        alert('Please enter a summary name.');
+        document.getElementById('summaryName').focus();
+        return;
+      }
+      
+      if (!description) {
+        alert('Please enter a description.');
+        document.getElementById('summaryDescription').focus();
+        return;
+      }
+      
+      if (!prompt) {
+        alert('Please enter a custom prompt.');
+        document.getElementById('customPrompt').focus();
+        return;
+      }
+      
+      // Validate Salesforce field if object is selected
+      if (salesforceObject && !salesforceField) {
+        alert('Please select a Salesforce field for the selected object.');
+        document.getElementById('salesforceField').focus();
+        return;
+      }
+      
+      if (window.editingSummaryId) {
+        // Edit mode - update existing summary
+        const summaryData = {
+          id: window.editingSummaryId,
+          name: name,
+          description: description,
+          prompt: prompt,
+          salesforceObject: salesforceObject,
+          salesforceField: salesforceField,
+          triggers: triggers,
+          active: true,
+          updatedAt: new Date().toISOString()
+        };
+        
+        // Store updated summary data for the list page to pick up
+        localStorage.setItem('updatedSummary', JSON.stringify(summaryData));
+        
+        // Show success message
+        let successMessage = `Custom summary "${name}" updated successfully!`;
+        if (salesforceObject && salesforceField) {
+          successMessage += ` It will write to ${salesforceObject}.${salesforceField}.`;
+        }
+        if (triggers.length > 0) {
+          successMessage += ` Configured with ${triggers.length} trigger condition${triggers.length > 1 ? 's' : ''}.`;
+        }
+        
+        alert(successMessage);
+      } else {
+        // Create mode - add new summary
+        const newId = Date.now();
+        const newSummary = {
+          id: newId,
+          name: name,
+          description: description,
+          prompt: prompt,
+          salesforceObject: salesforceObject,
+          salesforceField: salesforceField,
+          triggers: triggers,
+          active: true,
+          createdAt: new Date().toISOString()
+        };
+        
+        // Store in localStorage (in a real app, this would be sent to a server)
+        let summaries = JSON.parse(localStorage.getItem('customSummaries') || '{}');
+        summaries[newId] = newSummary;
+        localStorage.setItem('customSummaries', JSON.stringify(summaries));
+        
+        // Show success message
+        let successMessage = `Custom summary "${name}" created successfully!`;
+        if (salesforceObject && salesforceField) {
+          successMessage += ` It will write to ${salesforceObject}.${salesforceField}.`;
+        }
+        if (triggers.length > 0) {
+          successMessage += ` Configured with ${triggers.length} trigger condition${triggers.length > 1 ? 's' : ''}.`;
+        }
+        
+        alert(successMessage);
+      }
+      
+      // Redirect back to custom summaries page
+      window.location.href = 'custom-summaries.html';
+    }
+  </script>
+</body>
+</html>

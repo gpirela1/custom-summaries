@@ -262,8 +262,61 @@ function showCopyFeedback(button) {
   }, 2000);
 }
 
+// Sidebar toggle functionality
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const isExpanded = sidebar.classList.contains('expanded');
+  
+  if (isExpanded) {
+    sidebar.classList.remove('expanded');
+    // Store collapsed state in localStorage
+    localStorage.setItem('sidebarExpanded', 'false');
+  } else {
+    sidebar.classList.add('expanded');
+    // Store expanded state in localStorage
+    localStorage.setItem('sidebarExpanded', 'true');
+  }
+}
+
+// Initialize sidebar state from localStorage
+function initializeSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const savedState = localStorage.getItem('sidebarExpanded');
+  
+  // Default to collapsed if no saved state
+  if (savedState === 'true') {
+    sidebar.classList.add('expanded');
+  } else {
+    sidebar.classList.remove('expanded');
+  }
+}
+
+// Handle keyboard shortcuts for sidebar
+function handleKeyboardShortcuts(event) {
+  // Toggle sidebar with Ctrl/Cmd + B
+  if ((event.ctrlKey || event.metaKey) && event.key === 'b') {
+    event.preventDefault();
+    toggleSidebar();
+  }
+  
+  // Close sidebar with Escape key (only if expanded)
+  if (event.key === 'Escape') {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar.classList.contains('expanded')) {
+      sidebar.classList.remove('expanded');
+      localStorage.setItem('sidebarExpanded', 'false');
+    }
+  }
+}
+
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
   // Load overview tab by default
   loadOverviewTab();
+  
+  // Initialize sidebar state
+  initializeSidebar();
+  
+  // Add keyboard event listeners
+  document.addEventListener('keydown', handleKeyboardShortcuts);
 });

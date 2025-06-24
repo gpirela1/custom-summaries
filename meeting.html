@@ -74,8 +74,57 @@
 
   <!-- Main Content -->
   <div class="flex min-h-screen">
+    <!-- Expandable Left Sidebar -->
+    <div id="sidebar" class="sidebar-container">
+      <!-- Sidebar Toggle Button -->
+      <button id="sidebar-toggle" class="sidebar-toggle" onclick="toggleSidebar()">
+        <svg class="sidebar-toggle-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      
+      <!-- Sidebar Content -->
+      <div class="sidebar-content">
+        <div class="sidebar-header">
+          <h3 class="sidebar-title">Navigation</h3>
+        </div>
+        
+        <!-- Navigation Section -->
+        <div class="sidebar-section">
+          <h4 class="sidebar-section-title">Menu</h4>
+          <div class="sidebar-section-content">
+            <!-- Placeholder content -->
+          </div>
+        </div>
+        
+        <!-- Quick Actions Section -->
+        <div class="sidebar-section">
+          <h4 class="sidebar-section-title">Quick Actions</h4>
+          <div class="sidebar-section-content">
+            <!-- Placeholder content -->
+          </div>
+        </div>
+        
+        <!-- Recent Items Section -->
+        <div class="sidebar-section">
+          <h4 class="sidebar-section-title">Recent</h4>
+          <div class="sidebar-section-content">
+            <!-- Placeholder content -->
+          </div>
+        </div>
+        
+        <!-- Settings Section -->
+        <div class="sidebar-section">
+          <h4 class="sidebar-section-title">Settings</h4>
+          <div class="sidebar-section-content">
+            <!-- Placeholder content -->
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Video Section -->
-    <div class="flex-1 p-6">
+    <div class="flex-1 p-6 main-content">
       <div class="video-container">
         <div class="w-full h-full bg-gray-900 rounded-lg flex items-center justify-center relative">
           <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
