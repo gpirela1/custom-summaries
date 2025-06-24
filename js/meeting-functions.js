@@ -1,24 +1,39 @@
+// Sidebar toggle functionality
+function toggleSidebar() {
+  const layout = document.querySelector('.meeting-layout');
+  const isExpanded = layout.classList.contains('sidebar-expanded');
+  
+  if (isExpanded) {
+    layout.classList.remove('sidebar-expanded');
+    localStorage.setItem('sidebarExpanded', 'false');
+  } else {
+    layout.classList.add('sidebar-expanded');
+    localStorage.setItem('sidebarExpanded', 'true');
+  }
+}
+
 // Tab switching functionality
 function switchTab(tabName) {
-  // Hide all tabs
-  document.getElementById('overview-tab').classList.add('hidden');
-  document.getElementById('comments-tab').classList.add('hidden');
-  document.getElementById('transcript-tab').classList.add('hidden');
-  document.getElementById('highlights-tab').classList.add('hidden');
-  
   // Remove active class from all tab buttons
   document.querySelectorAll('.tab-button').forEach(btn => {
     btn.classList.remove('active');
   });
   
-  // Show selected tab and load content if needed
-  const targetTab = document.getElementById(tabName + '-tab');
-  targetTab.classList.remove('hidden');
+  // Hide all tab panels
+  document.querySelectorAll('.tab-panel').forEach(panel => {
+    panel.classList.remove('active');
+  });
   
   // Add active class to clicked button
   event.target.classList.add('active');
   
-  // Load content dynamically based on tab
+  // Show selected tab panel
+  const targetPanel = document.getElementById(tabName + '-tab');
+  if (targetPanel) {
+    targetPanel.classList.add('active');
+  }
+  
+  // Load content if needed
   loadTabContent(tabName);
 }
 
@@ -31,73 +46,13 @@ function loadTabContent(tabName) {
     case 'transcript':
       loadTranscriptTab();
       break;
-    case 'highlights':
-      loadHighlightsTab();
+    case 'detailed':
+      // Content is already in HTML
       break;
     case 'overview':
-      loadOverviewTab();
+      // Content is already in HTML
       break;
   }
-}
-
-// Load overview tab content
-function loadOverviewTab() {
-  const tab = document.getElementById('overview-tab');
-  if (tab.dataset.loaded) return;
-  
-  // Content is already in HTML, just mark as loaded
-  tab.dataset.loaded = 'true';
-}
-
-// Load highlights/detailed tab content
-function loadHighlightsTab() {
-  const tab = document.getElementById('highlights-tab');
-  if (tab.dataset.loaded) return;
-  
-  // Check if tab already has Sandler methodology content
-  if (tab.innerHTML.trim() && (tab.innerHTML.includes('Pain Development Analysis') || tab.innerHTML.includes('Sandler'))) {
-    // Tab already has Sandler content, just mark as loaded
-    tab.dataset.loaded = 'true';
-    return;
-  }
-  
-  // If no Sandler content, generate panels from data (fallback)
-  if (typeof meetingData !== 'undefined' && meetingData.detailedPanels) {
-    let html = '';
-    
-    Object.keys(meetingData.detailedPanels).forEach(panelKey => {
-      const panel = meetingData.detailedPanels[panelKey];
-      const expandedClass = panel.expanded ? 'expanded' : '';
-      const contentExpandedClass = panel.expanded ? 'expanded' : '';
-      
-      html += `
-        <div class="expandable-panel">
-          <div class="panel-header ${expandedClass}" onclick="togglePanel('${panelKey}')">
-            <div class="panel-title">${panel.title}</div>
-            <svg class="panel-chevron ${expandedClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-          </div>
-          <div class="panel-content ${contentExpandedClass}" id="${panelKey}-content">
-            <div class="panel-content-inner">
-              <button class="copy-button" onclick="copyPanelContent('${panelKey}-content')">
-                <svg class="copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                </svg>
-              </button>
-              <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-                ${panel.content.map(p => `<p>${p}</p>`).join('')}
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-    });
-    
-    tab.innerHTML = html;
-  }
-  
-  tab.dataset.loaded = 'true';
 }
 
 // Load comments tab content
@@ -105,48 +60,56 @@ function loadCommentsTab() {
   const tab = document.getElementById('comments-tab');
   if (tab.dataset.loaded) return;
   
-  let html = '<div class="space-y-4">';
-  
-  meetingData.comments.forEach(comment => {
-    html += `
-      <div class="border border-gray-200 rounded-lg p-4">
-        <div class="flex items-start space-x-3">
-          <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-            ${comment.author.split(' ').map(n => n[0]).join('')}
-          </div>
-          <div class="flex-1">
-            <div class="flex items-center space-x-2">
-              <span class="font-medium text-gray-900">${comment.author}</span>
-              <span class="text-sm text-gray-500">${comment.timestamp}</span>
+  // Check if meetingData exists and has comments
+  if (typeof meetingData !== 'undefined' && meetingData.comments) {
+    let html = '<div class="content-section">';
+    
+    meetingData.comments.forEach(comment => {
+      const initials = comment.author.split(' ').map(n => n[0]).join('');
+      html += `
+        <div class="comment-item">
+          <div class="comment-header">
+            <div class="comment-avatar">${initials}</div>
+            <div class="comment-meta">
+              <span class="comment-author">${comment.author}</span>
+              <span class="comment-time">${comment.timestamp}</span>
             </div>
-            <p class="mt-1 text-sm text-gray-700">${comment.content}</p>
-            
-            ${comment.replies.length > 0 ? `
-              <div class="mt-3 space-y-2">
-                ${comment.replies.map(reply => `
-                  <div class="flex items-start space-x-3 ml-4">
-                    <div class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs">
-                      ${reply.author.split(' ').map(n => n[0]).join('')}
-                    </div>
-                    <div class="flex-1">
-                      <div class="flex items-center space-x-2">
-                        <span class="font-medium text-gray-900 text-sm">${reply.author}</span>
-                        <span class="text-xs text-gray-500">${reply.timestamp}</span>
-                      </div>
-                      <p class="mt-1 text-sm text-gray-600">${reply.content}</p>
-                    </div>
-                  </div>
-                `).join('')}
-              </div>
-            ` : ''}
           </div>
+          <p class="comment-content">${comment.content}</p>
+        </div>
+      `;
+    });
+    
+    html += '</div>';
+    tab.innerHTML = html;
+  } else {
+    // Fallback content
+    tab.innerHTML = `
+      <div class="content-section">
+        <div class="comment-item">
+          <div class="comment-header">
+            <div class="comment-avatar">SM</div>
+            <div class="comment-meta">
+              <span class="comment-author">Sarah Martinez</span>
+              <span class="comment-time">2 hours ago</span>
+            </div>
+          </div>
+          <p class="comment-content">Great discussion on data quality challenges. Looking forward to the technical demo next week.</p>
+        </div>
+        <div class="comment-item">
+          <div class="comment-header">
+            <div class="comment-avatar">GP</div>
+            <div class="comment-meta">
+              <span class="comment-author">Gabe Pirela</span>
+              <span class="comment-time">1 hour ago</span>
+            </div>
+          </div>
+          <p class="comment-content">Thanks Sarah! I'll prepare a focused demo on the Salesforce integration capabilities we discussed.</p>
         </div>
       </div>
     `;
-  });
+  }
   
-  html += '</div>';
-  tab.innerHTML = html;
   tab.dataset.loaded = 'true';
 }
 
@@ -155,143 +118,83 @@ function loadTranscriptTab() {
   const tab = document.getElementById('transcript-tab');
   if (tab.dataset.loaded) return;
   
-  let html = '<div class="space-y-4">';
-  
-  meetingData.transcript.forEach(entry => {
-    const initials = entry.speaker.split(' ').map(n => n[0]).join('');
-    const colors = ['bg-blue-600', 'bg-green-600', 'bg-purple-600', 'bg-red-600', 'bg-yellow-600'];
-    const colorIndex = entry.speaker.length % colors.length;
+  // Check if meetingData exists and has transcript
+  if (typeof meetingData !== 'undefined' && meetingData.transcript) {
+    let html = '<div class="content-section">';
     
-    html += `
-      <div class="flex items-start space-x-3">
-        <div class="w-8 h-8 ${colors[colorIndex]} rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
-          ${initials}
-        </div>
-        <div class="flex-1">
-          <div class="flex items-center space-x-2">
-            <span class="font-medium text-gray-900">${entry.speaker}</span>
-            <span class="text-sm text-gray-500">${entry.timestamp}</span>
+    meetingData.transcript.forEach(entry => {
+      const initials = entry.speaker.split(' ').map(n => n[0]).join('');
+      html += `
+        <div class="transcript-entry">
+          <div class="transcript-header">
+            <div class="transcript-avatar">${initials}</div>
+            <div class="transcript-meta">
+              <span class="transcript-speaker">${entry.speaker}</span>
+              <span class="transcript-time">${entry.timestamp}</span>
+            </div>
           </div>
-          <p class="mt-1 text-sm text-gray-700">${entry.content}</p>
+          <p class="transcript-content">${entry.content}</p>
+        </div>
+      `;
+    });
+    
+    html += '</div>';
+    tab.innerHTML = html;
+  } else {
+    // Fallback content
+    tab.innerHTML = `
+      <div class="content-section">
+        <div class="transcript-entry">
+          <div class="transcript-header">
+            <div class="transcript-avatar">SM</div>
+            <div class="transcript-meta">
+              <span class="transcript-speaker">Sarah Martinez</span>
+              <span class="transcript-time">00:02:15</span>
+            </div>
+          </div>
+          <p class="transcript-content">Thanks for taking the time to meet with us today, Gabe. We're really excited to learn more about ZoomInfo's capabilities.</p>
+        </div>
+        <div class="transcript-entry">
+          <div class="transcript-header">
+            <div class="transcript-avatar">GP</div>
+            <div class="transcript-meta">
+              <span class="transcript-speaker">Gabe Pirela</span>
+              <span class="transcript-time">00:02:28</span>
+            </div>
+          </div>
+          <p class="transcript-content">Absolutely, Sarah. I'm looking forward to understanding your current data challenges and how we can help improve your sales team's efficiency.</p>
+        </div>
+        <div class="transcript-entry">
+          <div class="transcript-header">
+            <div class="transcript-avatar">SM</div>
+            <div class="transcript-meta">
+              <span class="transcript-speaker">Sarah Martinez</span>
+              <span class="transcript-time">00:02:45</span>
+            </div>
+          </div>
+          <p class="transcript-content">Great. So our main pain point right now is data quality. We're seeing about a 30% decay rate in our contact database, and it's really impacting our lead scoring accuracy.</p>
         </div>
       </div>
     `;
-  });
+  }
   
-  html += '</div>';
-  tab.innerHTML = html;
   tab.dataset.loaded = 'true';
-}
-
-// Panel toggle functionality
-function togglePanel(panelId) {
-  const header = event.currentTarget;
-  const content = document.getElementById(panelId + '-content');
-  const chevron = header.querySelector('.panel-chevron');
-  
-  // Toggle expanded state
-  header.classList.toggle('expanded');
-  content.classList.toggle('expanded');
-  chevron.classList.toggle('expanded');
-}
-
-// Copy panel content functionality
-function copyPanelContent(panelId) {
-  const panel = document.getElementById(panelId);
-  const button = panel.querySelector('.copy-button');
-  
-  // Get the text content, excluding the copy button
-  const contentDiv = panel.querySelector('.space-y-3, .space-y-4');
-  const textContent = contentDiv ? contentDiv.innerText : panel.innerText;
-  
-  // Use the Clipboard API
-  if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(textContent).then(() => {
-      showCopyFeedback(button);
-    }).catch(err => {
-      console.error('Failed to copy: ', err);
-      fallbackCopyTextToClipboard(textContent, button);
-    });
-  } else {
-    // Fallback for older browsers
-    fallbackCopyTextToClipboard(textContent, button);
-  }
-}
-
-// Fallback copy method for older browsers
-function fallbackCopyTextToClipboard(text, button) {
-  const textArea = document.createElement("textarea");
-  textArea.value = text;
-  textArea.style.top = "0";
-  textArea.style.left = "0";
-  textArea.style.position = "fixed";
-  textArea.style.opacity = "0";
-  
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
-  
-  try {
-    const successful = document.execCommand('copy');
-    if (successful) {
-      showCopyFeedback(button);
-    }
-  } catch (err) {
-    console.error('Fallback: Oops, unable to copy', err);
-  }
-  
-  document.body.removeChild(textArea);
-}
-
-// Show visual feedback when content is copied
-function showCopyFeedback(button) {
-  const originalHTML = button.innerHTML;
-  
-  // Add copied class and change icon
-  button.classList.add('copied');
-  button.innerHTML = `
-    <svg class="copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-    </svg>
-  `;
-  
-  // Reset after 2 seconds
-  setTimeout(() => {
-    button.classList.remove('copied');
-    button.innerHTML = originalHTML;
-  }, 2000);
-}
-
-// Sidebar toggle functionality
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const isExpanded = sidebar.classList.contains('expanded');
-  
-  if (isExpanded) {
-    sidebar.classList.remove('expanded');
-    // Store collapsed state in localStorage
-    localStorage.setItem('sidebarExpanded', 'false');
-  } else {
-    sidebar.classList.add('expanded');
-    // Store expanded state in localStorage
-    localStorage.setItem('sidebarExpanded', 'true');
-  }
 }
 
 // Initialize sidebar state from localStorage
 function initializeSidebar() {
-  const sidebar = document.getElementById('sidebar');
+  const layout = document.querySelector('.meeting-layout');
   const savedState = localStorage.getItem('sidebarExpanded');
   
-  // Default to collapsed if no saved state
+  // Default to collapsed
   if (savedState === 'true') {
-    sidebar.classList.add('expanded');
+    layout.classList.add('sidebar-expanded');
   } else {
-    sidebar.classList.remove('expanded');
+    layout.classList.remove('sidebar-expanded');
   }
 }
 
-// Handle keyboard shortcuts for sidebar
+// Handle keyboard shortcuts
 function handleKeyboardShortcuts(event) {
   // Toggle sidebar with Ctrl/Cmd + B
   if ((event.ctrlKey || event.metaKey) && event.key === 'b') {
@@ -301,9 +204,9 @@ function handleKeyboardShortcuts(event) {
   
   // Close sidebar with Escape key (only if expanded)
   if (event.key === 'Escape') {
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar.classList.contains('expanded')) {
-      sidebar.classList.remove('expanded');
+    const layout = document.querySelector('.meeting-layout');
+    if (layout.classList.contains('sidebar-expanded')) {
+      layout.classList.remove('sidebar-expanded');
       localStorage.setItem('sidebarExpanded', 'false');
     }
   }
@@ -311,12 +214,78 @@ function handleKeyboardShortcuts(event) {
 
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-  // Load overview tab by default
-  loadOverviewTab();
-  
   // Initialize sidebar state
   initializeSidebar();
   
   // Add keyboard event listeners
   document.addEventListener('keydown', handleKeyboardShortcuts);
+  
+  // Ensure overview tab is active by default
+  const overviewTab = document.getElementById('overview-tab');
+  if (overviewTab) {
+    overviewTab.classList.add('active');
+  }
 });
+
+// Add CSS styles for dynamic content
+const dynamicStyles = `
+<style>
+.comment-item, .transcript-entry {
+  padding: 1rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.comment-item:last-child, .transcript-entry:last-child {
+  border-bottom: none;
+}
+
+.comment-header, .transcript-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.comment-avatar, .transcript-avatar {
+  width: 32px;
+  height: 32px;
+  background: #1976d2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.comment-meta, .transcript-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.comment-author, .transcript-speaker {
+  font-weight: 500;
+  color: #111827;
+  font-size: 0.875rem;
+}
+
+.comment-time, .transcript-time {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.comment-content, .transcript-content {
+  font-size: 0.875rem;
+  color: #374151;
+  line-height: 1.5;
+  margin: 0;
+  padding-left: 2.5rem;
+}
+</style>
+`;
+
+// Inject dynamic styles
+document.head.insertAdjacentHTML('beforeend', dynamicStyles);

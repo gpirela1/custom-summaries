@@ -7,6 +7,15 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/meeting-styles.css">
   <style>
+    /* Header styles */
+    .chorus-logo {
+      color: #1976D2;
+    }
+    
+    .chorus-waveform {
+      fill: #1976D2;
+    }
+    
     /* User dropdown styles */
     .user-dropdown {
       position: absolute;
@@ -46,39 +55,107 @@
     .user-dropdown-item svg {
       margin-right: 0.75rem;
     }
-    
-    .chorus-logo {
-      color: #1976D2;
-    }
-    
-    .chorus-waveform {
-      fill: #1976D2;
-    }
   </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-  <!-- Header Component -->
-  <div id="header-placeholder"></div>
-
-  <!-- Meeting Header -->
-  <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
-    <div class="flex items-center">
-      <button onclick="history.back()" class="mr-4 p-2 hover:bg-gray-100 rounded">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      <h1 class="text-xl font-semibold text-gray-900">Salesforce Discovery Call - Data Quality Initiative</h1>
+<body class="bg-gray-50">
+  <!-- Header -->
+  <header class="border-b border-gray-200 bg-white">
+    <div class="flex items-center justify-between px-4 py-2">
+      <div class="flex items-center">
+        <a href="/" class="flex items-center mr-8">
+          <img src="/public/chorus-logo.svg" class="chorus-waveform" width="24" height="24" alt="Chorus">
+          <span class="ml-2 text-xl font-semibold chorus-logo">Chorus</span>
+        </a>
+        
+        <nav class="hidden md:flex space-x-8">
+          <a href="/" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Home
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Engagements
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Deals
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Playlists
+          </a>
+          <div class="relative group">
+            <button class="text-gray-600 hover:text-blue-600 py-4 font-medium flex items-center">
+              More
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+        </nav>
+      </div>
+      
+      <div class="flex items-center">
+        <div class="relative mr-4">
+          <div class="flex items-center border rounded-md px-3 py-1.5 bg-gray-50">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search in Chorus"
+              class="ml-2 bg-transparent outline-none text-sm w-40 md:w-60"
+            />
+            <button class="ml-2 text-gray-400 border-l pl-2">
+              Options
+            </button>
+          </div>
+        </div>
+        
+        <div class="flex items-center relative">
+          <button id="user-menu-button" class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-medium text-white">
+            GP
+          </button>
+          
+          <!-- User dropdown menu -->
+          <div id="user-dropdown" class="user-dropdown">
+            <div class="user-dropdown-header">
+              <div class="font-medium">Gabe Pirela</div>
+            </div>
+            <a href="/settings/personal-settings.html" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Settings
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              Help Center
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              Live Chat
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Log Out
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </header>
 
-  <!-- Main Content -->
-  <div class="flex min-h-screen">
-    <!-- Expandable Left Sidebar -->
-    <div id="sidebar" class="sidebar-container">
-      <!-- Sidebar Toggle Button -->
+  <!-- Main Layout Grid -->
+  <div class="meeting-layout">
+    <!-- Left Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <!-- Toggle Button -->
       <button id="sidebar-toggle" class="sidebar-toggle" onclick="toggleSidebar()">
-        <svg class="sidebar-toggle-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg class="sidebar-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
       </button>
@@ -89,47 +166,56 @@
           <h3 class="sidebar-title">Navigation</h3>
         </div>
         
-        <!-- Navigation Section -->
-        <div class="sidebar-section">
-          <h4 class="sidebar-section-title">Menu</h4>
-          <div class="sidebar-section-content">
-            <!-- Placeholder content -->
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <h4 class="nav-section-title">MENU</h4>
+            <div class="nav-section-content">
+              <p class="placeholder-text">Content placeholder</p>
+            </div>
           </div>
-        </div>
-        
-        <!-- Quick Actions Section -->
-        <div class="sidebar-section">
-          <h4 class="sidebar-section-title">Quick Actions</h4>
-          <div class="sidebar-section-content">
-            <!-- Placeholder content -->
+          
+          <div class="nav-section">
+            <h4 class="nav-section-title">QUICK ACTIONS</h4>
+            <div class="nav-section-content">
+              <p class="placeholder-text">Content placeholder</p>
+            </div>
           </div>
-        </div>
-        
-        <!-- Recent Items Section -->
-        <div class="sidebar-section">
-          <h4 class="sidebar-section-title">Recent</h4>
-          <div class="sidebar-section-content">
-            <!-- Placeholder content -->
+          
+          <div class="nav-section">
+            <h4 class="nav-section-title">RECENT</h4>
+            <div class="nav-section-content">
+              <p class="placeholder-text">Content placeholder</p>
+            </div>
           </div>
-        </div>
-        
-        <!-- Settings Section -->
-        <div class="sidebar-section">
-          <h4 class="sidebar-section-title">Settings</h4>
-          <div class="sidebar-section-content">
-            <!-- Placeholder content -->
+          
+          <div class="nav-section">
+            <h4 class="nav-section-title">SETTINGS</h4>
+            <div class="nav-section-content">
+              <p class="placeholder-text">Content placeholder</p>
+            </div>
           </div>
-        </div>
+        </nav>
       </div>
-    </div>
+    </aside>
 
-    <!-- Video Section -->
-    <div class="flex-1 p-6 main-content">
-      <div class="video-container">
-        <div class="w-full h-full bg-gray-900 rounded-lg flex items-center justify-center relative">
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Meeting Header -->
+      <header class="meeting-header">
+        <button onclick="history.back()" class="back-button">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <h1 class="meeting-title">Salesforce Discovery Call - Data Quality Initiative</h1>
+      </header>
+
+      <!-- Video Section -->
+      <section class="video-section">
+        <div class="video-container">
           <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
                alt="Meeting participants" 
-               class="w-full h-full object-cover rounded-lg">
+               class="video-image">
           
           <!-- Video Controls -->
           <div class="video-controls">
@@ -139,276 +225,161 @@
               </svg>
             </button>
             
-            <div class="flex items-center text-white text-sm">
-              <span>1.5x</span>
-            </div>
-            
-            <div class="flex items-center text-white text-sm">
-              <span>15</span>
-            </div>
+            <span class="control-text">1.5x</span>
+            <span class="control-text">15</span>
             
             <div class="progress-bar">
               <div class="progress-fill"></div>
             </div>
             
-            <div class="flex items-center text-white text-sm">
-              <span>00:00 / 01:02:47</span>
-            </div>
-            
-            <div class="flex items-center text-white text-sm">
-              <span>1.25x</span>
-            </div>
+            <span class="control-text">00:00 / 01:02:47</span>
+            <span class="control-text">1.25x</span>
           </div>
-        </div>
-      </div>
-      
-      <!-- Speaker Timeline -->
-      <div class="speaker-timeline-container">
-        <div class="text-center text-gray-500 text-sm mb-4">
-          Speaker Separation Unavailable
         </div>
         
-        <div class="speaker-info">
-          <div class="speaker-avatar" style="background-color: #EF4444;">
-            D
-          </div>
-          <div class="flex-1">
-            <div class="font-medium text-gray-900">Deck</div>
-          </div>
-          <div class="speaker-percentage" style="color: #EF4444;">65%</div>
-        </div>
-        
+        <!-- Speaker Timeline -->
         <div class="speaker-timeline">
-          <div class="speaker-segment" style="left: 0%; width: 65%; background: linear-gradient(90deg, #EF4444 0%, #DC2626 100%);"></div>
+          <p class="timeline-notice">Speaker Separation Unavailable</p>
+          
+          <div class="speaker-info">
+            <div class="speaker-avatar">D</div>
+            <span class="speaker-name">Deck</span>
+            <span class="speaker-percentage">65%</span>
+          </div>
+          
+          <div class="timeline-bar">
+            <div class="timeline-segment" style="width: 65%;"></div>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
 
     <!-- Right Sidebar -->
-    <div class="w-96 bg-white border-l border-gray-200">
-      <!-- Tabs -->
-      <div class="border-b border-gray-200">
-        <div class="flex overflow-x-auto scrollbar-hide">
-          <button class="tab-button active flex-shrink-0" onclick="switchTab('overview')">Overview</button>
-          <button class="tab-button flex-shrink-0" onclick="switchTab('highlights')">Detailed</button>
-          <button class="tab-button flex-shrink-0" onclick="switchTab('comments')">Comments</button>
-          <button class="tab-button flex-shrink-0" onclick="switchTab('transcript')">Transcript</button>
-        </div>
-      </div>
+    <aside class="right-sidebar">
+      <!-- Tab Navigation -->
+      <nav class="tab-nav">
+        <button class="tab-button active" onclick="switchTab('overview')">Overview</button>
+        <button class="tab-button" onclick="switchTab('detailed')">Detailed</button>
+        <button class="tab-button" onclick="switchTab('comments')">Comments</button>
+        <button class="tab-button" onclick="switchTab('transcript')">Transcript</button>
+      </nav>
 
       <!-- Tab Content -->
-      <div class="p-6 overflow-y-auto" style="height: calc(100vh - 200px);">
+      <div class="tab-content">
         <!-- Overview Tab -->
-        <div id="overview-tab">
-          <!-- Meeting Details -->
-          <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Meeting Details</h3>
-            
-            <div class="space-y-3">
-              <div>
-                <span class="text-sm font-medium text-gray-700">Meeting Date:</span>
-                <span class="text-sm text-gray-900 ml-2">May 29, 2025</span>
-              </div>
-              
-              <div>
-                <span class="text-sm font-medium text-gray-700">Time:</span>
-                <span class="text-sm text-gray-900 ml-2">9:00 AM - 9:45 AM (45 mins)</span>
-              </div>
-              
-              <div>
-                <span class="text-sm font-medium text-gray-700">Participants:</span>
-                <span class="text-sm text-gray-900 ml-2">Sarah Martinez</span>
-                <span class="text-sm text-blue-600 ml-1">+4</span>
-              </div>
-              
-              <div>
-                <span class="text-sm font-medium text-gray-700">Account:</span>
-                <a href="#" class="text-sm text-blue-600 ml-2 hover:underline">Salesforce Inc</a>
-              </div>
+        <div id="overview-tab" class="tab-panel active">
+          <div class="content-section">
+            <h3 class="section-title">Meeting Details</h3>
+            <div class="detail-item">
+              <span class="detail-label">Meeting Date:</span>
+              <span class="detail-value">May 29, 2025</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Participants:</span>
+              <span class="detail-value">Sarah Martinez <span class="participant-count">+4</span></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Account:</span>
+              <a href="#" class="detail-link">Salesforce Inc</a>
             </div>
           </div>
 
-          <!-- Deal Context -->
-          <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Deal Context</h3>
-            
-            <div class="space-y-3">
-              <div>
-                <a href="#" class="text-sm text-blue-600 hover:underline">Salesforce Data Quality & Intelligence Initiative</a>
-              </div>
-              
-              <div>
-                <span class="text-sm text-gray-700">Stage at time of call:</span>
-                <span class="text-sm font-medium text-gray-900 ml-2">Stage 2: Discovery</span>
-              </div>
-              
-              <div>
-                <span class="text-sm text-gray-700">Target close date:</span>
-                <span class="text-sm text-gray-900 ml-2">July 30, 2025</span>
-              </div>
-              
-              <div>
-                <span class="text-sm text-gray-700">Deal size:</span>
-                <span class="text-sm text-gray-900 ml-2">Enterprise ($500K+ ARR)</span>
-              </div>
+          <div class="content-section">
+            <h3 class="section-title">Deal Context</h3>
+            <div class="detail-item">
+              <a href="#" class="detail-link">Salesforce Data Quality Initiative</a>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Stage at time of call:</span>
+              <span class="detail-value">Stage 2: Discovery</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Close date:</span>
+              <span class="detail-value">July 30, 2025</span>
             </div>
           </div>
 
-          <!-- Meeting Summary -->
-          <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Meeting Summary</h3>
-            
-            <div class="space-y-6">
-              <!-- Action Items -->
-              <div>
-                <h4 class="text-sm font-medium text-gray-900 mb-3"># Action Items</h4>
-                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-                  <p>1. <span class="action-assignee">Gabe</span> to schedule technical demo focused on data enrichment and intent data capabilities for Sarah's team next week</p>
-                  
-                  <p>2. <span class="action-assignee">Sarah</span> to provide current data quality metrics and lead scoring challenges for ROI analysis</p>
-                  
-                  <p>3. <span class="action-assignee">Gabe</span> to connect Sarah with ZoomInfo customer success team for Salesforce integration best practices</p>
-                  
-                  <p>4. <span class="action-assignee">Sarah</span> to introduce Gabe to VP of Sales Operations (Michael Chen) for stakeholder alignment</p>
-                  
-                  <p>5. <span class="action-assignee">Gabe</span> to prepare custom ROI analysis based on Salesforce's current data challenges and team size</p>
-                </div>
-              </div>
-
-              <!-- Meeting Summary Points -->
-              <div>
-                <h4 class="text-sm font-medium text-gray-900 mb-3"># Meeting Summary</h4>
-                <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-                  <p>1. Discovery call with Salesforce to understand their data quality challenges and explore ZoomInfo's sales intelligence platform as a solution for their lead generation and account targeting initiatives.</p>
-                  
-                  <p>2. Sarah Martinez (Director of Sales Operations) outlined current pain points including inconsistent lead scoring, outdated contact data, and lack of intent signals for their 450+ person sales team.</p>
-                  
-                  <p>3. Salesforce currently uses a mix of internal tools and third-party data providers but struggles with data accuracy (estimated 30% decay rate) and integration challenges across their tech stack.</p>
-                  
-                  <p>4. Key requirements identified: real-time data enrichment, intent data for account prioritization, seamless Salesforce integration, and advanced lead scoring capabilities for their enterprise and mid-market segments.</p>
-                  
-                  <p>5. Strong interest expressed in ZoomInfo's AI-powered features and conversation intelligence capabilities, with budget allocated for Q3 implementation targeting $500K+ annual investment.</p>
-                </div>
-              </div>
-            </div>
+          <div class="content-section">
+            <h3 class="section-title">Action Items</h3>
+            <ul class="action-list">
+              <li class="action-item">
+                <strong>Gabe</strong> to schedule technical demo for next week
+              </li>
+              <li class="action-item">
+                <strong>Sarah</strong> to provide current data quality metrics
+              </li>
+              <li class="action-item">
+                <strong>Gabe</strong> to prepare custom ROI analysis
+              </li>
+            </ul>
           </div>
         </div>
 
-        <!-- Sandler Methodology Analysis Tab -->
-        <div id="highlights-tab" class="hidden">
-          <!-- Pain Development Analysis -->
-          <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Pain Development Analysis</h3>
-            <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-              <p><strong>Surface Pain Identified:</strong> Sarah mentioned "Our lead scoring is inconsistent and we're struggling with data accuracy" indicating immediate operational challenges.</p>
-              
-              <p><strong>Underlying Business Impact:</strong> The conversation revealed a 30% data decay rate affecting their 450+ person sales team, causing missed opportunities and wasted sales effort. Sarah expressed frustration: "We're flying blind on which accounts to prioritize."</p>
-              
-              <p><strong>Pain Ownership:</strong> Sarah acknowledged direct responsibility for solving this challenge and demonstrated strong ownership of the problem.</p>
-              
-              <p><strong>Urgency Assessment:</strong> High urgency driven by Q3 implementation timeline and board pressure on pipeline quality improvements.</p>
-            </div>
+        <!-- Detailed Tab -->
+        <div id="detailed-tab" class="tab-panel">
+          <div class="content-section">
+            <h3 class="section-title">Pain Development Analysis</h3>
+            <p class="analysis-text">
+              <strong>Surface Pain:</strong> Sarah mentioned "Our lead scoring is inconsistent and we're struggling with data accuracy" indicating immediate operational challenges.
+            </p>
+            <p class="analysis-text">
+              <strong>Business Impact:</strong> 30% data decay rate affecting 450+ person sales team, causing missed opportunities.
+            </p>
           </div>
 
-          <!-- Budget Qualification Analysis -->
-          <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Budget Qualification Analysis</h3>
-            <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-              <p><strong>Budget Discussion Status:</strong> Partially qualified. Sarah mentioned "budget allocated for Q3" but no specific range was discussed during the call.</p>
-              
-              <p><strong>Investment Mentality:</strong> Positive indicators - conversation focused on ROI and team efficiency gains rather than cost concerns.</p>
-              
-              <p><strong>Authority Assessment:</strong> Sarah has technical decision influence but indicated CFO approval required for investments over $500K. Currently spending on "mix of internal tools and third-party providers."</p>
-              
-              <p><strong>Next Steps Required:</strong> Schedule budget conversation with finance stakeholders to complete qualification.</p>
-            </div>
-          </div>
-
-          <!-- Decision Process Mapping -->
-          <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Decision Process Mapping</h3>
-            <div class="space-y-3 text-sm text-gray-700 leading-relaxed">
-              <p><strong>Primary Decision Maker:</strong> Sarah Martinez (Director of Sales Operations) holds technical decision authority.</p>
-              
-              <p><strong>Economic Buyer:</strong> Michael Chen (VP of Sales Operations) identified as budget approval authority.</p>
-              
-              <p><strong>Key Influencers:</strong> Sales team leads, IT integration team, and Finance department (CFO approval required for final decision).</p>
-              
-              <p><strong>Decision Criteria:</strong> Salesforce integration capabilities, data accuracy improvement, and team adoption ease were highlighted as primary evaluation factors.</p>
-              
-              <p><strong>Timeline:</strong> Q3 implementation target with decision needed by July 30, 2025. Evaluation process: Technical demo → ROI analysis → Stakeholder alignment → Budget approval.</p>
-            </div>
-          </div>
-
-          <!-- Sandler Opportunity Assessment -->
-          <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Sandler Opportunity Assessment</h3>
-            
-            <div class="mb-4">
-              <p class="text-sm font-medium text-gray-900 mb-2">Qualification Status: Partially Qualified (2 of 3 criteria met)</p>
-              <div class="space-y-2 text-sm text-gray-700">
-                <p><strong>Pain:</strong> Qualified - Strong business pain identified with emotional impact and clear ownership</p>
-                <p><strong>Budget:</strong> Partial - Need specific range and approval process details</p>
-                <p><strong>Decision:</strong> Qualified - Key stakeholders mapped with clear timeline</p>
-              </div>
-            </div>
-
-            <div class="mb-4">
-              <p class="text-sm font-medium text-gray-900 mb-2">Opportunity Strength: Medium-High</p>
-              <div class="space-y-3 text-sm text-gray-700">
-                <p><strong>Competitive Advantages:</strong> Strong technical fit with existing Salesforce infrastructure, compelling ROI case with quantifiable pain (30% data decay), favorable timing aligned with Q3 budget cycle, and champion (Sarah) with direct responsibility and influence.</p>
-                
-                <p><strong>Risk Factors:</strong> Budget authority not yet engaged (Michael Chen), multiple stakeholders could slow decision process, and existing vendor relationships may create switching resistance.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Strategic Recommendations -->
-          <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Strategic Recommendations</h3>
-            
-            <div class="space-y-4">
-              <div>
-                <p class="text-sm font-medium text-gray-900 mb-2">Immediate Priority: Complete Budget Qualification</p>
-                <div class="text-sm text-gray-700 leading-relaxed">
-                  <p>Schedule meeting with Michael Chen (VP Sales Ops) to discuss budget parameters, prepare ROI analysis showing cost of current data decay vs. ZoomInfo investment, and understand CFO approval process and timeline requirements.</p>
-                </div>
-              </div>
-
-              <div>
-                <p class="text-sm font-medium text-gray-900 mb-2">Secondary Focus: Stakeholder Alignment</p>
-                <div class="text-sm text-gray-700 leading-relaxed">
-                  <p>Conduct technical demo for Sarah's team focused on Salesforce integration, connect with IT team to address integration requirements, and identify and engage additional decision influencers.</p>
-                </div>
-              </div>
-
-              <div>
-                <p class="text-sm font-medium text-gray-900 mb-2">Sandler Methodology Guidance</p>
-                <div class="text-sm text-gray-700 leading-relaxed">
-                  <p><strong>Submarine Position:</strong> Advance from Pain (Compartment 3) to Budget (Compartment 5). <strong>Up-Front Contract:</strong> Establish clear agenda for Michael Chen meeting. <strong>Mutual Commitment:</strong> Secure Sarah's commitment to facilitate stakeholder introductions. <strong>Process Control:</strong> Maintain control by setting specific next meeting objectives.</p>
-                </div>
-              </div>
-
-              <div>
-                <p class="text-sm font-medium text-gray-900 mb-2">Recommended Timeline</p>
-                <div class="text-sm text-gray-700 leading-relaxed">
-                  <p><strong>Next 7 days:</strong> Technical demo with Sarah's team. <strong>Next 14 days:</strong> Budget conversation with Michael Chen. <strong>Next 30 days:</strong> Complete stakeholder mapping and ROI presentation. <strong>Target Close:</strong> July 30, 2025 (aligned with Q3 implementation goal).</p>
-                </div>
-              </div>
-            </div>
+          <div class="content-section">
+            <h3 class="section-title">Budget Qualification</h3>
+            <p class="analysis-text">
+              <strong>Status:</strong> Partially qualified. Budget allocated for Q3 but specific range not discussed.
+            </p>
+            <p class="analysis-text">
+              <strong>Authority:</strong> Sarah has technical influence, CFO approval required for $500K+ investments.
+            </p>
           </div>
         </div>
-        <div id="comments-tab" class="hidden"></div>
-        <div id="transcript-tab" class="hidden"></div>
+
+        <!-- Comments Tab -->
+        <div id="comments-tab" class="tab-panel">
+          <div class="content-section">
+            <p class="placeholder-text">Comments content will be loaded here</p>
+          </div>
+        </div>
+
+        <!-- Transcript Tab -->
+        <div id="transcript-tab" class="tab-panel">
+          <div class="content-section">
+            <p class="placeholder-text">Transcript content will be loaded here</p>
+          </div>
+        </div>
       </div>
-    </div>
+    </aside>
   </div>
 
-  <!-- Load Header Component -->
-  <script src="js/header-loader.js"></script>
-  
   <!-- Scripts -->
   <script src="js/meeting-data.js"></script>
   <script src="js/meeting-functions.js"></script>
+  
+  <script>
+    // Header dropdown functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const userMenuButton = document.getElementById('user-menu-button');
+      const userDropdown = document.getElementById('user-dropdown');
+      
+      if (userMenuButton && userDropdown) {
+        // Toggle dropdown when clicking the user menu button
+        userMenuButton.addEventListener('click', function(e) {
+          e.stopPropagation();
+          userDropdown.classList.toggle('active');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+          if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+            userDropdown.classList.remove('active');
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>
