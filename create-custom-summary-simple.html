@@ -434,14 +434,17 @@
             <p class="text-gray-600 text-sm">Define the AI prompt that will analyze your meetings and generate the summary.</p>
           </div>
           
-          <div class="form-group">
-            <label class="form-label" for="customPrompt">Custom Prompt *</label>
-            <div class="test-prompt-section">
-              <textarea 
-                id="customPrompt" 
-                class="form-textarea" 
-                style="min-height: 200px;"
-                placeholder="Analyze this meeting and provide:
+          <!-- Split Screen Layout -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Left Side - Configuration -->
+            <div class="space-y-4">
+              <div class="form-group">
+                <label class="form-label" for="customPrompt">Custom Prompt *</label>
+                <textarea 
+                  id="customPrompt" 
+                  class="form-textarea" 
+                  style="min-height: 300px;"
+                  placeholder="Analyze this meeting and provide:
 
 1. **Key Topics Discussed:**
    - List the main topics covered
@@ -454,19 +457,81 @@
 3. **Next Steps:**
    - Follow-up meetings scheduled
    - Decisions that need to be made"
-                oninput="updateCharacterCount('customPrompt', 'promptCount')"
-                required
-              ></textarea>
-              <button type="button" class="test-button" onclick="testPrompt()">Test Prompt</button>
-            </div>
-            <div class="character-count">
-              <span id="promptCount">0</span> characters
+                  oninput="updateCharacterCount('customPrompt', 'promptCount'); updateTestButtonState()"
+                  required
+                ></textarea>
+                <div class="character-count">
+                  <span id="promptCount">0</span> characters
+                </div>
+              </div>
+              
+              <!-- Helper Tips -->
+              <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 class="font-medium text-blue-900 mb-2">💡 Prompt Writing Tips</h4>
+                <ul class="text-sm text-blue-800 space-y-1">
+                  <li>• Use clear, specific instructions</li>
+                  <li>• Structure output with headers and bullet points</li>
+                  <li>• Ask for specific information you need</li>
+                  <li>• Include examples of desired format</li>
+                </ul>
+              </div>
             </div>
             
-            <!-- Test Results -->
-            <div id="testResults" class="test-results">
-              <strong>Test Results:</strong><br>
-              <div id="testOutput">Click "Test Prompt" to see how your prompt works with sample meeting data.</div>
+            <!-- Right Side - Preview -->
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 relative">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Test your prompt</h3>
+                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Beta</span>
+              </div>
+              
+              <p class="text-gray-600 text-sm mb-6">
+                Fill out the mandatory fields and preview the prompt results before saving, ensuring you get what you want.
+              </p>
+              
+              <!-- Test Results Area -->
+              <div id="testResultsArea" class="min-h-[200px] mb-6">
+                <div id="testPlaceholder" class="text-center py-12">
+                  <div class="text-gray-400 mb-4">
+                    <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                  </div>
+                  <p class="text-gray-500 text-sm">Enter a prompt and click "Test Prompt" to see sample output</p>
+                </div>
+                
+                <div id="testResults" class="hidden">
+                  <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                      <h4 class="font-medium text-gray-900">Sample Output</h4>
+                      <span class="text-xs text-gray-500">Based on sample meeting data</span>
+                    </div>
+                    <div id="testOutput" class="text-sm text-gray-700 prose prose-sm max-w-none"></div>
+                  </div>
+                </div>
+                
+                <div id="testLoading" class="hidden text-center py-8">
+                  <div class="inline-flex items-center">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-gray-600">Testing prompt...</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Test Button -->
+              <div class="absolute bottom-6 right-6">
+                <button 
+                  type="button" 
+                  id="testPromptButton"
+                  class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  onclick="testPrompt()"
+                  disabled
+                >
+                  Test Prompt
+                </button>
+              </div>
             </div>
           </div>
 
@@ -711,10 +776,24 @@
       // No longer needed since we removed append options, but keeping for compatibility
     }
 
-    // Test prompt functionality
+    // Update test button state based on prompt content
+    function updateTestButtonState() {
+      const prompt = document.getElementById('customPrompt').value.trim();
+      const testButton = document.getElementById('testPromptButton');
+      
+      if (prompt.length > 0) {
+        testButton.disabled = false;
+      } else {
+        testButton.disabled = true;
+      }
+    }
+
+    // Test prompt functionality with new UI
     function testPrompt() {
       const prompt = document.getElementById('customPrompt').value;
+      const testPlaceholder = document.getElementById('testPlaceholder');
       const testResults = document.getElementById('testResults');
+      const testLoading = document.getElementById('testLoading');
       const testOutput = document.getElementById('testOutput');
       
       if (!prompt.trim()) {
@@ -722,15 +801,14 @@
         return;
       }
       
-      // Show loading state
-      testOutput.innerHTML = 'Testing prompt with sample meeting data...';
-      testResults.classList.add('active');
+      // Hide placeholder and results, show loading
+      testPlaceholder.classList.add('hidden');
+      testResults.classList.add('hidden');
+      testLoading.classList.remove('hidden');
       
       // Simulate API call with sample data
       setTimeout(() => {
         const sampleResult = `
-<strong>Sample Output:</strong><br><br>
-
 <strong>1. Key Topics Discussed:</strong><br>
 • Product roadmap and upcoming features<br>
 • Integration requirements with existing systems<br>
@@ -750,7 +828,10 @@
 <em>Note: This is a sample output based on your prompt structure. Actual results will vary based on meeting content.</em>
         `;
         
+        // Hide loading, show results
+        testLoading.classList.add('hidden');
         testOutput.innerHTML = sampleResult;
+        testResults.classList.remove('hidden');
       }, 1500);
     }
 
