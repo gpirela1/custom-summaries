@@ -46,8 +46,8 @@ function loadTabContent(tabName) {
     case 'transcript':
       loadTranscriptTab();
       break;
-    case 'detailed':
-      // Content is already in HTML
+    case 'summary':
+      loadSummaryTab();
       break;
     case 'overview':
       // Content is already in HTML
@@ -286,6 +286,116 @@ const dynamicStyles = `
 }
 </style>
 `;
+
+// Load summary tab content
+function loadSummaryTab() {
+  const tab = document.getElementById('summary-tab');
+  if (tab.dataset.loaded) return;
+  
+  // Content is already in HTML, just mark as loaded
+  tab.dataset.loaded = 'true';
+}
+
+// Toggle summary section expand/collapse
+function toggleSummarySection(sectionId) {
+  const section = document.querySelector(`[data-section="${sectionId}"]`);
+  if (!section) return;
+  
+  const isExpanded = section.classList.contains('expanded');
+  
+  if (isExpanded) {
+    section.classList.remove('expanded');
+  } else {
+    section.classList.add('expanded');
+  }
+}
+
+// Copy section content to clipboard
+function copySectionContent(sectionId) {
+  const section = document.querySelector(`[data-section="${sectionId}"]`);
+  if (!section) return;
+  
+  const button = section.querySelector('.copy-button');
+  const contentWrapper = section.querySelector('.summary-content-wrapper');
+  
+  if (!contentWrapper) return;
+  
+  // Get the section title
+  const title = section.querySelector('.section-title').textContent;
+  
+  // Check if content is narrative text or action list
+  const summaryText = contentWrapper.querySelector('.summary-content-text');
+  const actionList = contentWrapper.querySelector('.action-list');
+  
+  let content = '';
+  
+  if (summaryText) {
+    // Handle narrative content with mixed format
+    const paragraphs = Array.from(summaryText.querySelectorAll('p'));
+    const actionSections = Array.from(summaryText.querySelectorAll('.action-items-section'));
+    
+    // Extract paragraph content
+    const paragraphText = paragraphs.map(p => p.textContent.trim()).join('\n\n');
+    
+    // Extract action items if present
+    let actionText = '';
+    actionSections.forEach(section => {
+      const headers = Array.from(section.querySelectorAll('h4'));
+      const lists = Array.from(section.querySelectorAll('.action-list'));
+      
+      headers.forEach((header, index) => {
+        actionText += `\n\n${header.textContent.trim()}\n`;
+        if (lists[index]) {
+          const items = Array.from(lists[index].querySelectorAll('.action-item'));
+          actionText += items.map(item => `• ${item.textContent.trim()}`).join('\n');
+        }
+      });
+    });
+    
+    content = paragraphText + actionText;
+  } else if (actionList) {
+    // Handle pure action list content
+    const items = Array.from(actionList.querySelectorAll('.action-item'));
+    content = items.map(item => `• ${item.textContent.trim()}`).join('\n');
+  }
+  
+  // Combine title and content
+  const fullContent = `${title}\n\n${content}`;
+  
+  // Copy to clipboard
+  navigator.clipboard.writeText(fullContent).then(() => {
+    // Show success feedback
+    button.classList.add('copied');
+    
+    // Create and show tooltip
+    const tooltip = document.createElement('div');
+    tooltip.className = 'copy-tooltip show';
+    tooltip.textContent = 'Copied!';
+    button.appendChild(tooltip);
+    
+    // Reset after 2 seconds
+    setTimeout(() => {
+      button.classList.remove('copied');
+      if (tooltip.parentNode) {
+        tooltip.parentNode.removeChild(tooltip);
+      }
+    }, 2000);
+  }).catch(err => {
+    console.error('Failed to copy text: ', err);
+    
+    // Fallback: show error feedback
+    const tooltip = document.createElement('div');
+    tooltip.className = 'copy-tooltip show';
+    tooltip.textContent = 'Copy failed';
+    button.appendChild(tooltip);
+    
+    setTimeout(() => {
+      if (tooltip.parentNode) {
+        tooltip.parentNode.removeChild(tooltip);
+      }
+    }, 2000);
+  });
+}
 
 // Inject dynamic styles
 document.head.insertAdjacentHTML('beforeend', dynamicStyles);

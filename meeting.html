@@ -259,7 +259,7 @@
       <!-- Tab Navigation -->
       <nav class="tab-nav">
         <button class="tab-button active" onclick="switchTab('overview')">Overview</button>
-        <button class="tab-button" onclick="switchTab('detailed')">Detailed</button>
+        <button class="tab-button" onclick="switchTab('summary')">Summary</button>
         <button class="tab-button" onclick="switchTab('comments')">Comments</button>
         <button class="tab-button" onclick="switchTab('transcript')">Transcript</button>
       </nav>
@@ -315,26 +315,156 @@
           </div>
         </div>
 
-        <!-- Detailed Tab -->
-        <div id="detailed-tab" class="tab-panel">
+
+        <!-- Summary Tab -->
+        <div id="summary-tab" class="tab-panel">
+          <!-- MEDDIC Qualification Section -->
           <div class="content-section">
-            <h3 class="section-title">Pain Development Analysis</h3>
-            <p class="analysis-text">
-              <strong>Surface Pain:</strong> Sarah mentioned "Our lead scoring is inconsistent and we're struggling with data accuracy" indicating immediate operational challenges.
-            </p>
-            <p class="analysis-text">
-              <strong>Business Impact:</strong> 30% data decay rate affecting 450+ person sales team, causing missed opportunities.
-            </p>
+            <div class="summary-section" data-section="meddic">
+              <div class="summary-section-header" onclick="toggleSummarySection('meddic')">
+                <h3 class="section-title">MEDDIC Qualification</h3>
+                <svg class="summary-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+              <div class="summary-section-content">
+                <div class="summary-content-wrapper">
+                  <button class="copy-button" onclick="copySectionContent('meddic')" title="Copy to clipboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </button>
+                  <div class="summary-content-text">
+                    <p>This deal shows strong MEDDIC qualification with several positive indicators. Sarah Johnson (CFO) has confirmed budget authority for the $2.8M initiative and referenced her successful experience with similar projects at Oracle, suggesting she's already building the internal business case.</p>
+                    
+                    <p>The pain points are well-defined and costly: 30% of hot leads going cold due to manual routing, 35% annual data decay costing $1.2M in lost opportunities, and sales team spending 40% of time on data cleanup instead of selling. These metrics align perfectly with our value proposition and create urgency for a solution.</p>
+                    
+                    <p><strong>Key metrics target:</strong> 50% reduction in lead response time (from 4.2 hours), 67% to 95% data accuracy improvement, 30% sales productivity increase measured through pipeline velocity.</p>
+                    
+                    <p><strong>Decision process:</strong> IT evaluation (Tom Wilson) → Security review (Mike Chen) → CFO approval (Sarah Johnson) → CEO sign-off (David Park). Timeline: 45-60 days with Q3 target, though board review required for >$2M investments.</p>
+                    
+                    <p>Tom Wilson (IT Director) emerges as our strongest champion - he's highly engaged, has the CEO's ear on technology decisions, and has mentioned our solution in the last 3 leadership meetings. His $500K budget influence and track record with similar implementations make him invaluable for internal advocacy.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
+          <!-- Stakeholder Updates Section -->
           <div class="content-section">
-            <h3 class="section-title">Budget Qualification</h3>
-            <p class="analysis-text">
-              <strong>Status:</strong> Partially qualified. Budget allocated for Q3 but specific range not discussed.
-            </p>
-            <p class="analysis-text">
-              <strong>Authority:</strong> Sarah has technical influence, CFO approval required for $500K+ investments.
-            </p>
+            <div class="summary-section" data-section="stakeholders">
+              <div class="summary-section-header" onclick="toggleSummarySection('stakeholders')">
+                <h3 class="section-title">Stakeholder Updates</h3>
+                <svg class="summary-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+              <div class="summary-section-content">
+                <div class="summary-content-wrapper">
+                  <button class="copy-button" onclick="copySectionContent('stakeholders')" title="Copy to clipboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </button>
+                  <div class="summary-content-text">
+                    <p>Three new stakeholders emerged during this call, significantly expanding our buying committee understanding and revealing both opportunities and potential roadblocks.</p>
+                    
+                    <p><strong>Mike Chen (CISO)</strong> represents our biggest risk. He's blocked similar initiatives before due to security concerns and reports directly to the CEO, giving him significant influence. His questions about data residency and API security were pointed, and I could sense skepticism when we discussed cloud deployment. We need to front-load compliance documentation - SOC 2 Type II, ISO 27001, and GDPR proof will be table stakes.</p>
+                    
+                    <p><strong>Jennifer Liu (VP Sales Operations)</strong> could be a strong advocate. She manages the 450+ person sales team and expressed genuine frustration with current manual processes. Her body language was engaged when we discussed automation benefits, and she asked specific questions about user training and adoption support. Her $200K annual budget for sales tools gives her credibility in vendor discussions.</p>
+                    
+                    <p><strong>David Park (CEO)</strong> is the ultimate decision maker for investments >$2M. His growth focus and mention of competitive pressure from startups creates urgency, but he'll want measurable business impact. His experience scaling 3 companies through data-driven initiatives suggests he understands the value proposition.</p>
+                    
+                    <p>The relationship dynamics are interesting: Tom Wilson has weekly technology meetings with David Park, creating a direct advocacy channel. Jennifer and Tom seem aligned on the solution need, but Mike Chen's security requirements could slow momentum. Sarah Johnson trusts Tom's technical judgment but will need detailed financial justification for the board.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Competitive Intelligence Section -->
+          <div class="content-section">
+            <div class="summary-section" data-section="competitive">
+              <div class="summary-section-header" onclick="toggleSummarySection('competitive')">
+                <h3 class="section-title">Competitive Intelligence</h3>
+                <svg class="summary-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+              <div class="summary-section-content">
+                <div class="summary-content-wrapper">
+                  <button class="copy-button" onclick="copySectionContent('competitive')" title="Copy to clipboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </button>
+                  <div class="summary-content-text">
+                    <p>The competitive landscape is more complex than initially anticipated, with Gong representing the primary threat but also revealing vulnerabilities we can exploit.</p>
+                    
+                    <p><strong>Gong is the elephant in the room.</strong> They're currently running a 50-user pilot at $165/user/month, which would cost $990K annually for full deployment. Sarah Johnson's visible concern about the 40% price premium versus our solution suggests budget sensitivity. While Gong has strong conversation analytics and market presence, their Salesforce integration is poor and they lack real-time lead scoring - exactly where we excel.</p>
+                    
+                    <p><strong>Outreach is wounded but not dead.</strong> Tom Wilson's mention of "integration nightmares" from their previous attempt 6 months ago gives us ammunition. Mike Chen blocked it due to security concerns, which plays to our compliance strengths. At $125/user/month, they're price-competitive but lack our comprehensive data quality features.</p>
+                    
+                    <p><strong>Apollo.io is the wild card.</strong> Jennifer Liu mentioned team interest due to $49/user/month pricing and modern UI. However, it's clearly positioned as a "startup solution" lacking enterprise security and scalability for 450+ users. We can use this to reinforce our enterprise-grade positioning.</p>
+                    
+                    <p><strong>Our competitive advantage is clear:</strong> 99.2% data accuracy vs. Gong's 87%, sub-2 second API response times, and superior Salesforce integration. At $135/user/month, we're 18% below Gong while delivering better results. Our security compliance is superior to all competitors, which matters to Mike Chen.</p>
+                    
+                    <p><strong>The winning strategy:</strong> Emphasize total cost of ownership over unit price, leverage Tom's Outreach pain points, and position our 90-day implementation versus Gong's 6-month timeline as a competitive advantage in their aggressive Q3 timeline.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Next Steps & Actions Section -->
+          <div class="content-section">
+            <div class="summary-section" data-section="nextsteps">
+              <div class="summary-section-header" onclick="toggleSummarySection('nextsteps')">
+                <h3 class="section-title">Next Steps & Actions</h3>
+                <svg class="summary-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+              <div class="summary-section-content">
+                <div class="summary-content-wrapper">
+                  <button class="copy-button" onclick="copySectionContent('nextsteps')" title="Copy to clipboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </button>
+                  <div class="summary-content-text">
+                    <p>The momentum from this call creates a clear path forward, but the next two weeks are critical for maintaining velocity. Mike Chen's security concerns and the aggressive Q3 timeline mean we need to front-load compliance documentation while keeping the technical demo on track.</p>
+                    
+                    <p><strong>Critical path items:</strong> Security documentation to Mike Chen by June 6th is non-negotiable - his previous blocking of similar initiatives makes this our highest risk. The June 12th demo with the full buying committee is our best opportunity to build consensus, especially with David Park's direct participation.</p>
+                    
+                    <div class="action-items-section">
+                      <h4><strong>Immediate Actions (Due by June 6th):</strong></h4>
+                      <ul class="action-list">
+                        <li class="action-item">Gabe to send SOC 2 Type II and ISO 27001 compliance documentation to Mike Chen (CISO) for security review</li>
+                        <li class="action-item">Include data residency options and API security architecture diagrams</li>
+                        <li class="action-item">Sarah Johnson requested detailed pricing breakdown with volume discounts for 450+ users</li>
+                      </ul>
+                      
+                      <h4><strong>Customer Deliverables (Due by June 8th):</strong></h4>
+                      <ul class="action-list">
+                        <li class="action-item">Tom Wilson to provide current Salesforce schema and integration requirements document</li>
+                        <li class="action-item">Jennifer Liu to share existing data quality metrics and user workflow documentation</li>
+                        <li class="action-item">Mike Chen to complete security questionnaire and provide compliance requirements checklist</li>
+                      </ul>
+                      
+                      <h4><strong>Technical Demo (Scheduled June 12th, 2:00 PM PST):</strong></h4>
+                      <ul class="action-list">
+                        <li class="action-item">90-minute comprehensive demo for full buying committee (David Park, Sarah Johnson, Tom Wilson, Mike Chen, Jennifer Liu)</li>
+                        <li class="action-item">Focus areas: Salesforce integration, real-time data enrichment, security features, and ROI calculator</li>
+                        <li class="action-item">Demo environment to include their actual Salesforce data (sanitized)</li>
+                      </ul>
+                    </div>
+                    
+                    <p><strong>Decision timeline is aggressive but achievable:</strong> Final decision expected by July 15th, contract signature by July 30th for Q3 budget allocation, with August 1st implementation kickoff targeting 100 initial users and 90-day go-live.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
