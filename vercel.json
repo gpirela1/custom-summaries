@@ -1,0 +1,58 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "."
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/custom-summaries-simple.html",
+      "dest": "/custom-summaries-simple.html"
+    },
+    {
+      "src": "/create-custom-summary-simple.html",
+      "dest": "/create-custom-summary-simple.html"
+    },
+    {
+      "src": "/meeting.html",
+      "dest": "/meeting.html"
+    },
+    {
+      "src": "/meeting-complete.html",
+      "dest": "/meeting-complete.html"
+    },
+    {
+      "src": "/meeting-review-panel.html",
+      "dest": "/meeting-review-panel.html"
+    },
+    {
+      "src": "/components/(.*)",
+      "dest": "/components/$1"
+    },
+    {
+      "src": "/css/(.*)",
+      "dest": "/css/$1"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "/js/$1"
+    },
+    {
+      "src": "/public/(.*)",
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}
