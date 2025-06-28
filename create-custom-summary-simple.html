@@ -435,16 +435,15 @@
           </div>
           
           <!-- Split Screen Layout -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             <!-- Left Side - Configuration -->
             <div class="flex flex-col">
-              <div class="form-group mb-0">
-                <label class="form-label" for="customPrompt">Custom Prompt *</label>
-                <textarea 
-                  id="customPrompt" 
-                  class="form-textarea" 
-                  style="min-height: 340px;"
-                  placeholder="Analyze this meeting and provide:
+              <label class="form-label mb-4" for="customPrompt">Custom Prompt *</label>
+              <textarea 
+                id="customPrompt" 
+                class="form-textarea mb-2" 
+                style="min-height: 340px;"
+                placeholder="Analyze this meeting and provide:
 
 1. **Key Topics Discussed:**
    - List the main topics covered
@@ -457,28 +456,27 @@
 3. **Next Steps:**
    - Follow-up meetings scheduled
    - Decisions that need to be made"
-                  oninput="updateCharacterCount('customPrompt', 'promptCount'); updateTestButtonState()"
-                  required
-                ></textarea>
-                <div class="character-count">
-                  <span id="promptCount">0</span> characters
-                </div>
+                oninput="updateCharacterCount('customPrompt', 'promptCount'); updateTestButtonState()"
+                required
+              ></textarea>
+              <div class="character-count">
+                <span id="promptCount">0</span> characters
               </div>
             </div>
             
             <!-- Right Side - Preview -->
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 relative flex flex-col" style="min-height: 420px;">
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 relative flex flex-col">
               <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Test your prompt</h3>
                 <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Beta</span>
               </div>
               
-              <p class="text-gray-600 text-sm mb-6">
+              <p class="text-gray-600 text-sm mb-4">
                 Fill out the mandatory fields and preview the prompt results before saving, ensuring you get what you want.
               </p>
               
               <!-- Test Results Area -->
-              <div id="testResultsArea" class="flex-1 mb-6">
+              <div id="testResultsArea" class="flex-1" style="min-height: 340px;">
                 <div id="testPlaceholder" class="text-center py-12">
                   <div class="text-gray-400 mb-4">
                     <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
