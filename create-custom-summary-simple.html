@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Custom Summary Simple - Chorus by ZoomInfo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom styles */
+    .chorus-logo {
+      color: #1976D2;
+    }
+    
+    .chorus-waveform {
+      fill: #1976D2;
+    }
+    
+    /* User dropdown styles */
+    .user-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5rem;
+      width: 240px;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      z-index: 50;
+      overflow: hidden;
+      display: none;
+    }
+    
+    .user-dropdown.active {
+      display: block;
+    }
+    
+    .user-dropdown-header {
+      padding: 1rem;
+      border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .user-dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      color: #374151;
+      transition: background-color 0.2s;
+    }
+    
+    .user-dropdown-item:hover {
+      background-color: #F3F4F6;
+    }
+    
+    .user-dropdown-item svg {
+      margin-right: 0.75rem;
+    }
+
+    /* Settings sidebar styles */
+    .settings-sidebar {
+      width: 250px;
+      border-right: 1px solid #E5E7EB;
+    }
+
+    .settings-nav-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      color: #374151;
+      transition: background-color 0.2s;
+      border-radius: 0.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .settings-nav-item:hover {
+      background-color: #F3F4F6;
+    }
+
+    .settings-nav-item.active {
+      background-color: #E3F2FD;
+      color: #1976D2;
+      font-weight: 500;
+    }
+
+    .settings-nav-item-child {
+      padding-left: 2.5rem;
+    }
+
+    .create-button {
+      background-color: #1976D2;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+
+    .create-button:hover {
+      background-color: #1565C0;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #1976D2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    }
+
+    .form-textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      min-height: 120px;
+      resize: vertical;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-textarea:focus {
+      outline: none;
+      border-color: #1976D2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      background: white;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-select:focus {
+      outline: none;
+      border-color: #1976D2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    }
+
+    .test-prompt-section {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .test-button {
+      background-color: #F3F4F6;
+      color: #374151;
+      padding: 0.75rem 1rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .test-button:hover {
+      background-color: #E5E7EB;
+    }
+
+    .test-results {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      color: #374151;
+      display: none;
+    }
+
+    .test-results.active {
+      display: block;
+    }
+
+    .btn-secondary {
+      background-color: #F3F4F6;
+      color: #374151;
+      padding: 0.75rem 1.5rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-secondary:hover {
+      background-color: #E5E7EB;
+    }
+
+    .btn-primary {
+      background-color: #1976D2;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background-color: #1565C0;
+    }
+
+    .btn-primary:disabled {
+      background-color: #D1D5DB;
+      cursor: not-allowed;
+    }
+
+    .character-count {
+      font-size: 0.75rem;
+      color: #6B7280;
+      text-align: right;
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Header -->
+  <header class="border-b border-gray-200 bg-white">
+    <div class="flex items-center justify-between px-4 py-2">
+      <div class="flex items-center">
+        <a href="/" class="flex items-center mr-8">
+          <img src="/public/chorus-logo.svg" class="chorus-waveform" width="24" height="24" alt="Chorus">
+          <span class="ml-2 text-xl font-semibold chorus-logo">Chorus</span>
+        </a>
+        
+        <nav class="hidden md:flex space-x-8">
+          <a href="/" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Home
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Engagements
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Deals
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 py-4 font-medium">
+            Playlists
+          </a>
+          <div class="relative group">
+            <button class="text-gray-600 hover:text-blue-600 py-4 font-medium flex items-center">
+              More
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+        </nav>
+      </div>
+      
+      <div class="flex items-center">
+        <div class="relative mr-4">
+          <div class="flex items-center border rounded-md px-3 py-1.5 bg-gray-50">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search in Chorus"
+              class="ml-2 bg-transparent outline-none text-sm w-40 md:w-60"
+            />
+            <button class="ml-2 text-gray-400 border-l pl-2">
+              Options
+            </button>
+          </div>
+        </div>
+        
+        <div class="flex items-center relative">
+          <button id="user-menu-button" class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-medium text-white">
+            GP
+          </button>
+          
+          <!-- User dropdown menu -->
+          <div id="user-dropdown" class="user-dropdown">
+            <div class="user-dropdown-header">
+              <div class="font-medium">Gabe Pirela</div>
+            </div>
+            <a href="personal-settings.html" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Settings
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              Help Center
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              Live Chat
+            </a>
+            <a href="#" class="user-dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Log Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="flex min-h-screen">
+    <!-- Settings Sidebar -->
+    <div class="settings-sidebar p-4 bg-white">
+      <div class="settings-nav-item">
+        <a href="personal-settings.html" class="block w-full">Personal Settings</a>
+      </div>
+      <div class="settings-nav-item">
+        User Management
+      </div>
+      <div class="settings-nav-item-child">
+        Users
+      </div>
+      <div class="settings-nav-item-child">
+        Teams and Data Access
+      </div>
+      <div class="settings-nav-item-child">
+        Roles and Permissions
+      </div>
+      <div class="settings-nav-item">
+        Integrations
+      </div>
+      <div class="settings-nav-item">
+        Organization Settings
+      </div>
+      <div class="settings-nav-item">
+        Trackers
+      </div>
+      <div class="settings-nav-item">
+        Signals
+      </div>
+      <div class="settings-nav-item active">
+        <a href="custom-summaries-simple.html" class="block w-full">Custom Summaries</a>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 p-8 max-w-4xl">
+      <!-- Header -->
+      <div class="mb-8">
+        <div class="flex items-center mb-4">
+          <a href="custom-summaries-simple.html" class="text-blue-600 hover:text-blue-700 mr-4">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </a>
+          <h1 class="text-2xl font-semibold text-gray-900">Create Custom Summary Simple</h1>
+        </div>
+        <p class="text-gray-600">
+          Create a custom AI-powered summary for your meetings with a simplified interface.
+        </p>
+      </div>
+
+      <!-- Form Content -->
+      <form id="createSummaryForm" class="space-y-8">
+        <!-- Basic Information -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-2">Basic Information</h2>
+            <p class="text-gray-600 text-sm">Provide the name and description for your custom summary.</p>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="summaryName">Summary Name *</label>
+            <input 
+              type="text" 
+              id="summaryName" 
+              class="form-input" 
+              placeholder="e.g., Sales Discovery Summary, Technical Requirements Analysis"
+              maxlength="100"
+              oninput="updateCharacterCount('summaryName', 'nameCount')"
+              required
+            >
+            <div class="character-count">
+              <span id="nameCount">0</span>/100 characters
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="summaryDescription">Description *</label>
+            <textarea 
+              id="summaryDescription" 
+              class="form-textarea" 
+              placeholder="Describe what information this summary will extract from meetings. For example: 'Extracts key pain points, budget information, decision-making process, and next steps from sales discovery calls.'"
+              maxlength="500"
+              oninput="updateCharacterCount('summaryDescription', 'descriptionCount')"
+              required
+            ></textarea>
+            <div class="character-count">
+              <span id="descriptionCount">0</span>/500 characters
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Prompt -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-2">Custom Prompt</h2>
+            <p class="text-gray-600 text-sm">Define the AI prompt that will analyze your meetings and generate the summary.</p>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="customPrompt">Custom Prompt *</label>
+            <div class="test-prompt-section">
+              <textarea 
+                id="customPrompt" 
+                class="form-textarea" 
+                style="min-height: 200px;"
+                placeholder="Analyze this meeting and provide:
+
+1. **Key Topics Discussed:**
+   - List the main topics covered
+   - Include specific details mentioned
+
+2. **Action Items:**
+   - Who is responsible for what
+   - Timeline for completion
+
+3. **Next Steps:**
+   - Follow-up meetings scheduled
+   - Decisions that need to be made"
+                oninput="updateCharacterCount('customPrompt', 'promptCount')"
+                required
+              ></textarea>
+              <button type="button" class="test-button" onclick="testPrompt()">Test Prompt</button>
+            </div>
+            <div class="character-count">
+              <span id="promptCount">0</span> characters
+            </div>
+            
+            <!-- Test Results -->
+            <div id="testResults" class="test-results">
+              <strong>Test Results:</strong><br>
+              <div id="testOutput">Click "Test Prompt" to see how your prompt works with sample meeting data.</div>
+            </div>
+          </div>
+
+          <!-- CRM Integration -->
+          <div class="form-group">
+            <label class="flex items-center">
+              <input type="checkbox" id="enableCrmWriteback" class="mr-3" onchange="toggleCrmWriteback()">
+              <div>
+                <div class="font-medium text-gray-900">Enable CRM Writeback</div>
+                <div class="text-sm text-gray-600">Automatically write summaries to CRM fields</div>
+              </div>
+            </label>
+          </div>
+
+          <div id="crmIntegrationSection" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" for="crmObject">CRM Object</label>
+              <select id="crmObject" class="form-select" onchange="updateCrmFields()">
+                <option value="">Select CRM Object</option>
+                <option value="Account">Account</option>
+                <option value="Opportunity">Opportunity</option>
+                <option value="Event">Event</option>
+                <option value="Task">Task</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="crmFieldGroup" style="display: none;">
+              <label class="form-label" for="crmField">CRM Field</label>
+              <select id="crmField" class="form-select" onchange="updateWritebackOptions()">
+                <option value="">Select Field</option>
+              </select>
+            </div>
+
+            <!-- Writeback Behavior Section -->
+            <div id="writebackBehaviorGroup" style="display: none;">
+            <div class="form-group">
+              <label class="form-label">Writeback Behavior</label>
+              <p class="text-sm text-gray-600 mb-3">Choose how the summary should be written to the CRM field.</p>
+              
+              <div class="space-y-3">
+                <label class="flex items-start">
+                  <input type="radio" name="writebackMode" value="append" class="mt-1 mr-3" onchange="updateWritebackControls()">
+                  <div>
+                    <div class="font-medium text-gray-900">Append</div>
+                    <div class="text-sm text-gray-600">Add the summary to existing content with a separator</div>
+                  </div>
+                </label>
+                
+                <label class="flex items-start">
+                  <input type="radio" name="writebackMode" value="overwrite" class="mt-1 mr-3" onchange="updateWritebackControls()" checked>
+                  <div>
+                    <div class="font-medium text-gray-900">Overwrite</div>
+                    <div class="text-sm text-gray-600">Replace all existing content with the new summary</div>
+                  </div>
+                </label>
+                
+                <label class="flex items-start">
+                  <input type="radio" name="writebackMode" value="blank_only" class="mt-1 mr-3" onchange="updateWritebackControls()">
+                  <div>
+                    <div class="font-medium text-gray-900">Only if Blank</div>
+                    <div class="text-sm text-gray-600">Only write if the field is currently empty</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+
+            <!-- Timestamp Option -->
+            <div class="form-group">
+              <label class="flex items-center">
+                <input type="checkbox" id="includeTimestamp" class="mr-3">
+                <div>
+                  <div class="font-medium text-gray-900">Include Timestamp</div>
+                  <div class="text-sm text-gray-600">Add date and time when the summary was generated</div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="flex justify-between items-center">
+            <a href="custom-summaries-simple.html" class="btn-secondary">
+              ← Cancel
+            </a>
+            <button type="submit" class="btn-primary" onclick="createSummary(); return false;">
+              Create Custom Summary
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let formData = {
+      name: '',
+      description: '',
+      prompt: '',
+      crmObject: '',
+      crmField: ''
+    };
+
+    // CRM field mappings - MEDDIC-focused custom fields
+    const crmFieldMappings = {
+      'Account': [
+        { value: 'Account_Pain_Points__c', label: 'Account Pain Points' },
+        { value: 'Key_Stakeholders__c', label: 'Key Stakeholders' },
+        { value: 'Decision_Making_Process__c', label: 'Decision Making Process' },
+        { value: 'Budget_Authority__c', label: 'Budget Authority' },
+        { value: 'Account_Summary__c', label: 'Account Summary' },
+        { value: 'Strategic_Initiatives__c', label: 'Strategic Initiatives' }
+      ],
+      'Opportunity': [
+        { value: 'MEDDIC_Metrics__c', label: 'Metrics & Economic Impact' },
+        { value: 'MEDDIC_Economic_Buyer__c', label: 'Economic Buyer' },
+        { value: 'MEDDIC_Decision_Criteria__c', label: 'Decision Criteria' },
+        { value: 'MEDDIC_Decision_Process__c', label: 'Decision Process' },
+        { value: 'MEDDIC_Pain_Points__c', label: 'Identified Pain Points' },
+        { value: 'MEDDIC_Champion__c', label: 'Champion Details' },
+        { value: 'MEDDIC_Score__c', label: 'MEDDIC Qualification Score' },
+        { value: 'Next_Steps__c', label: 'Next Steps' },
+        { value: 'Competitive_Landscape__c', label: 'Competitive Landscape' },
+        { value: 'Value_Proposition__c', label: 'Value Proposition' }
+      ],
+      'Event': [
+        { value: 'Meeting_MEDDIC_Notes__c', label: 'MEDDIC Meeting Notes' },
+        { value: 'Qualification_Status__c', label: 'Qualification Status' },
+        { value: 'Action_Items__c', label: 'Action Items' },
+        { value: 'Key_Insights__c', label: 'Key Insights' },
+        { value: 'Follow_Up_Required__c', label: 'Follow-up Required' },
+        { value: 'Meeting_Outcome__c', label: 'Meeting Outcome' }
+      ],
+      'Task': [
+        { value: 'Task_MEDDIC_Notes__c', label: 'MEDDIC Task Notes' },
+        { value: 'Qualification_Updates__c', label: 'Qualification Updates' },
+        { value: 'Stakeholder_Feedback__c', label: 'Stakeholder Feedback' },
+        { value: 'Research_Findings__c', label: 'Research Findings' },
+        { value: 'Preparation_Notes__c', label: 'Preparation Notes' }
+      ]
+    };
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      // User dropdown functionality
+      const userMenuButton = document.getElementById('user-menu-button');
+      const userDropdown = document.getElementById('user-dropdown');
+      
+      userMenuButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        userDropdown.classList.toggle('active');
+      });
+      
+      document.addEventListener('click', function(e) {
+        if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+          userDropdown.classList.remove('active');
+        }
+      });
+
+      // Check if we're in edit mode
+      const urlParams = new URLSearchParams(window.location.search);
+      const editId = urlParams.get('edit');
+      
+      if (editId) {
+        // Edit mode - load existing summary data
+        loadSummaryForEdit(editId);
+      }
+    });
+
+    // Character count update
+    function updateCharacterCount(inputId, countId) {
+      const input = document.getElementById(inputId);
+      const count = document.getElementById(countId);
+      count.textContent = input.value.length;
+    }
+
+    // Toggle CRM writeback functionality
+    function toggleCrmWriteback() {
+      const enableCrmWriteback = document.getElementById('enableCrmWriteback').checked;
+      const crmIntegrationSection = document.getElementById('crmIntegrationSection');
+      
+      if (enableCrmWriteback) {
+        crmIntegrationSection.style.display = 'block';
+      } else {
+        crmIntegrationSection.style.display = 'none';
+        // Reset CRM fields when disabled
+        document.getElementById('crmObject').value = '';
+        document.getElementById('crmField').value = '';
+        document.getElementById('crmFieldGroup').style.display = 'none';
+        document.getElementById('writebackBehaviorGroup').style.display = 'none';
+      }
+    }
+
+    // CRM functionality
+    function updateCrmFields() {
+      const objectSelect = document.getElementById('crmObject');
+      const fieldSelect = document.getElementById('crmField');
+      const fieldGroup = document.getElementById('crmFieldGroup');
+      
+      const selectedObject = objectSelect.value;
+      
+      if (selectedObject && crmFieldMappings[selectedObject]) {
+        // Show the field group
+        fieldGroup.style.display = 'block';
+        
+        // Clear existing options
+        fieldSelect.innerHTML = '<option value="">Select Field</option>';
+        
+        // Add fields for selected object
+        crmFieldMappings[selectedObject].forEach(field => {
+          const option = document.createElement('option');
+          option.value = field.value;
+          option.textContent = field.label;
+          fieldSelect.appendChild(option);
+        });
+      } else {
+        // Hide the field group
+        fieldGroup.style.display = 'none';
+        fieldSelect.innerHTML = '<option value="">Select Field</option>';
+        
+        // Hide writeback options when no object is selected
+        document.getElementById('writebackBehaviorGroup').style.display = 'none';
+      }
+    }
+
+    // Update writeback options visibility
+    function updateWritebackOptions() {
+      const crmField = document.getElementById('crmField').value;
+      const writebackGroup = document.getElementById('writebackBehaviorGroup');
+      
+      if (crmField) {
+        writebackGroup.style.display = 'block';
+      } else {
+        writebackGroup.style.display = 'none';
+      }
+    }
+
+    // Update writeback controls based on selected mode (simplified - no append options)
+    function updateWritebackControls() {
+      // No longer needed since we removed append options, but keeping for compatibility
+    }
+
+    // Test prompt functionality
+    function testPrompt() {
+      const prompt = document.getElementById('customPrompt').value;
+      const testResults = document.getElementById('testResults');
+      const testOutput = document.getElementById('testOutput');
+      
+      if (!prompt.trim()) {
+        alert('Please enter a custom prompt first.');
+        return;
+      }
+      
+      // Show loading state
+      testOutput.innerHTML = 'Testing prompt with sample meeting data...';
+      testResults.classList.add('active');
+      
+      // Simulate API call with sample data
+      setTimeout(() => {
+        const sampleResult = `
+<strong>Sample Output:</strong><br><br>
+
+<strong>1. Key Topics Discussed:</strong><br>
+• Product roadmap and upcoming features<br>
+• Integration requirements with existing systems<br>
+• Pricing structure for enterprise package<br>
+• Timeline for implementation (Q2 2024)<br><br>
+
+<strong>2. Action Items:</strong><br>
+• John Smith to send technical specifications by Friday<br>
+• Sarah Johnson to prepare pricing proposal by next week<br>
+• Schedule follow-up demo for decision makers<br><br>
+
+<strong>3. Next Steps:</strong><br>
+• Technical deep-dive meeting scheduled for March 15th<br>
+• Budget approval needed from finance team<br>
+• Final decision expected by end of month<br><br>
+
+<em>Note: This is a sample output based on your prompt structure. Actual results will vary based on meeting content.</em>
+        `;
+        
+        testOutput.innerHTML = sampleResult;
+      }, 1500);
+    }
+
+    // Load summary for editing
+    function loadSummaryForEdit(editId) {
+      // Get summary data from localStorage
+      const editingSummary = localStorage.getItem('editingSummary');
+      if (!editingSummary) {
+        alert('Summary data not found. Redirecting to custom summaries page.');
+        window.location.href = 'custom-summaries-simple.html';
+        return;
+      }
+      
+      const summaryData = JSON.parse(editingSummary);
+      
+      // Update page title and button text for edit mode
+      document.title = 'Edit Custom Summary Simple - Chorus by ZoomInfo';
+      document.querySelector('h1').textContent = 'Edit Custom Summary Simple';
+      document.querySelector('.btn-primary').textContent = 'Update Custom Summary';
+      
+      // Pre-fill form with existing data
+      document.getElementById('summaryName').value = summaryData.name || '';
+      document.getElementById('summaryDescription').value = summaryData.description || '';
+      document.getElementById('customPrompt').value = summaryData.prompt || '';
+      
+      // Handle CRM writeback toggle and fields
+      const hasCrmData = summaryData.crmObject || summaryData.salesforceObject;
+      if (hasCrmData) {
+        document.getElementById('enableCrmWriteback').checked = true;
+        toggleCrmWriteback();
+        
+        // Set CRM object (support both new and legacy field names)
+        document.getElementById('crmObject').value = summaryData.crmObject || summaryData.salesforceObject || '';
+        
+        // Trigger field update for CRM fields
+        updateCrmFields();
+        
+        // Set CRM field after fields are populated
+        setTimeout(() => {
+          document.getElementById('crmField').value = summaryData.crmField || summaryData.salesforceField || '';
+          
+          // Update writeback options if field is selected
+          if (summaryData.crmField || summaryData.salesforceField) {
+            updateWritebackOptions();
+            
+            // Set writeback behavior if available
+            if (summaryData.writebackBehavior) {
+              const behavior = summaryData.writebackBehavior;
+              
+              // Set writeback mode
+              const modeRadio = document.querySelector(`input[name="writebackMode"][value="${behavior.mode}"]`);
+              if (modeRadio) {
+                modeRadio.checked = true;
+                updateWritebackControls();
+                
+                // Set separator options if append mode
+                if (behavior.mode === 'append') {
+                  document.getElementById('separator').value = behavior.separator || 'newline';
+                  updateCustomSeparator();
+                  
+                  if (behavior.separator === 'custom' && behavior.customSeparator) {
+                    document.getElementById('customSeparator').value = behavior.customSeparator;
+                  }
+                }
+                
+                // Set timestamp option
+                document.getElementById('includeTimestamp').checked = behavior.includeTimestamp || false;
+              }
+            }
+          }
+        }, 100);
+      }
+      
+      // Update character counts
+      updateCharacterCount('summaryName', 'nameCount');
+      updateCharacterCount('summaryDescription', 'descriptionCount');
+      updateCharacterCount('customPrompt', 'promptCount');
+      
+      // Store the edit ID for later use
+      window.editingSummaryId = editId;
+      
+      // Clean up localStorage
+      localStorage.removeItem('editingSummary');
+    }
+
+    // Create or update summary
+    function createSummary() {
+      // Get form data directly from inputs
+      const name = document.getElementById('summaryName').value.trim();
+      const description = document.getElementById('summaryDescription').value.trim();
+      const prompt = document.getElementById('customPrompt').value.trim();
+      const enableCrmWriteback = document.getElementById('enableCrmWriteback').checked;
+      const crmObject = enableCrmWriteback ? document.getElementById('crmObject').value : '';
+      const crmField = enableCrmWriteback ? document.getElementById('crmField').value : '';
+      
+      // Get writeback behavior settings (simplified - no separator selection)
+      const writebackMode = document.querySelector('input[name="writebackMode"]:checked')?.value || 'overwrite';
+      const includeTimestamp = document.getElementById('includeTimestamp').checked;
+      
+      // Validate required fields
+      if (!name) {
+        alert('Please enter a summary name.');
+        document.getElementById('summaryName').focus();
+        return;
+      }
+      
+      if (!description) {
+        alert('Please enter a description.');
+        document.getElementById('summaryDescription').focus();
+        return;
+      }
+      
+      if (!prompt) {
+        alert('Please enter a custom prompt.');
+        document.getElementById('customPrompt').focus();
+        return;
+      }
+      
+      // Validate CRM field if object is selected and writeback is enabled
+      if (enableCrmWriteback && crmObject && !crmField) {
+        alert('Please select a CRM field for the selected object.');
+        document.getElementById('crmField').focus();
+        return;
+      }
+      
+      if (window.editingSummaryId) {
+        // Edit mode - update existing summary
+        const summaryData = {
+          id: window.editingSummaryId,
+          name: name,
+          description: description,
+          prompt: prompt,
+          crmObject: crmObject,
+          crmField: crmField,
+          writebackBehavior: crmField ? {
+            mode: writebackMode,
+            includeTimestamp: includeTimestamp
+          } : null,
+          active: true,
+          updatedAt: new Date().toISOString()
+        };
+        
+        // Show success message
+        let successMessage = 'Custom summary updated successfully!';
+        if (crmObject && crmField) {
+          const behaviorText = writebackMode === 'append' ? 'append to' : 
+                              writebackMode === 'blank_only' ? 'write to (if blank)' : 'overwrite';
+          successMessage += ` It will ${behaviorText} ${crmObject}.${crmField}.`;
+        }
+        alert(successMessage);
+        
+        // Redirect back to custom summaries page
+        window.location.href = 'custom-summaries-simple.html';
+      } else {
+        // Create mode - add new summary
+        const newId = Date.now();
+        const newSummary = {
+          id: newId,
+          name: name,
+          description: description,
+          prompt: prompt,
+          crmObject: crmObject,
+          crmField: crmField,
+          writebackBehavior: crmField ? {
+            mode: writebackMode,
+            includeTimestamp: includeTimestamp
+          } : null,
+          active: true,
+          createdAt: new Date().toISOString()
+        };
+        
+        // Show success message
+        let successMessage = 'Custom summary created successfully!';
+        if (crmObject && crmField) {
+          const behaviorText = writebackMode === 'append' ? 'append to' : 
+                              writebackMode === 'blank_only' ? 'write to (if blank)' : 'overwrite';
+          successMessage += ` It will ${behaviorText} ${crmObject}.${crmField}.`;
+        }
+        alert(successMessage);
+        
+        // Redirect back to custom summaries page
+        window.location.href = 'custom-summaries-simple.html';
+      }
+    }
+  </script>
+</body>
+</html>
