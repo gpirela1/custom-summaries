@@ -11,6 +11,10 @@
   ],
   "routes": [
     {
+      "src": "/chorus-logo.svg",
+      "dest": "/public/chorus-logo.svg"
+    },
+    {
       "src": "/",
       "dest": "/index.html"
     },
