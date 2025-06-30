@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chorus by ZoomInfo</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React Scripts -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <style>
     /* Custom styles */
     .chorus-logo {
@@ -180,262 +183,23 @@
           <div class="border-t mt-2">
             <div class="p-4">
               <div class="space-y-3">
-                <!-- Meeting 1 - Discovery Call -->
-                <div class="chorus-meeting-item cursor-pointer" onclick="openMeeting('meeting1')">
-                  <div class="flex">
-                    <div class="w-16 text-gray-500 font-medium">
-                      9:00
-                      <div class="text-xs mt-1">
-                        AM
-                      </div>
-                    </div>
-                    
-                    <div class="flex-1">
-                      <div class="flex justify-between">
-                        <div>
-                          <h4 class="font-medium">Salesforce Discovery Call - Data Quality Initiative</h4>
-                          <p class="text-sm text-gray-500">Enterprise Account - Stage 2: Discovery</p>
-                        </div>
-                        
-                        <div class="text-sm text-gray-500">
-                          45 Mins
-                        </div>
-                      </div>
-                      
-                      <div class="flex items-center mt-2">
-                        <div class="flex items-center mr-3">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                          </svg>
-                          <span class="text-xs text-blue-600">Meeting Recap</span>
-                        </div>
-                        
-                        <div class="flex items-center">
-                          <div class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-xs text-white">
-                            SM
-                          </div>
-                          <span class="ml-2 text-sm">Sarah Martinez</span>
-                          <span class="ml-1 text-xs text-gray-400">• Salesforce</span>
-                          
-                          <span class="ml-2 text-xs text-blue-600">+4</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <!-- Meeting 1 - React Component -->
+                <div id="react-meeting-meeting1"></div>
                 
-                <!-- Meeting 2 - Demo Call -->
-                <div class="chorus-meeting-item cursor-pointer" onclick="openMeeting('meeting2')">
-                  <div class="flex">
-                    <div class="w-16 text-gray-500 font-medium">
-                      11:30
-                      <div class="text-xs mt-1">
-                        AM
-                      </div>
-                    </div>
-                    
-                    <div class="flex-1">
-                      <div class="flex justify-between">
-                        <div>
-                          <h4 class="font-medium">HubSpot Demo: Intent Data & Lead Scoring</h4>
-                          <p class="text-sm text-gray-500">Mid-Market Prospect - Stage 3: Demo</p>
-                        </div>
-                        
-                        <div class="text-sm text-gray-500">
-                          60 Mins
-                        </div>
-                      </div>
-                      
-                      <div class="flex items-center mt-2">
-                        <div class="flex items-center mr-3">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                          </svg>
-                          <span class="text-xs text-blue-600">Meeting Recap</span>
-                        </div>
-                        
-                        <div class="flex items-center">
-                          <div class="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-xs text-white">
-                            MJ
-                          </div>
-                          <span class="ml-2 text-sm">Mike Johnson</span>
-                          <span class="ml-1 text-xs text-gray-400">• HubSpot</span>
-                          
-                          <span class="ml-2 text-xs text-blue-600">+2</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <!-- Meeting 2 - React Component -->
+                <div id="react-meeting-meeting2"></div>
                 
-                <!-- Meeting 3 - Negotiation Call -->
-                <div class="chorus-meeting-item cursor-pointer" onclick="openMeeting('meeting3')">
-                  <div class="flex">
-                    <div class="w-16 text-gray-500 font-medium">
-                      1:00
-                      <div class="text-xs mt-1">
-                        PM
-                      </div>
-                    </div>
-                    
-                    <div class="flex-1">
-                      <div class="flex justify-between">
-                        <div>
-                          <h4 class="font-medium">Microsoft Contract Negotiation - Enterprise Package</h4>
-                          <p class="text-sm text-gray-500">Stage 4: Negotiate • Close Date: June 15, 2025</p>
-                        </div>
-                        
-                        <div class="text-sm text-gray-500">
-                          30 Mins
-                        </div>
-                      </div>
-                      
-                      <div class="flex items-center mt-2">
-                        <div class="flex items-center mr-3">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                          </svg>
-                          <span class="text-xs text-blue-600">Meeting Brief</span>
-                        </div>
-                        
-                        <div class="flex items-center">
-                          <div class="w-6 h-6 rounded-full bg-green-600 flex items-center justify-center text-xs text-white">
-                            AC
-                          </div>
-                          <span class="ml-2 text-sm">Amanda Chen</span>
-                          <span class="ml-1 text-xs text-gray-400">• Microsoft</span>
-                          
-                          <span class="ml-2 text-xs text-blue-600">+3</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <!-- Meeting 3 - React Component -->
+                <div id="react-meeting-meeting3"></div>
                 
-                <!-- Meeting 4 - Customer Expansion -->
-                <div class="chorus-meeting-item cursor-pointer" onclick="openMeeting('meeting4')">
-                  <div class="flex">
-                    <div class="w-16 text-gray-500 font-medium">
-                      2:30
-                      <div class="text-xs mt-1">
-                        PM
-                      </div>
-                    </div>
-                    
-                    <div class="flex-1">
-                      <div class="flex justify-between">
-                        <div>
-                          <h4 class="font-medium">Zoom Expansion Discussion - Marketing Intelligence Add-on</h4>
-                          <p class="text-sm text-gray-500">Existing Customer • Renewal + Expansion Opportunity</p>
-                        </div>
-                        
-                        <div class="text-sm text-gray-500">
-                          45 Mins
-                        </div>
-                      </div>
-                      
-                      <div class="flex items-center mt-2">
-                        <div class="flex items-center mr-3">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                          </svg>
-                          <span class="text-xs text-blue-600">Meeting Recap</span>
-                        </div>
-                        
-                        <div class="flex items-center">
-                          <div class="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-xs text-white">
-                            DL
-                          </div>
-                          <span class="ml-2 text-sm">David Liu</span>
-                          <span class="ml-1 text-xs text-gray-400">• Zoom</span>
-                          
-                          <span class="ml-2 text-xs text-blue-600">+2</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <!-- Meeting 4 - React Component -->
+                <div id="react-meeting-meeting4"></div>
                 
-                <!-- Meeting 5 - Prospecting Call -->
-                <div class="chorus-meeting-item cursor-pointer" onclick="openMeeting('meeting5')">
-                  <div class="flex">
-                    <div class="w-16 text-gray-500 font-medium">
-                      4:00
-                      <div class="text-xs mt-1">
-                        PM
-                      </div>
-                    </div>
-                    
-                    <div class="flex-1">
-                      <div class="flex justify-between">
-                        <div>
-                          <h4 class="font-medium">Stripe Initial Outreach - Sales Intelligence Platform</h4>
-                          <p class="text-sm text-gray-500">New Prospect • Stage 1: Prospecting</p>
-                        </div>
-                        
-                        <div class="text-sm text-gray-500">
-                          30 Mins
-                        </div>
-                      </div>
-                      
-                      <div class="flex items-center mt-2">
-                        <div class="flex items-center mr-3">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                          </svg>
-                          <span class="text-xs text-blue-600">Meeting Brief</span>
-                        </div>
-                        
-                        <div class="flex items-center">
-                          <div class="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-xs text-white">
-                            RK
-                          </div>
-                          <span class="ml-2 text-sm">Rachel Kim</span>
-                          <span class="ml-1 text-xs text-gray-400">• Stripe</span>
-                          
-                          <span class="ml-2 text-xs text-blue-600">+1</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <!-- Meeting 5 - React Component -->
+                <div id="react-meeting-meeting5"></div>
                 
-                <!-- Meeting 6 - Internal Strategy -->
-                <div class="chorus-meeting-item">
-                  <div class="flex">
-                    <div class="w-16 text-gray-500 font-medium">
-                      5:30
-                      <div class="text-xs mt-1">
-                        PM
-                      </div>
-                    </div>
-                    
-                    <div class="flex-1">
-                      <div class="flex justify-between">
-                        <div>
-                          <h4 class="font-medium">Internal: Q2 Pipeline Review & Account Strategy</h4>
-                          <p class="text-sm text-gray-500">Team Meeting • Forecast Planning</p>
-                        </div>
-                        
-                        <div class="text-sm text-gray-500">
-                          60 Mins
-                        </div>
-                      </div>
-                      
-                      <div class="flex items-center mt-2">
-                        <div class="flex items-center">
-                          <div class="w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center text-xs text-white">
-                            JW
-                          </div>
-                          <span class="ml-2 text-sm">Jennifer Walsh</span>
-                          <span class="ml-1 text-xs text-gray-400">• Sales Manager</span>
-                          
-                          <span class="ml-2 text-xs text-blue-600">+5</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <!-- Meeting 6 - React Component -->
+                <div id="react-meeting-meeting6"></div>
               </div>
             </div>
           </div>
@@ -445,72 +209,32 @@
       <!-- Sidebar -->
       <div class="w-full md:w-80 space-y-6">
         <!-- Continue Watching -->
-        <div class="bg-white rounded-lg shadow-sm p-4">
-          <h2 class="text-lg font-medium mb-4">Continue Watching</h2>
-          
-          <div class="flex justify-center items-center h-40">
-            <div class="flex flex-col items-center">
-              <div class="flex space-x-1 mb-2">
-                <div class="chorus-audio-bar" style="height: 15px; background-color: #1976D2;"></div>
-                <div class="chorus-audio-bar" style="height: 25px; background-color: #90CAF9;"></div>
-                <div class="chorus-audio-bar" style="height: 35px; background-color: #1976D2;"></div>
-                <div class="chorus-audio-bar" style="height: 20px; background-color: #90CAF9;"></div>
-                <div class="chorus-audio-bar" style="height: 30px; background-color: #1976D2;"></div>
-                <div class="chorus-audio-bar" style="height: 18px; background-color: #90CAF9;"></div>
-                <div class="chorus-audio-bar" style="height: 22px; background-color: #1976D2;"></div>
-              </div>
-              <svg xmlns="http://www.w3.org/2000/svg" class="text-blue-600 h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-              <p class="text-sm text-gray-500 text-center">
-                Your recently watched recordings will appear here
-              </p>
-            </div>
-          </div>
-        </div>
+        <div id="continue-watching-container"></div>
         
         <!-- Team Leaderboard -->
-        <div class="bg-white rounded-lg shadow-sm p-4">
-          <h2 class="text-lg font-medium mb-2">Darrell Grissen's Team Leaderboard</h2>
-          <p class="text-sm text-gray-500 mb-4">Calls During Last 7 Days</p>
-          
-          <div class="space-y-4">
-            <div class="flex items-center">
-              <div class="flex-shrink-0 mr-3 text-gray-500 font-medium">
-                #1
-              </div>
-              
-              <div 
-                class="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium"
-                style="background-color: #00BCD4;"
-              >
-                BS
-              </div>
-              
-              <div class="ml-3 flex-1">
-                <div class="font-medium">Brahmjot Singh Kohli</div>
-                <div class="text-sm text-gray-500">4 calls</div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="mt-4 pt-4 border-t border-gray-100">
-            <div class="flex items-center justify-center py-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-              </svg>
-              <p class="text-sm text-gray-500">
-                Make more calls to appear on the leaderboard
-              </p>
-            </div>
-          </div>
-        </div>
+        <div id="team-leaderboard-container"></div>
       </div>
     </div>
   </main>
 
   <!-- Load Header Component -->
   <script src="js/header-loader.js"></script>
+  
+  <!-- Load React MeetingRecord Component -->
+  <script src="public/meeting-record-standalone.js"></script>
+  
+  <!-- Load React ContinueWatching Component -->
+  <script src="public/continue-watching-standalone.js"></script>
+  
+  <!-- Load React TeamLeaderboard Component -->
+  <script src="public/team-leaderboard-standalone.js"></script>
+  
+  <!-- Debug Script -->
+  <script>
+    console.log('React available:', typeof React !== 'undefined');
+    console.log('ReactDOM available:', typeof ReactDOM !== 'undefined');
+    console.log('Target div exists:', document.getElementById('react-meeting-record') !== null);
+  </script>
   
   <script>
     // Meeting navigation functionality
