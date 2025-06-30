@@ -589,16 +589,6 @@
             </div>
 
 
-            <!-- Timestamp Option -->
-            <div class="form-group">
-              <label class="flex items-center">
-                <input type="checkbox" id="includeTimestamp" class="mr-3">
-                <div>
-                  <div class="font-medium text-gray-900">Include Timestamp</div>
-                  <div class="text-sm text-gray-600">Add date and time when the summary was generated</div>
-                </div>
-              </label>
-            </div>
           </div>
         </div>
 
@@ -919,7 +909,6 @@
       
       // Get writeback behavior settings (simplified - no separator selection)
       const writebackMode = document.querySelector('input[name="writebackMode"]:checked')?.value || 'overwrite';
-      const includeTimestamp = document.getElementById('includeTimestamp').checked;
       
       // Validate required fields
       if (!name) {
@@ -957,8 +946,7 @@
           crmObject: crmObject,
           crmField: crmField,
           writebackBehavior: crmField ? {
-            mode: writebackMode,
-            includeTimestamp: includeTimestamp
+            mode: writebackMode
           } : null,
           active: true,
           updatedAt: new Date().toISOString()
@@ -986,8 +974,7 @@
           crmObject: crmObject,
           crmField: crmField,
           writebackBehavior: crmField ? {
-            mode: writebackMode,
-            includeTimestamp: includeTimestamp
+            mode: writebackMode
           } : null,
           active: true,
           createdAt: new Date().toISOString()

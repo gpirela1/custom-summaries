@@ -1044,14 +1044,16 @@
             <p class="section-description">Define the AI prompt that will analyze your meetings and generate the summary.</p>
           </div>
           
-          <div class="form-group">
-            <label class="form-label" for="customPrompt">Custom Prompt *</label>
-            <div class="prompt-two-column-layout">
-              <div class="prompt-left-column">
-                <textarea 
-                  id="customPrompt" 
-                  class="form-textarea prompt-textarea-full" 
-                  placeholder="Analyze this meeting and provide:
+          <!-- Split Screen Layout -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            <!-- Left Side - Configuration -->
+            <div class="flex flex-col">
+              <label class="form-label mb-4" for="customPrompt">Custom Prompt *</label>
+              <textarea 
+                id="customPrompt" 
+                class="form-textarea mb-2" 
+                style="min-height: 340px;"
+                placeholder="Analyze this meeting and provide:
 
 1. **Key Topics Discussed:**
    - List the main topics covered
@@ -1064,44 +1066,139 @@
 3. **Next Steps:**
    - Follow-up meetings scheduled
    - Decisions that need to be made"
-                  oninput="updateCharacterCount('customPrompt', 'promptCount')"
-                  required
-                ></textarea>
-                <div class="character-count">
-                  <span id="promptCount">0</span> characters
+                oninput="updateCharacterCount('customPrompt', 'promptCount'); updateTestButtonState()"
+                required
+              ></textarea>
+              <div class="character-count">
+                <span id="promptCount">0</span> characters
+              </div>
+            </div>
+            
+            <!-- Right Side - Preview -->
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 relative flex flex-col">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Test your prompt</h3>
+                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Beta</span>
+              </div>
+              
+              <p class="text-gray-600 text-sm mb-4">
+                Fill out the mandatory fields and preview the prompt results before saving, ensuring you get what you want.
+              </p>
+              
+              <!-- Test Results Area -->
+              <div id="testResultsArea" class="flex-1 pb-16" style="min-height: 340px;">
+                <div id="testPlaceholder" class="text-center py-12">
+                  <div class="text-gray-400 mb-4">
+                    <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                  </div>
+                  <p class="text-gray-500 text-sm">Enter a prompt and click "Test Prompt" to see sample output</p>
+                </div>
+                
+                <div id="testResults" class="hidden">
+                  <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                      <h4 class="font-medium text-gray-900">Sample Output</h4>
+                      <span class="text-xs text-gray-500">Based on sample meeting data</span>
+                    </div>
+                    <div id="testOutput" class="text-sm text-gray-700 prose prose-sm max-w-none"></div>
+                  </div>
+                </div>
+                
+                <div id="testLoading" class="hidden text-center py-8">
+                  <div class="inline-flex items-center">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-gray-600">Testing prompt...</span>
+                  </div>
                 </div>
               </div>
               
-              <div class="prompt-right-column">
-                <div class="prompt-preview-panel">
-                  <div id="testResults" class="test-results-new">
-                    <div id="testOutput" class="test-output-content">Click "Test Prompt" to see how your prompt works with sample meeting data.</div>
-                  </div>
-                </div>
-                <div class="prompt-test-button-container">
-                  <button type="button" class="btn btn-secondary" onclick="testPrompt()">Test Prompt</button>
-                </div>
+              <!-- Test Button -->
+              <div class="absolute bottom-6 right-6">
+                <button 
+                  type="button" 
+                  id="testPromptButton"
+                  class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  onclick="testPrompt()"
+                  disabled
+                >
+                  Test Prompt
+                </button>
               </div>
             </div>
           </div>
 
-          <!-- Salesforce Integration -->
+          <!-- Section Separator -->
+          <div class="border-t border-gray-200 my-8"></div>
+
+          <!-- CRM Integration -->
           <div class="form-group">
-            <label class="form-label" for="salesforceObject">Salesforce Object (Optional)</label>
-            <select id="salesforceObject" class="form-select" onchange="updateSalesforceFields()">
-              <option value="">Select Salesforce Object (Optional)</option>
-              <option value="Account">Account</option>
-              <option value="Opportunity">Opportunity</option>
-              <option value="Event">Event</option>
-              <option value="Task">Task</option>
-            </select>
+            <label class="flex items-center">
+              <input type="checkbox" id="enableCrmWriteback" class="mr-3" onchange="toggleCrmWriteback()">
+              <div>
+                <div class="font-medium text-gray-900">Enable CRM Writeback</div>
+                <div class="text-sm text-gray-600">Automatically write summaries to CRM fields</div>
+              </div>
+            </label>
           </div>
 
-          <div class="form-group" id="salesforceFieldGroup" style="display: none;">
-            <label class="form-label" for="salesforceField">Salesforce Field</label>
-            <select id="salesforceField" class="form-select">
-              <option value="">Select Field</option>
-            </select>
+          <div id="crmIntegrationSection" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" for="crmObject">CRM Object</label>
+              <select id="crmObject" class="form-select" onchange="updateCrmFields()">
+                <option value="">Select CRM Object</option>
+                <option value="Account">Account</option>
+                <option value="Opportunity">Opportunity</option>
+                <option value="Event">Event</option>
+                <option value="Task">Task</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="crmFieldGroup" style="display: none;">
+              <label class="form-label" for="crmField">CRM Field</label>
+              <select id="crmField" class="form-select" onchange="updateWritebackOptions()">
+                <option value="">Select Field</option>
+              </select>
+            </div>
+
+            <!-- Writeback Behavior Section -->
+            <div id="writebackBehaviorGroup" style="display: none;">
+              <div class="form-group">
+                <label class="form-label">Writeback Behavior</label>
+                <p class="text-sm text-gray-600 mb-3">Choose how the summary should be written to the CRM field.</p>
+                
+                <div class="space-y-3">
+                  <label class="flex items-start">
+                    <input type="radio" name="writebackMode" value="append" class="mt-1 mr-3" onchange="updateWritebackControls()">
+                    <div>
+                      <div class="font-medium text-gray-900">Append</div>
+                      <div class="text-sm text-gray-600">Add the summary to existing content with a separator</div>
+                    </div>
+                  </label>
+                  
+                  <label class="flex items-start">
+                    <input type="radio" name="writebackMode" value="overwrite" class="mt-1 mr-3" onchange="updateWritebackControls()" checked>
+                    <div>
+                      <div class="font-medium text-gray-900">Overwrite</div>
+                      <div class="text-sm text-gray-600">Replace all existing content with the new summary</div>
+                    </div>
+                  </label>
+                  
+                  <label class="flex items-start">
+                    <input type="radio" name="writebackMode" value="blank_only" class="mt-1 mr-3" onchange="updateWritebackControls()">
+                    <div>
+                      <div class="font-medium text-gray-900">Only if Blank</div>
+                      <div class="text-sm text-gray-600">Only write if the field is currently empty</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+            </div>
           </div>
 
         </div>
@@ -1241,33 +1338,113 @@
       salesforceField: ''
     };
 
-    // Salesforce field mappings
-    const salesforceFieldMappings = {
+    // CRM field mappings for writeback - MEDDIC-focused custom fields
+    const crmFieldMappings = {
       'Account': [
-        { value: 'Description', label: 'Description' },
-        { value: 'Notes__c', label: 'Notes' },
-        { value: 'Meeting_Summary__c', label: 'Meeting Summary' },
-        { value: 'Last_Call_Notes__c', label: 'Last Call Notes' }
+        { value: 'Account_Pain_Points__c', label: 'Account Pain Points' },
+        { value: 'Key_Stakeholders__c', label: 'Key Stakeholders' },
+        { value: 'Decision_Making_Process__c', label: 'Decision Making Process' },
+        { value: 'Budget_Authority__c', label: 'Budget Authority' },
+        { value: 'Account_Summary__c', label: 'Account Summary' },
+        { value: 'Strategic_Initiatives__c', label: 'Strategic Initiatives' }
       ],
       'Opportunity': [
-        { value: 'Description', label: 'Description' },
+        { value: 'MEDDIC_Metrics__c', label: 'Metrics & Economic Impact' },
+        { value: 'MEDDIC_Economic_Buyer__c', label: 'Economic Buyer' },
+        { value: 'MEDDIC_Decision_Criteria__c', label: 'Decision Criteria' },
+        { value: 'MEDDIC_Decision_Process__c', label: 'Decision Process' },
+        { value: 'MEDDIC_Pain_Points__c', label: 'Identified Pain Points' },
+        { value: 'MEDDIC_Champion__c', label: 'Champion Details' },
+        { value: 'MEDDIC_Score__c', label: 'MEDDIC Qualification Score' },
         { value: 'Next_Steps__c', label: 'Next Steps' },
-        { value: 'Meeting_Summary__c', label: 'Meeting Summary' },
-        { value: 'Call_Notes__c', label: 'Call Notes' }
+        { value: 'Competitive_Landscape__c', label: 'Competitive Landscape' },
+        { value: 'Value_Proposition__c', label: 'Value Proposition' }
       ],
       'Event': [
-        { value: 'Description', label: 'Description' },
-        { value: 'Comments__c', label: 'Comments' },
-        { value: 'Meeting_Notes__c', label: 'Meeting Notes' },
-        { value: 'Summary__c', label: 'Summary' }
+        { value: 'Meeting_MEDDIC_Notes__c', label: 'MEDDIC Meeting Notes' },
+        { value: 'Qualification_Status__c', label: 'Qualification Status' },
+        { value: 'Action_Items__c', label: 'Action Items' },
+        { value: 'Key_Insights__c', label: 'Key Insights' },
+        { value: 'Follow_Up_Required__c', label: 'Follow-up Required' },
+        { value: 'Meeting_Outcome__c', label: 'Meeting Outcome' }
       ],
       'Task': [
-        { value: 'Description', label: 'Description' },
-        { value: 'Comments__c', label: 'Comments' },
-        { value: 'Call_Summary__c', label: 'Call Summary' },
-        { value: 'Notes__c', label: 'Notes' }
+        { value: 'Task_MEDDIC_Notes__c', label: 'MEDDIC Task Notes' },
+        { value: 'Qualification_Updates__c', label: 'Qualification Updates' },
+        { value: 'Stakeholder_Feedback__c', label: 'Stakeholder Feedback' },
+        { value: 'Research_Findings__c', label: 'Research Findings' },
+        { value: 'Preparation_Notes__c', label: 'Preparation Notes' }
       ]
     };
+
+    // Trigger field mappings - Standard CRM fields for realistic triggers
+    const triggerFieldMappings = {
+      'Account': [
+        { value: 'Name', label: 'Account Name', type: 'text' },
+        { value: 'Industry', label: 'Industry', type: 'picklist' },
+        { value: 'Type', label: 'Account Type', type: 'picklist' },
+        { value: 'AnnualRevenue', label: 'Annual Revenue', type: 'number' },
+        { value: 'NumberOfEmployees', label: 'Number of Employees', type: 'number' },
+        { value: 'OwnerId', label: 'Account Owner', type: 'text' },
+        { value: 'CreatedDate', label: 'Created Date', type: 'date' },
+        { value: 'LastModifiedDate', label: 'Last Modified Date', type: 'date' }
+      ],
+      'Opportunity': [
+        { value: 'Name', label: 'Opportunity Name', type: 'text' },
+        { value: 'StageName', label: 'Stage', type: 'picklist' },
+        { value: 'Amount', label: 'Amount', type: 'number' },
+        { value: 'CloseDate', label: 'Close Date', type: 'date' },
+        { value: 'Probability', label: 'Probability (%)', type: 'number' },
+        { value: 'LeadSource', label: 'Lead Source', type: 'picklist' },
+        { value: 'OwnerId', label: 'Opportunity Owner', type: 'text' },
+        { value: 'Renewal_Date__c', label: 'Renewal Date', type: 'date' },
+        { value: 'Contract_End_Date__c', label: 'Contract End Date', type: 'date' },
+        { value: 'LastActivityDate', label: 'Last Activity Date', type: 'date' }
+      ],
+      'Event': [
+        { value: 'Subject', label: 'Subject', type: 'text' },
+        { value: 'StartDateTime', label: 'Start Date/Time', type: 'datetime' },
+        { value: 'EndDateTime', label: 'End Date/Time', type: 'datetime' },
+        { value: 'Type', label: 'Activity Type', type: 'picklist' },
+        { value: 'IsAllDayEvent', label: 'All Day Event', type: 'boolean' },
+        { value: 'OwnerId', label: 'Event Owner', type: 'text' },
+        { value: 'CreatedDate', label: 'Created Date', type: 'date' }
+      ],
+      'Task': [
+        { value: 'Subject', label: 'Subject', type: 'text' },
+        { value: 'Status', label: 'Status', type: 'picklist' },
+        { value: 'Priority', label: 'Priority', type: 'picklist' },
+        { value: 'ActivityDate', label: 'Due Date', type: 'date' },
+        { value: 'Type', label: 'Task Type', type: 'picklist' },
+        { value: 'OwnerId', label: 'Task Owner', type: 'text' },
+        { value: 'CreatedDate', label: 'Created Date', type: 'date' },
+        { value: 'IsClosed', label: 'Is Closed', type: 'boolean' }
+      ],
+      'Contact': [
+        { value: 'Name', label: 'Contact Name', type: 'text' },
+        { value: 'Title', label: 'Title', type: 'text' },
+        { value: 'Department', label: 'Department', type: 'text' },
+        { value: 'LeadSource', label: 'Lead Source', type: 'picklist' },
+        { value: 'Email', label: 'Email', type: 'text' },
+        { value: 'OwnerId', label: 'Contact Owner', type: 'text' },
+        { value: 'CreatedDate', label: 'Created Date', type: 'date' },
+        { value: 'LastActivityDate', label: 'Last Activity Date', type: 'date' }
+      ],
+      'Lead': [
+        { value: 'Name', label: 'Lead Name', type: 'text' },
+        { value: 'Company', label: 'Company', type: 'text' },
+        { value: 'Status', label: 'Lead Status', type: 'picklist' },
+        { value: 'LeadSource', label: 'Lead Source', type: 'picklist' },
+        { value: 'Rating', label: 'Rating', type: 'picklist' },
+        { value: 'Industry', label: 'Industry', type: 'picklist' },
+        { value: 'OwnerId', label: 'Lead Owner', type: 'text' },
+        { value: 'CreatedDate', label: 'Created Date', type: 'date' },
+        { value: 'LastActivityDate', label: 'Last Activity Date', type: 'date' }
+      ]
+    };
+
+    // Keep legacy mapping for backward compatibility
+    const salesforceFieldMappings = crmFieldMappings;
 
     // Operator options for different field types
     const operatorOptions = {
@@ -1287,14 +1464,31 @@
         { value: 'greater_equal', label: 'Greater Than or Equal' },
         { value: 'less_equal', label: 'Less Than or Equal' }
       ],
+      'picklist': [
+        { value: 'equals', label: 'Equals' },
+        { value: 'not_equals', label: 'Not Equals' },
+        { value: 'includes', label: 'Includes' },
+        { value: 'excludes', label: 'Excludes' }
+      ],
       'boolean': [
-        { value: 'equals', label: 'Equals' }
+        { value: 'equals', label: 'Equals' },
+        { value: 'not_equals', label: 'Not Equals' }
       ],
       'date': [
         { value: 'equals', label: 'Equals' },
         { value: 'not_equals', label: 'Not Equals' },
         { value: 'after', label: 'After' },
-        { value: 'before', label: 'Before' }
+        { value: 'before', label: 'Before' },
+        { value: 'within_last', label: 'Within Last X Days' },
+        { value: 'within_next', label: 'Within Next X Days' }
+      ],
+      'datetime': [
+        { value: 'equals', label: 'Equals' },
+        { value: 'not_equals', label: 'Not Equals' },
+        { value: 'after', label: 'After' },
+        { value: 'before', label: 'Before' },
+        { value: 'within_last', label: 'Within Last X Hours' },
+        { value: 'within_next', label: 'Within Next X Hours' }
       ]
     };
 
@@ -1620,12 +1814,13 @@
       fieldSelect.innerHTML = '<option value="">Select Field</option>';
       operatorSelect.innerHTML = '<option value="">Select Operator</option>';
       
-      if (selectedObject && salesforceFieldMappings[selectedObject]) {
-        // Add fields for selected object
-        salesforceFieldMappings[selectedObject].forEach(field => {
+      if (selectedObject && triggerFieldMappings[selectedObject]) {
+        // Add fields for selected object using trigger field mappings
+        triggerFieldMappings[selectedObject].forEach(field => {
           const option = document.createElement('option');
           option.value = field.value;
           option.textContent = field.label;
+          option.setAttribute('data-type', field.type);
           fieldSelect.appendChild(option);
         });
       }
@@ -1642,24 +1837,19 @@
       operatorSelect.innerHTML = '<option value="">Select Operator</option>';
       
       if (selectedField) {
-        // Determine field type based on field name (simplified logic)
-        let fieldType = 'text'; // default
-        
-        if (selectedField.includes('Amount') || selectedField.includes('Count') || selectedField.includes('Number')) {
-          fieldType = 'number';
-        } else if (selectedField.includes('Date') || selectedField.includes('Time')) {
-          fieldType = 'date';
-        } else if (selectedField.includes('Active') || selectedField.includes('Closed') || selectedField.includes('Won')) {
-          fieldType = 'boolean';
-        }
+        // Get field type from the selected option's data attribute
+        const selectedOption = fieldSelect.querySelector(`option[value="${selectedField}"]`);
+        const fieldType = selectedOption ? selectedOption.getAttribute('data-type') : 'text';
         
         // Add operators for field type
-        operatorOptions[fieldType].forEach(operator => {
-          const option = document.createElement('option');
-          option.value = operator.value;
-          option.textContent = operator.label;
-          operatorSelect.appendChild(option);
-        });
+        if (operatorOptions[fieldType]) {
+          operatorOptions[fieldType].forEach(operator => {
+            const option = document.createElement('option');
+            option.value = operator.value;
+            option.textContent = operator.label;
+            operatorSelect.appendChild(option);
+          });
+        }
       }
     }
 
@@ -1848,18 +2038,11 @@
       template.outputs.forEach((templateOutput, index) => {
         const outputId = ++structuredOutputCounter;
         
-        // Writeback mode options
+        // Writeback mode options - aligned with Custom Prompt section
         const writebackModes = [
           { value: 'append', label: 'Append' },
-          { value: 'replace', label: 'Replace' },
-          { value: 'prepend', label: 'Prepend' }
-        ];
-        
-        // Overwrite behavior options
-        const overwriteBehaviors = [
-          { value: 'always', label: 'Always overwrite' },
-          { value: 'if_empty', label: 'Only if empty' },
-          { value: 'ask', label: 'Ask before overwriting' }
+          { value: 'overwrite', label: 'Overwrite' },
+          { value: 'blank_only', label: 'Only if Blank' }
         ];
 
         const outputHTML = `
@@ -1914,14 +2097,6 @@
               </div>
             </div>
             
-            <div class="structured-output-row">
-              <div class="structured-output-full-row">
-                <label class="form-label" style="margin-bottom: 0.25rem;">Overwrite Behavior *</label>
-                <select class="form-select-small output-overwrite-select">
-                  ${overwriteBehaviors.map(behavior => `<option value="${behavior.value}">${behavior.label}</option>`).join('')}
-                </select>
-              </div>
-            </div>
             
             <div class="structured-output-row">
               <div class="structured-output-full-row">
@@ -1960,18 +2135,11 @@
       const isFirstOutput = outputsContainer.children.length === 0 || 
                            outputsContainer.querySelector('.structured-empty-state');
       
-      // Writeback mode options
+      // Writeback mode options - aligned with Custom Prompt section
       const writebackModes = [
         { value: 'append', label: 'Append' },
-        { value: 'replace', label: 'Replace' },
-        { value: 'prepend', label: 'Prepend' }
-      ];
-      
-      // Overwrite behavior options
-      const overwriteBehaviors = [
-        { value: 'always', label: 'Always overwrite' },
-        { value: 'if_empty', label: 'Only if empty' },
-        { value: 'ask', label: 'Ask before overwriting' }
+        { value: 'overwrite', label: 'Overwrite' },
+        { value: 'blank_only', label: 'Only if Blank' }
       ];
       
       // Create output HTML with drag handle and improved structure
@@ -2027,14 +2195,6 @@
             </div>
           </div>
           
-          <div class="structured-output-row">
-            <div class="structured-output-full-row">
-              <label class="form-label" style="margin-bottom: 0.25rem;">Overwrite Behavior *</label>
-              <select class="form-select-small output-overwrite-select">
-                ${overwriteBehaviors.map(behavior => `<option value="${behavior.value}">${behavior.label}</option>`).join('')}
-              </select>
-            </div>
-          </div>
           
           <div class="structured-output-row">
             <div class="structured-output-full-row">
@@ -2391,7 +2551,73 @@
       }
     }
 
-    // Salesforce functionality
+    // Toggle CRM writeback functionality
+    function toggleCrmWriteback() {
+      const enableCrmWriteback = document.getElementById('enableCrmWriteback').checked;
+      const crmIntegrationSection = document.getElementById('crmIntegrationSection');
+      
+      if (enableCrmWriteback) {
+        crmIntegrationSection.style.display = 'block';
+      } else {
+        crmIntegrationSection.style.display = 'none';
+        // Reset CRM fields when disabled
+        document.getElementById('crmObject').value = '';
+        document.getElementById('crmField').value = '';
+        document.getElementById('crmFieldGroup').style.display = 'none';
+        document.getElementById('writebackBehaviorGroup').style.display = 'none';
+      }
+    }
+
+    // CRM functionality
+    function updateCrmFields() {
+      const objectSelect = document.getElementById('crmObject');
+      const fieldSelect = document.getElementById('crmField');
+      const fieldGroup = document.getElementById('crmFieldGroup');
+      
+      const selectedObject = objectSelect.value;
+      
+      if (selectedObject && crmFieldMappings[selectedObject]) {
+        // Show the field group
+        fieldGroup.style.display = 'block';
+        
+        // Clear existing options
+        fieldSelect.innerHTML = '<option value="">Select Field</option>';
+        
+        // Add fields for selected object
+        crmFieldMappings[selectedObject].forEach(field => {
+          const option = document.createElement('option');
+          option.value = field.value;
+          option.textContent = field.label;
+          fieldSelect.appendChild(option);
+        });
+      } else {
+        // Hide the field group
+        fieldGroup.style.display = 'none';
+        fieldSelect.innerHTML = '<option value="">Select Field</option>';
+        
+        // Hide writeback options when no object is selected
+        document.getElementById('writebackBehaviorGroup').style.display = 'none';
+      }
+    }
+
+    // Update writeback options visibility
+    function updateWritebackOptions() {
+      const crmField = document.getElementById('crmField').value;
+      const writebackGroup = document.getElementById('writebackBehaviorGroup');
+      
+      if (crmField) {
+        writebackGroup.style.display = 'block';
+      } else {
+        writebackGroup.style.display = 'none';
+      }
+    }
+
+    // Update writeback controls based on selected mode
+    function updateWritebackControls() {
+      // No longer needed since we removed append options, but keeping for compatibility
+    }
+
+    // Salesforce functionality (legacy compatibility)
     function updateSalesforceFields() {
       const objectSelect = document.getElementById('salesforceObject');
       const fieldSelect = document.getElementById('salesforceField');
@@ -2420,10 +2646,24 @@
       }
     }
 
-    // Test prompt functionality
+    // Update test button state based on prompt content
+    function updateTestButtonState() {
+      const prompt = document.getElementById('customPrompt').value.trim();
+      const testButton = document.getElementById('testPromptButton');
+      
+      if (prompt.length > 0) {
+        testButton.disabled = false;
+      } else {
+        testButton.disabled = true;
+      }
+    }
+
+    // Test prompt functionality with new UI
     function testPrompt() {
       const prompt = document.getElementById('customPrompt').value;
+      const testPlaceholder = document.getElementById('testPlaceholder');
       const testResults = document.getElementById('testResults');
+      const testLoading = document.getElementById('testLoading');
       const testOutput = document.getElementById('testOutput');
       
       if (!prompt.trim()) {
@@ -2431,15 +2671,14 @@
         return;
       }
       
-      // Show loading state
-      testOutput.innerHTML = 'Testing prompt with sample meeting data...';
-      testResults.classList.add('active');
+      // Hide placeholder and results, show loading
+      testPlaceholder.classList.add('hidden');
+      testResults.classList.add('hidden');
+      testLoading.classList.remove('hidden');
       
       // Simulate API call with sample data
       setTimeout(() => {
         const sampleResult = `
-<strong>Sample Output:</strong><br><br>
-
 <strong>1. Key Topics Discussed:</strong><br>
 • Product roadmap and upcoming features<br>
 • Integration requirements with existing systems<br>
@@ -2459,7 +2698,10 @@
 <em>Note: This is a sample output based on your prompt structure. Actual results will vary based on meeting content.</em>
         `;
         
+        // Hide loading, show results
+        testLoading.classList.add('hidden');
         testOutput.innerHTML = sampleResult;
+        testResults.classList.remove('hidden');
       }, 1500);
     }
 
