@@ -138,7 +138,7 @@
     
     // Fix logo image source
     if (logoImg) {
-      logoImg.src = pathPrefix + 'public/chorus-logo.svg';
+      logoImg.src = pathPrefix + 'chorus-logo.svg';
     }
     
     // Fix settings link
