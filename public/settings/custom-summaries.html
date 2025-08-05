@@ -583,7 +583,7 @@
     <div class="flex items-center justify-between px-4 py-2">
       <div class="flex items-center">
         <a href="/" class="flex items-center mr-8">
-          <img src="/public/chorus-logo.svg" class="chorus-waveform" width="24" height="24" alt="Chorus">
+          <img src="/public/chorus-logo.svg" class="chorus-waveform" width="40" height="40" alt="Chorus">
           <span class="ml-2 text-xl font-semibold chorus-logo">Chorus</span>
         </a>
         
@@ -971,6 +971,22 @@ Evaluate qualification status using Sandler standards, assess relationship stren
 Evaluate every interaction through the Sandler submarine framework, focus on qualification over presentation, assess emotional and logical pain development, and provide coaching recommendations for methodology improvement.`,
         salesforceObject: 'Opportunity',
         salesforceField: 'Meeting_Summary__c',
+        triggers: [
+          {
+            object: 'Opportunity',
+            field: 'StageName',
+            operator: 'equals',
+            value: 'Discovery',
+            logicOperator: null
+          },
+          {
+            object: 'Opportunity',
+            field: 'Amount',
+            operator: 'greater_than',
+            value: '50000',
+            logicOperator: 'AND'
+          }
+        ],
         structuredOutputs: [
           {
             name: 'Pain',

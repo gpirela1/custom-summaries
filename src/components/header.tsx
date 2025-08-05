@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Search, Settings, User, LogOut, ChevronDown } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
@@ -126,11 +127,12 @@ export function ChorusHeader() {
 
 function ChorusLogo() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" className="chorus-waveform">
-      <path d="M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z" fill="none" stroke="currentColor" strokeWidth="2" />
-      <path d="M7 14C7 14 8.5 16 12 16C15.5 16 17 14 17 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <path d="M7 10C7 10 8.5 8 12 8C15.5 8 17 10 17 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <path d="M12 7V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
+    <Image
+      src="/chorus-logo.svg"
+      alt="Chorus Logo"
+      width={40}
+      height={40}
+      className="chorus-waveform"
+    />
   );
 }

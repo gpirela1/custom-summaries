@@ -568,6 +568,100 @@
       margin-right: 0.5rem;
     }
 
+    /* CRM action styles */
+    .crm-action {
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+      cursor: move;
+      transition: all 0.2s ease;
+    }
+
+    .crm-action:hover {
+      border-color: #D1D5DB;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .crm-action.dragging {
+      opacity: 0.5;
+      transform: rotate(2deg);
+    }
+
+    .crm-action-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .crm-action-title {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      color: #374151;
+      font-size: 0.875rem;
+    }
+
+    .crm-action-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .crm-action-remove-btn {
+      background: #FEE2E2;
+      color: #DC2626;
+      border: 1px solid #FECACA;
+      border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .crm-action-remove-btn:hover {
+      background: #FECACA;
+    }
+
+    .crm-action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .crm-action-full-row {
+      grid-column: 1 / -1;
+    }
+
+    .add-action-inline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      background: #F8FAFC;
+      border: 1px dashed #CBD5E1;
+      border-radius: 0.375rem;
+      color: #64748B;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .add-action-inline:hover {
+      background: #F1F5F9;
+      border-color: #94A3B8;
+      color: #475569;
+    }
+
+    .add-action-inline svg {
+      margin-right: 0.5rem;
+    }
+
     /* Template button styles */
     .template-btn {
       display: inline-flex;
@@ -842,7 +936,7 @@
     <div class="flex items-center justify-between px-4 py-2">
       <div class="flex items-center">
         <a href="/" class="flex items-center mr-8">
-          <img src="/public/chorus-logo.svg" class="chorus-waveform" width="24" height="24" alt="Chorus">
+          <img src="/public/chorus-logo.svg" class="chorus-waveform" width="40" height="40" alt="Chorus">
           <span class="ml-2 text-xl font-semibold chorus-logo">Chorus</span>
         </a>
         
@@ -1037,35 +1131,38 @@
 
         </div>
 
-        <!-- Section 3: Custom Prompt -->
+        <!-- Section 3: Agents -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div class="section-header mb-6">
-            <h2 class="section-title">3. Custom Prompt</h2>
-            <p class="section-description">Define the AI prompt that will analyze your meetings and generate the summary.</p>
+            <h2 class="section-title">3. Agents</h2>
+            <p class="section-description">Select an AI agent and configure how it should analyze your meetings.</p>
+          </div>
+          
+          <!-- Agent Selection -->
+          <div class="form-group mb-6">
+            <label class="form-label" for="agentSelection">Select Agent *</label>
+            <select id="agentSelection" class="form-select" onchange="updateAgentPrompt()" required>
+              <option value="">Choose an agent...</option>
+              <option value="general">General Meeting Summary</option>
+              <option value="meddic">MEDDIC Extraction</option>
+              <option value="bant">BANT Qualification</option>
+              <option value="sandler">Sandler Methodology</option>
+              <option value="discovery">Sales Discovery</option>
+              <option value="technical">Technical Requirements</option>
+              <option value="custom">Custom Instructions</option>
+            </select>
           </div>
           
           <!-- Split Screen Layout -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             <!-- Left Side - Configuration -->
             <div class="flex flex-col">
-              <label class="form-label mb-4" for="customPrompt">Custom Prompt *</label>
+              <label class="form-label mb-4" for="customPrompt">Agent Instructions *</label>
               <textarea 
                 id="customPrompt" 
                 class="form-textarea mb-2" 
                 style="min-height: 340px;"
-                placeholder="Analyze this meeting and provide:
-
-1. **Key Topics Discussed:**
-   - List the main topics covered
-   - Include specific details mentioned
-
-2. **Action Items:**
-   - Who is responsible for what
-   - Timeline for completion
-
-3. **Next Steps:**
-   - Follow-up meetings scheduled
-   - Decisions that need to be made"
+                placeholder="Select an agent above to see example instructions, or write your own custom instructions for how the AI should analyze your meetings."
                 oninput="updateCharacterCount('customPrompt', 'promptCount'); updateTestButtonState()"
                 required
               ></textarea>
@@ -1132,113 +1229,61 @@
             </div>
           </div>
 
-          <!-- Section Separator -->
-          <div class="border-t border-gray-200 my-8"></div>
-
-          <!-- CRM Integration -->
-          <div class="form-group">
-            <label class="flex items-center">
-              <input type="checkbox" id="enableCrmWriteback" class="mr-3" onchange="toggleCrmWriteback()">
-              <div>
-                <div class="font-medium text-gray-900">Enable CRM Writeback</div>
-                <div class="text-sm text-gray-600">Automatically write summaries to CRM fields</div>
-              </div>
-            </label>
-          </div>
-
-          <div id="crmIntegrationSection" style="display: none;">
-            <div class="form-group">
-              <label class="form-label" for="crmObject">CRM Object</label>
-              <select id="crmObject" class="form-select" onchange="updateCrmFields()">
-                <option value="">Select CRM Object</option>
-                <option value="Account">Account</option>
-                <option value="Opportunity">Opportunity</option>
-                <option value="Event">Event</option>
-                <option value="Task">Task</option>
-              </select>
-            </div>
-
-            <div class="form-group" id="crmFieldGroup" style="display: none;">
-              <label class="form-label" for="crmField">CRM Field</label>
-              <select id="crmField" class="form-select" onchange="updateWritebackOptions()">
-                <option value="">Select Field</option>
-              </select>
-            </div>
-
-            <!-- Writeback Behavior Section -->
-            <div id="writebackBehaviorGroup" style="display: none;">
-              <div class="form-group">
-                <label class="form-label">Writeback Behavior</label>
-                <p class="text-sm text-gray-600 mb-3">Choose how the summary should be written to the CRM field.</p>
-                
-                <div class="space-y-3">
-                  <label class="flex items-start">
-                    <input type="radio" name="writebackMode" value="append" class="mt-1 mr-3" onchange="updateWritebackControls()">
-                    <div>
-                      <div class="font-medium text-gray-900">Append</div>
-                      <div class="text-sm text-gray-600">Add the summary to existing content with a separator</div>
-                    </div>
-                  </label>
-                  
-                  <label class="flex items-start">
-                    <input type="radio" name="writebackMode" value="overwrite" class="mt-1 mr-3" onchange="updateWritebackControls()" checked>
-                    <div>
-                      <div class="font-medium text-gray-900">Overwrite</div>
-                      <div class="text-sm text-gray-600">Replace all existing content with the new summary</div>
-                    </div>
-                  </label>
-                  
-                  <label class="flex items-start">
-                    <input type="radio" name="writebackMode" value="blank_only" class="mt-1 mr-3" onchange="updateWritebackControls()">
-                    <div>
-                      <div class="font-medium text-gray-900">Only if Blank</div>
-                      <div class="text-sm text-gray-600">Only write if the field is currently empty</div>
-                    </div>
-                  </label>
-                </div>
-              </div>
-
-            </div>
-          </div>
 
         </div>
 
-        <!-- Section 4: Structured Outputs -->
+        <!-- Section 4: CRM Actions -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div class="section-header mb-6">
-            <h2 class="section-title">4. Structured Outputs <span class="text-sm font-normal text-gray-500">(Optional)</span></h2>
-            <p class="section-description">Define specific data extraction points that write to CRM fields independently.</p>
+            <h2 class="section-title">4. CRM Actions</h2>
+            <p class="section-description">Configure automated CRM updates and data extraction based on meeting analysis.</p>
           </div>
 
           <!-- Quick Start Templates -->
           <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <h3 class="font-medium text-blue-900 mb-3">Quick Start Templates</h3>
-            <p class="text-sm text-blue-700 mb-4">Apply pre-configured structured outputs for popular deal qualification frameworks.</p>
+            <p class="text-sm text-blue-700 mb-4">Apply pre-configured CRM actions for popular deal qualification frameworks.</p>
             <div class="flex flex-wrap gap-3">
-              <button type="button" class="template-btn" onclick="applyTemplate('meddic')">
-                MEDDIC (6 outputs)
+              <button type="button" class="template-btn" onclick="applyCrmTemplate('meddic')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-2">
+                  <path d="M9 11H5a2 2 0 0 0-2 2v3c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2z"/>
+                  <path d="M19 11h-4a2 2 0 0 0-2 2v3c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2z"/>
+                  <path d="M6 7V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3"/>
+                </svg>
+                MEDDIC (6 actions)
               </button>
-              <button type="button" class="template-btn" onclick="applyTemplate('bant')">
-                BANT (4 outputs)
+              <button type="button" class="template-btn" onclick="applyCrmTemplate('bant')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-2">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                </svg>
+                BANT (4 actions)
               </button>
-              <button type="button" class="template-btn" onclick="applyTemplate('sandler')">
-                Sandler (4 outputs)
+              <button type="button" class="template-btn" onclick="applyCrmTemplate('sandler')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14,2 14,8 20,8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10,9 9,9 8,9"/>
+                </svg>
+                Sandler (4 actions)
               </button>
             </div>
           </div>
 
           <div class="mb-4">
-            <div id="structuredOutputs">
-              <!-- Structured outputs will be dynamically added here -->
+            <div id="crmActions">
+              <!-- CRM actions will be dynamically added here -->
             </div>
           </div>
         </div>
 
-        <!-- Section 5: Actions & Delivery -->
+        <!-- Section 5: Delivery & Notifications -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div class="section-header mb-6">
-            <h2 class="section-title">5. Actions & Delivery</h2>
-            <p class="section-description">Configure how insights are delivered to your team.</p>
+            <h2 class="section-title">5. Delivery & Notifications</h2>
+            <p class="section-description">Configure how insights and summaries are delivered to your team.</p>
           </div>
 
           <div class="space-y-4">
@@ -1250,8 +1295,8 @@
                   <polyline points="22,6 12,13 2,6"/>
                 </svg>
                 <div>
-                  <h3 class="font-medium text-gray-900">Email</h3>
-                  <p class="text-sm text-gray-500">Send insights via email</p>
+                  <h3 class="font-medium text-gray-900">Email Notifications</h3>
+                  <p class="text-sm text-gray-500">Send summary and insights via email</p>
                 </div>
               </div>
               <label class="relative inline-flex items-center cursor-pointer">
@@ -1274,8 +1319,8 @@
                   <path d="M10 20v-4.5"/>
                 </svg>
                 <div>
-                  <h3 class="font-medium text-gray-900">Slack</h3>
-                  <p class="text-sm text-gray-500">Send insights to Slack channels</p>
+                  <h3 class="font-medium text-gray-900">Slack Integration</h3>
+                  <p class="text-sm text-gray-500">Send insights to Slack channels and DMs</p>
                 </div>
               </div>
               <label class="relative inline-flex items-center cursor-pointer">
@@ -1295,7 +1340,7 @@
                 </svg>
                 <div>
                   <h3 class="font-medium text-gray-900">Microsoft Teams</h3>
-                  <p class="text-sm text-gray-500">Send insights to Teams channels</p>
+                  <p class="text-sm text-gray-500">Send insights to Teams channels and chats</p>
                 </div>
               </div>
               <label class="relative inline-flex items-center cursor-pointer">
@@ -1303,6 +1348,7 @@
                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
               </label>
             </div>
+
           </div>
         </div>
 
@@ -1338,42 +1384,123 @@
       salesforceField: ''
     };
 
-    // CRM field mappings for writeback - MEDDIC-focused custom fields
+    // CRM field mappings for writeback - Mix of standard and custom fields
     const crmFieldMappings = {
       'Account': [
-        { value: 'Account_Pain_Points__c', label: 'Account Pain Points' },
+        { value: 'Name', label: 'Account Name' },
+        { value: 'Industry', label: 'Industry' },
+        { value: 'Type', label: 'Account Type' },
+        { value: 'AnnualRevenue', label: 'Annual Revenue' },
+        { value: 'NumberOfEmployees', label: 'Number of Employees' },
+        { value: 'Description', label: 'Account Description' },
+        { value: 'Pain_Points__c', label: 'Pain Points' },
         { value: 'Key_Stakeholders__c', label: 'Key Stakeholders' },
         { value: 'Decision_Making_Process__c', label: 'Decision Making Process' },
         { value: 'Budget_Authority__c', label: 'Budget Authority' },
-        { value: 'Account_Summary__c', label: 'Account Summary' },
-        { value: 'Strategic_Initiatives__c', label: 'Strategic Initiatives' }
+        { value: 'Strategic_Initiatives__c', label: 'Strategic Initiatives' },
+        { value: 'Competitive_Threats__c', label: 'Competitive Threats' },
+        { value: 'Technology_Stack__c', label: 'Technology Stack' },
+        { value: 'Account_Health_Score__c', label: 'Account Health Score' },
+        { value: 'Renewal_Risk__c', label: 'Renewal Risk' },
+        { value: 'Executive_Sponsor__c', label: 'Executive Sponsor' },
+        { value: 'Implementation_Status__c', label: 'Implementation Status' }
       ],
       'Opportunity': [
-        { value: 'MEDDIC_Metrics__c', label: 'Metrics & Economic Impact' },
-        { value: 'MEDDIC_Economic_Buyer__c', label: 'Economic Buyer' },
-        { value: 'MEDDIC_Decision_Criteria__c', label: 'Decision Criteria' },
-        { value: 'MEDDIC_Decision_Process__c', label: 'Decision Process' },
-        { value: 'MEDDIC_Pain_Points__c', label: 'Identified Pain Points' },
-        { value: 'MEDDIC_Champion__c', label: 'Champion Details' },
-        { value: 'MEDDIC_Score__c', label: 'MEDDIC Qualification Score' },
-        { value: 'Next_Steps__c', label: 'Next Steps' },
+        { value: 'Name', label: 'Opportunity Name' },
+        { value: 'StageName', label: 'Stage' },
+        { value: 'Amount', label: 'Amount' },
+        { value: 'CloseDate', label: 'Close Date' },
+        { value: 'Probability', label: 'Probability (%)' },
+        { value: 'Description', label: 'Description' },
+        { value: 'NextStep', label: 'Next Steps' },
+        { value: 'MEDDIC_Score__c', label: 'MEDDIC Score' },
+        { value: 'Champion__c', label: 'Champion' },
+        { value: 'Economic_Buyer__c', label: 'Economic Buyer' },
+        { value: 'Decision_Criteria__c', label: 'Decision Criteria' },
+        { value: 'Decision_Process__c', label: 'Decision Process' },
+        { value: 'Pain_Points__c', label: 'Pain Points' },
+        { value: 'Metrics__c', label: 'Success Metrics' },
         { value: 'Competitive_Landscape__c', label: 'Competitive Landscape' },
-        { value: 'Value_Proposition__c', label: 'Value Proposition' }
+        { value: 'Value_Proposition__c', label: 'Value Proposition' },
+        { value: 'Budget_Range__c', label: 'Budget Range' },
+        { value: 'Implementation_Timeline__c', label: 'Implementation Timeline' },
+        { value: 'BANT_Score__c', label: 'BANT Score' },
+        { value: 'Discovery_Complete__c', label: 'Discovery Complete' },
+        { value: 'Technical_Fit__c', label: 'Technical Fit' },
+        { value: 'Proposal_Sent_Date__c', label: 'Proposal Sent Date' },
+        { value: 'Contract_Terms__c', label: 'Contract Terms' },
+        { value: 'Risk_Assessment__c', label: 'Risk Assessment' }
+      ],
+      'Contact': [
+        { value: 'FirstName', label: 'First Name' },
+        { value: 'LastName', label: 'Last Name' },
+        { value: 'Title', label: 'Title' },
+        { value: 'Department', label: 'Department' },
+        { value: 'Email', label: 'Email' },
+        { value: 'Phone', label: 'Phone' },
+        { value: 'Description', label: 'Description' },
+        { value: 'Decision_Maker__c', label: 'Decision Maker' },
+        { value: 'Influence_Level__c', label: 'Influence Level' },
+        { value: 'Champion_Status__c', label: 'Champion Status' },
+        { value: 'Pain_Points__c', label: 'Personal Pain Points' },
+        { value: 'Preferred_Communication__c', label: 'Preferred Communication' },
+        { value: 'Meeting_Notes__c', label: 'Meeting Notes' },
+        { value: 'Engagement_Score__c', label: 'Engagement Score' },
+        { value: 'Last_Interaction__c', label: 'Last Interaction' },
+        { value: 'Budget_Influence__c', label: 'Budget Influence' },
+        { value: 'Technical_Evaluator__c', label: 'Technical Evaluator' }
       ],
       'Event': [
-        { value: 'Meeting_MEDDIC_Notes__c', label: 'MEDDIC Meeting Notes' },
-        { value: 'Qualification_Status__c', label: 'Qualification Status' },
-        { value: 'Action_Items__c', label: 'Action Items' },
+        { value: 'Subject', label: 'Subject' },
+        { value: 'Description', label: 'Description' },
+        { value: 'Location', label: 'Location' },
+        { value: 'Meeting_Type__c', label: 'Meeting Type' },
+        { value: 'Meeting_Outcome__c', label: 'Meeting Outcome' },
         { value: 'Key_Insights__c', label: 'Key Insights' },
+        { value: 'Action_Items__c', label: 'Action Items' },
         { value: 'Follow_Up_Required__c', label: 'Follow-up Required' },
-        { value: 'Meeting_Outcome__c', label: 'Meeting Outcome' }
+        { value: 'Qualification_Status__c', label: 'Qualification Status' },
+        { value: 'Next_Meeting_Purpose__c', label: 'Next Meeting Purpose' },
+        { value: 'Attendee_Feedback__c', label: 'Attendee Feedback' },
+        { value: 'Demo_Given__c', label: 'Demo Given' },
+        { value: 'Objections_Raised__c', label: 'Objections Raised' },
+        { value: 'Competitive_Mentions__c', label: 'Competitive Mentions' },
+        { value: 'Meeting_Quality_Score__c', label: 'Meeting Quality Score' }
       ],
       'Task': [
-        { value: 'Task_MEDDIC_Notes__c', label: 'MEDDIC Task Notes' },
-        { value: 'Qualification_Updates__c', label: 'Qualification Updates' },
-        { value: 'Stakeholder_Feedback__c', label: 'Stakeholder Feedback' },
+        { value: 'Subject', label: 'Subject' },
+        { value: 'Description', label: 'Description' },
+        { value: 'Status', label: 'Status' },
+        { value: 'Priority', label: 'Priority' },
+        { value: 'Type', label: 'Task Type' },
         { value: 'Research_Findings__c', label: 'Research Findings' },
-        { value: 'Preparation_Notes__c', label: 'Preparation Notes' }
+        { value: 'Preparation_Notes__c', label: 'Preparation Notes' },
+        { value: 'Stakeholder_Feedback__c', label: 'Stakeholder Feedback' },
+        { value: 'Qualification_Updates__c', label: 'Qualification Updates' },
+        { value: 'Competitive_Intel__c', label: 'Competitive Intelligence' },
+        { value: 'Follow_Up_Actions__c', label: 'Follow-up Actions' },
+        { value: 'Call_Outcome__c', label: 'Call Outcome' },
+        { value: 'Next_Steps__c', label: 'Next Steps' },
+        { value: 'Customer_Sentiment__c', label: 'Customer Sentiment' }
+      ],
+      'Lead': [
+        { value: 'FirstName', label: 'First Name' },
+        { value: 'LastName', label: 'Last Name' },
+        { value: 'Company', label: 'Company' },
+        { value: 'Title', label: 'Title' },
+        { value: 'Industry', label: 'Industry' },
+        { value: 'Status', label: 'Lead Status' },
+        { value: 'Rating', label: 'Rating' },
+        { value: 'Description', label: 'Description' },
+        { value: 'Pain_Points__c', label: 'Pain Points' },
+        { value: 'Budget_Range__c', label: 'Budget Range' },
+        { value: 'Timeline__c', label: 'Timeline' },
+        { value: 'Decision_Maker__c', label: 'Decision Maker' },
+        { value: 'Qualification_Notes__c', label: 'Qualification Notes' },
+        { value: 'Lead_Source_Detail__c', label: 'Lead Source Detail' },
+        { value: 'Interest_Level__c', label: 'Interest Level' },
+        { value: 'Competitor_Mentioned__c', label: 'Competitor Mentioned' },
+        { value: 'Demo_Requested__c', label: 'Demo Requested' }
       ]
     };
 
@@ -1445,6 +1572,78 @@
 
     // Keep legacy mapping for backward compatibility
     const salesforceFieldMappings = crmFieldMappings;
+
+    // Source field mappings for different agents - maps to structured JSON output
+    const agentSourceFieldMappings = {
+      'meddic': [
+        { value: 'structured.metrics', label: 'Metrics & Economic Impact', description: 'Quantifiable measures of success the customer cares about' },
+        { value: 'structured.economic_buyer', label: 'Economic Buyer', description: 'Person who has budget authority and can sign the deal' },
+        { value: 'structured.decision_criteria', label: 'Decision Criteria', description: 'Requirements and criteria for vendor selection' },
+        { value: 'structured.decision_process', label: 'Decision Process', description: 'Timeline, steps, and people involved in making the decision' },
+        { value: 'structured.identified_pain', label: 'Identified Pain', description: 'Business problems they\'re trying to solve' },
+        { value: 'structured.champion', label: 'Champion', description: 'Internal advocate who will help drive the deal forward' },
+        { value: 'conversational.summary', label: 'Meeting Summary', description: 'High-level meeting overview with key participants and outcomes' },
+        { value: 'conversational.key_insights', label: 'Key Insights', description: 'Important observations and context for the sales team' },
+        { value: 'conversational.meddic_gaps', label: 'MEDDIC Gaps', description: 'Specific gaps in MEDDIC that need follow-up' },
+        { value: 'conversational.risk_flags', label: 'Risk Flags', description: 'Potential deal risks or concerns identified' }
+      ],
+      'bant': [
+        { value: 'structured.budget', label: 'Budget', description: 'Budget information, ranges, or financial constraints discussed' },
+        { value: 'structured.authority', label: 'Authority', description: 'Decision makers, influencers, and approval process identified' },
+        { value: 'structured.need', label: 'Need', description: 'Specific needs, requirements, and use cases mentioned' },
+        { value: 'structured.timeline', label: 'Timeline', description: 'Timeline information, deadlines, and implementation dates' },
+        { value: 'conversational.summary', label: 'Meeting Summary', description: 'Brief overview of the call and key discussion points' },
+        { value: 'conversational.key_insights', label: 'Key Insights', description: 'Important observations about the opportunity and stakeholders' },
+        { value: 'conversational.bant_gaps', label: 'BANT Gaps', description: 'Specific gaps in BANT qualification that need follow-up' },
+        { value: 'conversational.qualification_score', label: 'Qualification Score', description: 'Assessment of how well this opportunity qualifies based on BANT criteria' }
+      ],
+      'sandler': [
+        { value: 'structured.pain', label: 'Pain', description: 'Pain points, challenges, and problems that need solving' },
+        { value: 'structured.budget', label: 'Budget', description: 'Budget discussions, financial capacity, and investment appetite' },
+        { value: 'structured.decision', label: 'Decision', description: 'Decision-making process, criteria, and stakeholders involved' },
+        { value: 'structured.timeline', label: 'Timeline', description: 'Timeline expectations, deadlines, and urgency indicators' },
+        { value: 'conversational.summary', label: 'Meeting Summary', description: 'Brief overview of the call and main discussion points' },
+        { value: 'conversational.key_insights', label: 'Key Insights', description: 'Important observations about the prospect and opportunity' },
+        { value: 'conversational.sandler_gaps', label: 'Sandler Gaps', description: 'Specific gaps in Sandler qualification that need follow-up' },
+        { value: 'conversational.qualification_assessment', label: 'Qualification Assessment', description: 'Evaluation of the opportunity based on Sandler principles' }
+      ],
+      'general': [
+        { value: 'structured.meeting_purpose', label: 'Meeting Purpose', description: 'Purpose and objectives of the meeting' },
+        { value: 'structured.key_participants', label: 'Key Participants', description: 'Important attendees and their roles' },
+        { value: 'structured.main_topics', label: 'Main Topics', description: 'Primary topics and themes discussed' },
+        { value: 'structured.decisions_made', label: 'Decisions Made', description: 'Important decisions reached during the meeting' },
+        { value: 'conversational.summary', label: 'Meeting Summary', description: 'High-level meeting overview' },
+        { value: 'conversational.key_insights', label: 'Key Insights', description: 'Important observations and context' },
+        { value: 'conversational.meeting_outcome', label: 'Meeting Outcome', description: 'Overall result and next steps' }
+      ],
+      'discovery': [
+        { value: 'structured.current_state', label: 'Current State', description: 'Current processes and systems in use' },
+        { value: 'structured.future_state', label: 'Future State', description: 'Desired outcomes and goals' },
+        { value: 'structured.stakeholders', label: 'Stakeholders', description: 'Key decision makers and influencers' },
+        { value: 'structured.requirements', label: 'Requirements', description: 'Technical and business requirements' },
+        { value: 'structured.competition', label: 'Competition', description: 'Competitive landscape and alternatives' },
+        { value: 'conversational.summary', label: 'Call Summary', description: 'Overview of the discovery call' },
+        { value: 'conversational.key_insights', label: 'Key Insights', description: 'Important observations about the opportunity' },
+        { value: 'conversational.competitive_position', label: 'Competitive Position', description: 'Our position vs competitors' }
+      ],
+      'technical': [
+        { value: 'structured.system_requirements', label: 'System Requirements', description: 'Technical specifications and constraints' },
+        { value: 'structured.integration_needs', label: 'Integration Needs', description: 'Integration requirements and data flows' },
+        { value: 'structured.implementation_timeline', label: 'Implementation Timeline', description: 'Timeline and resource requirements' },
+        { value: 'structured.technical_concerns', label: 'Technical Concerns', description: 'Risks and challenges identified' },
+        { value: 'conversational.summary', label: 'Meeting Summary', description: 'Overview of technical discussion' },
+        { value: 'conversational.key_insights', label: 'Key Insights', description: 'Important technical observations' },
+        { value: 'conversational.implementation_feasibility', label: 'Implementation Feasibility', description: 'Assessment of implementation approach' }
+      ],
+      'custom': [
+        { value: 'structured.key_topics', label: 'Key Topics', description: 'Main topics extracted from the meeting' },
+        { value: 'structured.decisions', label: 'Decisions', description: 'Important decisions made' },
+        { value: 'structured.action_items', label: 'Action Items', description: 'Tasks and follow-up items' },
+        { value: 'structured.insights', label: 'Insights', description: 'Key insights and observations' },
+        { value: 'conversational.summary', label: 'Summary', description: 'Meeting summary and overview' },
+        { value: 'conversational.next_steps', label: 'Next Steps', description: 'Follow-up actions and next steps' }
+      ]
+    };
 
     // Operator options for different field types
     const operatorOptions = {
@@ -1520,6 +1719,13 @@
         // Create mode - initialize empty states
         updateTriggerEmptyState();
         updateStructuredOutputsEmptyState();
+        
+        // Force CRM actions empty state by clearing container first
+        const crmActionsContainer = document.getElementById('crmActions');
+        if (crmActionsContainer) {
+          crmActionsContainer.innerHTML = '';
+          updateCrmActionsEmptyState();
+        }
       }
     });
 
@@ -1918,6 +2124,68 @@
       nextStep();
     }
 
+    // Set trigger conditions data (for editing)
+    function setTriggerConditions(triggers) {
+      const conditionsContainer = document.getElementById('triggerConditions');
+      conditionsContainer.innerHTML = '';
+      triggerConditionCounter = 0;
+      
+      if (!triggers || triggers.length === 0) {
+        updateTriggerEmptyState();
+        return;
+      }
+      
+      triggers.forEach((trigger, index) => {
+        addTriggerCondition();
+        
+        // Get the last added condition
+        const conditions = conditionsContainer.querySelectorAll('.trigger-condition');
+        const condition = conditions[conditions.length - 1];
+        
+        // Set values with null checks
+        const objectSelect = condition.querySelector('select');
+        const fieldSelect = condition.querySelector('.trigger-field-select');
+        const operatorSelect = condition.querySelector('.trigger-operator-select');
+        const valueInput = condition.querySelector('.trigger-value-input');
+        
+        if (objectSelect) {
+          objectSelect.value = trigger.object;
+          updateTriggerFields(triggerConditionCounter);
+        }
+        
+        setTimeout(() => {
+          if (fieldSelect) {
+            fieldSelect.value = trigger.field;
+            updateTriggerOperators(triggerConditionCounter);
+          }
+          
+          setTimeout(() => {
+            if (operatorSelect) {
+              operatorSelect.value = trigger.operator;
+            }
+            if (valueInput) {
+              valueInput.value = trigger.value;
+            }
+          }, 50);
+        }, 50);
+        
+        // Set logic operator if not first condition
+        if (index > 0 && trigger.logicOperator) {
+          const logicOperators = conditionsContainer.querySelectorAll('.trigger-logic-operator');
+          const lastOperator = logicOperators[logicOperators.length - 1];
+          if (lastOperator) {
+            const buttons = lastOperator.querySelectorAll('.logic-operator-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            const targetBtn = Array.from(buttons).find(btn => btn.textContent === trigger.logicOperator);
+            if (targetBtn) {
+              targetBtn.classList.add('active');
+            }
+          }
+        }
+      });
+    }
+
     // Deal qualification framework templates
     const qualificationTemplates = {
       meddic: {
@@ -2021,34 +2289,38 @@
       }
     };
 
-    // Apply qualification framework template
-    function applyTemplate(templateName) {
+    // CRM Actions functionality
+    let crmActionCounter = 0;
+
+    // Apply CRM template
+    function applyCrmTemplate(templateName) {
       const template = qualificationTemplates[templateName];
       if (!template) {
         alert('Template not found.');
         return;
       }
 
-      // Clear existing structured outputs
-      const outputsContainer = document.getElementById('structuredOutputs');
-      outputsContainer.innerHTML = '';
-      structuredOutputCounter = 0;
+      // Clear existing CRM actions
+      const actionsContainer = document.getElementById('crmActions');
+      actionsContainer.innerHTML = '';
+      crmActionCounter = 0;
 
-      // Add each template output
+      // Add each template output as a CRM action
       template.outputs.forEach((templateOutput, index) => {
-        const outputId = ++structuredOutputCounter;
+        const actionId = ++crmActionCounter;
         
-        // Writeback mode options - aligned with Custom Prompt section
-        const writebackModes = [
-          { value: 'append', label: 'Append' },
-          { value: 'overwrite', label: 'Overwrite' },
-          { value: 'blank_only', label: 'Only if Blank' }
+        // Action types
+        const actionTypes = [
+          { value: 'field_update', label: 'Update CRM Field' },
+          { value: 'create_task', label: 'Create Task' },
+          { value: 'send_email', label: 'Send Email' },
+          { value: 'create_event', label: 'Create Calendar Event' }
         ];
 
-        const outputHTML = `
-          <div class="structured-output" data-output-id="${outputId}" draggable="true">
-            <div class="structured-output-header">
-              <span class="structured-output-title">
+        const actionHTML = `
+          <div class="crm-action" data-action-id="${actionId}" draggable="true">
+            <div class="crm-action-header">
+              <span class="crm-action-title">
                 <svg class="drag-handle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M9 9h6v6H9z"/>
                   <path d="M9 3h6v6H9z"/>
@@ -2056,21 +2328,21 @@
                 </svg>
                 ${templateOutput.name}
               </span>
-              <div class="structured-output-actions">
-                <button type="button" class="structured-output-remove-btn" onclick="removeStructuredOutput(${outputId})">
+              <div class="crm-action-actions">
+                <button type="button" class="crm-action-remove-btn" onclick="removeCrmAction(${actionId})">
                   Remove
                 </button>
               </div>
             </div>
             
-            <div class="structured-output-row">
+            <div class="crm-action-row">
               <div>
-                <label class="form-label" style="margin-bottom: 0.25rem;">Name *</label>
-                <input type="text" class="form-input-small output-name-input" value="${templateOutput.name}">
+                <label class="form-label" style="margin-bottom: 0.25rem;">Action Name *</label>
+                <input type="text" class="form-input-small action-name-input" value="${templateOutput.name}">
               </div>
               <div>
                 <label class="form-label" style="margin-bottom: 0.25rem;">CRM Object *</label>
-                <select class="form-select-small output-object-select" onchange="updateOutputFields(${outputId})">
+                <select class="form-select-small action-object-select" onchange="updateActionObjectFields(${actionId})">
                   <option value="">Select Object</option>
                   <option value="Account" ${templateOutput.object === 'Account' ? 'selected' : ''}>Account</option>
                   <option value="Opportunity" ${templateOutput.object === 'Opportunity' ? 'selected' : ''}>Opportunity</option>
@@ -2082,48 +2354,582 @@
               </div>
             </div>
             
-            <div class="structured-output-row">
+            <div class="crm-action-row">
               <div>
                 <label class="form-label" style="margin-bottom: 0.25rem;">CRM Field *</label>
-                <select class="form-select-small output-field-select">
+                <select class="form-select-small action-field-select">
                   <option value="">Select Field</option>
                 </select>
               </div>
               <div>
-                <label class="form-label" style="margin-bottom: 0.25rem;">Writeback Mode *</label>
-                <select class="form-select-small output-writeback-select">
-                  ${writebackModes.map(mode => `<option value="${mode.value}">${mode.label}</option>`).join('')}
+                <label class="form-label" style="margin-bottom: 0.25rem;">Source Field *</label>
+                <select class="form-select-small action-source-field-select" onchange="updateSourceFieldDescription(${actionId})">
+                  <option value="">Select Source Field</option>
+                </select>
+                <div class="text-xs text-gray-500 mt-1 source-field-description" style="display: none;"></div>
+              </div>
+            </div>
+            
+            <div class="crm-action-row">
+              <div class="crm-action-full-row">
+                <label class="form-label" style="margin-bottom: 0.25rem;">Update Type *</label>
+                <select class="form-select-small action-update-type-select">
+                  <option value="overwrite" selected>Overwrite</option>
+                  <option value="append">Append</option>
+                  <option value="only_if_empty">Only if Empty</option>
                 </select>
               </div>
             </div>
             
-            
-            <div class="structured-output-row">
-              <div class="structured-output-full-row">
-                <label class="form-label" style="margin-bottom: 0.25rem;">Extraction Prompt *</label>
-                <textarea class="form-textarea output-prompt-textarea" style="min-height: 80px;">${templateOutput.extractionPrompt}</textarea>
-              </div>
-            </div>
-            
-            <!-- Inline Add Output Button -->
-            <div class="add-output-inline" onclick="addStructuredOutput(${outputId})">
+            <!-- Inline Add Action Button -->
+            <div class="add-action-inline" onclick="addCrmAction(${actionId})">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <line x1="5" y1="12" x2="19" y2="12"></line>
               </svg>
-              Add another output
+              Add another action
             </div>
           </div>
         `;
 
-        outputsContainer.insertAdjacentHTML('beforeend', outputHTML);
+        actionsContainer.insertAdjacentHTML('beforeend', actionHTML);
 
-        // Populate the CRM field dropdown for this output
-        setTimeout(() => updateOutputFields(outputId), 100);
+        // Populate the CRM field dropdown for this action
+        setTimeout(() => updateActionObjectFields(actionId), 100);
       });
 
-      // Initialize drag and drop for all outputs
-      setTimeout(() => initializeOutputDragAndDrop(), 200);
+      // Initialize drag and drop for all actions
+      setTimeout(() => initializeCrmActionDragAndDrop(), 200);
+    }
+
+    // Add CRM action
+    function addCrmAction(insertAfterActionId = null) {
+      const actionsContainer = document.getElementById('crmActions');
+      const actionId = ++crmActionCounter;
+      
+      // Check if this is the first action
+      const isFirstAction = actionsContainer.children.length === 0 || 
+                           actionsContainer.querySelector('.crm-actions-empty-state');
+      
+      const actionHTML = `
+        <div class="crm-action" data-action-id="${actionId}" draggable="true">
+          <div class="crm-action-header">
+            <span class="crm-action-title">
+              <svg class="drag-handle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 9h6v6H9z"/>
+                <path d="M9 3h6v6H9z"/>
+                <path d="M9 15h6v6H9z"/>
+              </svg>
+              Action ${actionId}
+            </span>
+            <div class="crm-action-actions">
+              <button type="button" class="crm-action-remove-btn" onclick="removeCrmAction(${actionId})">
+                Remove
+              </button>
+            </div>
+          </div>
+          
+          <div class="crm-action-row">
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">Action Name *</label>
+              <input type="text" class="form-input-small action-name-input" placeholder="e.g., Update Budget Information">
+            </div>
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">CRM Object *</label>
+              <select class="form-select-small action-object-select" onchange="updateActionObjectFields(${actionId})">
+                <option value="">Select Object</option>
+                <option value="Account">Account</option>
+                <option value="Opportunity">Opportunity</option>
+                <option value="Event">Event</option>
+                <option value="Task">Task</option>
+                <option value="Contact">Contact</option>
+                <option value="Lead">Lead</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="crm-action-row">
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">CRM Field *</label>
+              <select class="form-select-small action-field-select">
+                <option value="">Select Field</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" style="margin-bottom: 0.25rem;">Source Field *</label>
+              <select class="form-select-small action-source-field-select" onchange="updateSourceFieldDescription(${actionId})">
+                <option value="">Select Source Field</option>
+              </select>
+              <div class="text-xs text-gray-500 mt-1 source-field-description" style="display: none;"></div>
+            </div>
+          </div>
+          
+          <div class="crm-action-row">
+            <div class="crm-action-full-row">
+              <label class="form-label" style="margin-bottom: 0.25rem;">Update Type *</label>
+              <select class="form-select-small action-update-type-select">
+                <option value="overwrite" selected>Overwrite</option>
+                <option value="append">Append</option>
+                <option value="only_if_empty">Only if Empty</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Inline Add Action Button -->
+          <div class="add-action-inline" onclick="addCrmAction(${actionId})">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add another action
+          </div>
+        </div>
+      `;
+      
+      // Remove empty state since we now have actions
+      const emptyState = actionsContainer.querySelector('.crm-actions-empty-state');
+      if (emptyState) {
+        emptyState.remove();
+      }
+      
+      if (insertAfterActionId) {
+        // Insert after specific action
+        const targetAction = document.querySelector(`[data-action-id="${insertAfterActionId}"]`);
+        if (targetAction) {
+          targetAction.insertAdjacentHTML('afterend', actionHTML);
+        }
+      } else {
+        // Add the action
+        actionsContainer.insertAdjacentHTML('beforeend', actionHTML);
+      }
+      
+      // Initialize drag and drop for CRM actions
+      initializeCrmActionDragAndDrop();
+    }
+
+    // Remove CRM action
+    function removeCrmAction(actionId) {
+      const actionsContainer = document.getElementById('crmActions');
+      const action = document.querySelector(`[data-action-id="${actionId}"]`);
+      
+      if (action) {
+        action.remove();
+        updateCrmActionsEmptyState();
+      }
+    }
+
+    // Update action fields based on action type
+    function updateActionFields(actionId) {
+      // This function can be expanded to show/hide different fields based on action type
+      console.log(`Action type changed for action ${actionId}`);
+    }
+
+    // Update action object fields
+    function updateActionObjectFields(actionId) {
+      const action = document.querySelector(`[data-action-id="${actionId}"]`);
+      const objectSelect = action.querySelector('.action-object-select');
+      const fieldSelect = action.querySelector('.action-field-select');
+      const sourceFieldSelect = action.querySelector('.action-source-field-select');
+      
+      const selectedObject = objectSelect.value;
+      
+      // Clear field selection
+      fieldSelect.innerHTML = '<option value="">Select Field</option>';
+      
+      if (selectedObject && crmFieldMappings[selectedObject]) {
+        // Add fields for selected object
+        crmFieldMappings[selectedObject].forEach(field => {
+          const option = document.createElement('option');
+          option.value = field.value;
+          option.textContent = field.label;
+          fieldSelect.appendChild(option);
+        });
+      }
+      
+      // Update source field dropdown based on selected agent
+      updateSourceFieldOptions(actionId);
+    }
+
+    // Update source field options based on selected agent
+    function updateSourceFieldOptions(actionId) {
+      const action = document.querySelector(`[data-action-id="${actionId}"]`);
+      const sourceFieldSelect = action.querySelector('.action-source-field-select');
+      const agentSelect = document.getElementById('agentSelection');
+      const selectedAgent = agentSelect ? agentSelect.value : '';
+      
+      // Clear source field selection
+      sourceFieldSelect.innerHTML = '<option value="">Select Source Field</option>';
+      
+      if (selectedAgent && agentSourceFieldMappings[selectedAgent]) {
+        // Add source fields for selected agent
+        agentSourceFieldMappings[selectedAgent].forEach(field => {
+          const option = document.createElement('option');
+          option.value = field.value;
+          option.textContent = field.label;
+          option.setAttribute('data-description', field.description);
+          sourceFieldSelect.appendChild(option);
+        });
+      }
+    }
+
+    // Update source field description
+    function updateSourceFieldDescription(actionId) {
+      const action = document.querySelector(`[data-action-id="${actionId}"]`);
+      const sourceFieldSelect = action.querySelector('.action-source-field-select');
+      const descriptionDiv = action.querySelector('.source-field-description');
+      
+      const selectedValue = sourceFieldSelect.value;
+      
+      if (selectedValue) {
+        const selectedOption = sourceFieldSelect.querySelector(`option[value="${selectedValue}"]`);
+        const description = selectedOption ? selectedOption.getAttribute('data-description') : '';
+        
+        if (description) {
+          descriptionDiv.textContent = description;
+          descriptionDiv.style.display = 'block';
+        } else {
+          descriptionDiv.style.display = 'none';
+        }
+      } else {
+        descriptionDiv.style.display = 'none';
+      }
+    }
+
+    // Update CRM actions empty state
+    function updateCrmActionsEmptyState() {
+      const actionsContainer = document.getElementById('crmActions');
+      if (!actionsContainer) {
+        console.error('CRM Actions container not found');
+        return;
+      }
+      
+      const actions = actionsContainer.querySelectorAll('.crm-action');
+      
+      if (actions.length === 0) {
+        actionsContainer.innerHTML = `
+          <div class="trigger-empty-state">
+            <svg class="trigger-empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <p class="font-medium mb-3">No CRM actions configured</p>
+            <button type="button" class="btn btn-primary mb-3" onclick="addCrmAction()" style="display: inline-flex; align-items: center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add CRM Action
+            </button>
+            <p class="text-sm text-gray-500">Add CRM actions to automatically update records based on meeting analysis.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Initialize CRM action drag and drop
+    function initializeCrmActionDragAndDrop() {
+      const actions = document.querySelectorAll('.crm-action');
+      
+      actions.forEach(action => {
+        action.addEventListener('dragstart', handleCrmActionDragStart);
+        action.addEventListener('dragover', handleCrmActionDragOver);
+        action.addEventListener('drop', handleCrmActionDrop);
+        action.addEventListener('dragend', handleCrmActionDragEnd);
+        action.addEventListener('dragenter', handleCrmActionDragEnter);
+        action.addEventListener('dragleave', handleCrmActionDragLeave);
+      });
+    }
+
+    function handleCrmActionDragStart(e) {
+      draggedElement = this;
+      draggedElementId = this.getAttribute('data-action-id');
+      this.classList.add('dragging');
+      
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', this.outerHTML);
+    }
+
+    function handleCrmActionDragOver(e) {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+      
+      e.dataTransfer.dropEffect = 'move';
+      return false;
+    }
+
+    function handleCrmActionDragEnter(e) {
+      if (this !== draggedElement) {
+        this.classList.add('drag-over');
+      }
+    }
+
+    function handleCrmActionDragLeave(e) {
+      this.classList.remove('drag-over');
+    }
+
+    function handleCrmActionDrop(e) {
+      if (e.stopPropagation) {
+        e.stopPropagation();
+      }
+      
+      if (draggedElement !== this) {
+        const container = document.getElementById('crmActions');
+        const allActions = Array.from(container.querySelectorAll('.crm-action'));
+        const draggedIndex = allActions.indexOf(draggedElement);
+        const targetIndex = allActions.indexOf(this);
+        
+        draggedElement.remove();
+        
+        if (targetIndex < draggedIndex) {
+          this.parentNode.insertBefore(draggedElement, this);
+        } else {
+          this.parentNode.insertBefore(draggedElement, this.nextSibling);
+        }
+        
+        initializeCrmActionDragAndDrop();
+      }
+      
+      return false;
+    }
+
+    function handleCrmActionDragEnd(e) {
+      this.classList.remove('dragging');
+      
+      document.querySelectorAll('.crm-action').forEach(action => {
+        action.classList.remove('drag-over');
+      });
+      
+      draggedElement = null;
+      draggedElementId = null;
+    }
+
+    // Agent prompt templates
+    const agentPromptTemplates = {
+      general: `Analyze this meeting and provide a comprehensive summary including:
+
+1. **Meeting Overview:**
+   - Meeting purpose and objectives
+   - Key participants and their roles
+   - Main topics discussed
+
+2. **Key Decisions Made:**
+   - Important decisions reached
+   - Action items assigned with owners
+   - Next steps and timelines
+
+3. **Important Insights:**
+   - Key takeaways and learnings
+   - Risks or concerns identified
+   - Opportunities discussed
+
+4. **Follow-up Actions:**
+   - Scheduled follow-up meetings
+   - Deliverables and deadlines
+   - Outstanding questions or issues`,
+
+      meddic: `Analyze this sales conversation and extract MEDDIC information. Return both structured data for CRM updates and conversational insights for the team.
+
+For each MEDDIC element, capture:
+- Metrics: Quantifiable measures of success the customer cares about
+- Economic Buyer: Person who has budget authority and can sign the deal
+- Decision Criteria: Requirements and criteria for vendor selection
+- Decision Process: Timeline, steps, and people involved in making the decision
+- Identify Pain: Business problems they're trying to solve
+- Champion: Internal advocate who will help drive the deal forward
+
+Be specific with names, quotes, and dates. Identify any gaps in MEDDIC that need follow-up.
+
+Return your analysis in this exact JSON format:
+
+{
+  "structured": {
+    "metrics": "Specific quantifiable measures mentioned",
+    "economic_buyer": "Name and title of budget authority",
+    "decision_criteria": "Requirements and selection criteria",
+    "decision_process": "Timeline and decision-making steps",
+    "identified_pain": "Business problems they're solving",
+    "champion": "Internal advocate details"
+  },
+  "conversational": {
+    "summary": "High-level meeting overview with key participants and outcomes",
+    "key_insights": "Important observations and context for the sales team",
+    "meddic_gaps": "Specific gaps in MEDDIC that need follow-up",
+    "next_actions": [
+      "Concrete action items for advancing the deal"
+    ],
+    "risk_flags": "Potential deal risks or concerns identified"
+  }
+}`,
+
+      bant: `Analyze this sales conversation and extract BANT qualification information. Return both structured data for CRM updates and conversational insights for the team.
+
+For each BANT element, capture:
+- Budget: Financial capacity, budget ranges, and funding sources
+- Authority: Decision makers and approval hierarchy
+- Need: Business requirements and desired outcomes
+- Timeline: Decision timeline and implementation schedule
+
+Be specific with names, quotes, and dates. Identify any gaps that need follow-up.
+
+Return your analysis in this exact JSON format:
+
+{
+  "structured": {
+    "budget": "Budget information, ranges, or financial constraints discussed",
+    "authority": "Decision makers, influencers, and approval process identified",
+    "need": "Specific needs, requirements, and use cases mentioned",
+    "timeline": "Timeline information, deadlines, and implementation dates"
+  },
+  "conversational": {
+    "summary": "Brief overview of the call and key discussion points",
+    "key_insights": "Important observations about the opportunity and stakeholders",
+    "bant_gaps": "Specific gaps in BANT qualification that need follow-up",
+    "next_actions": [
+      "Concrete action items for advancing the qualification"
+    ],
+    "qualification_score": "Assessment of how well this opportunity qualifies based on BANT criteria"
+  }
+}`,
+
+      sandler: `Analyze this sales conversation using the Sandler methodology. Return both structured data for CRM updates and conversational insights for the team.
+
+For each Sandler element, capture:
+- Pain: Business problems and emotional impact
+- Budget: Financial capacity and investment appetite
+- Decision: Decision-making process and criteria
+- Timeline: Timeline expectations and urgency indicators
+
+Be specific with names, quotes, and dates. Identify any gaps that need follow-up.
+
+Return your analysis in this exact JSON format:
+
+{
+  "structured": {
+    "pain": "Pain points, challenges, and problems that need solving",
+    "budget": "Budget discussions, financial capacity, and investment appetite",
+    "decision": "Decision-making process, criteria, and stakeholders involved",
+    "timeline": "Timeline expectations, deadlines, and urgency indicators"
+  },
+  "conversational": {
+    "summary": "Brief overview of the call and main discussion points",
+    "key_insights": "Important observations about the prospect and opportunity",
+    "sandler_gaps": "Specific gaps in Sandler qualification that need follow-up",
+    "next_actions": [
+      "Concrete action items for advancing the qualification"
+    ],
+    "qualification_assessment": "Evaluation of the opportunity based on Sandler principles and recommended next steps"
+  }
+}`,
+
+      discovery: `Analyze this sales discovery call and extract key information:
+
+## **Call Summary:**
+Overview of the discovery call including participants and main objectives.
+
+## **Discovery Insights:**
+
+### **Current State:**
+- Current processes and systems in use
+- Pain points and challenges identified
+- What's working well and what isn't
+
+### **Future State:**
+- Desired outcomes and goals
+- Success criteria and metrics
+- Vision for improvement
+
+### **Stakeholders:**
+- Key decision makers and influencers
+- Champions and potential blockers
+- Roles and responsibilities
+
+### **Requirements:**
+- Technical requirements and constraints
+- Business requirements and priorities
+- Integration needs and considerations
+
+### **Competition:**
+- Competitive landscape and alternatives
+- Previous vendors or solutions considered
+- Differentiation opportunities
+
+## **Next Steps:**
+Action items and follow-up activities to advance the opportunity.`,
+
+      technical: `Analyze this technical requirements meeting:
+
+## **Meeting Overview:**
+Summary of the technical discussion and participants involved.
+
+## **Technical Requirements:**
+
+### **System Requirements:**
+- Technical specifications and constraints
+- Performance and scalability needs
+- Security and compliance requirements
+
+### **Integration Requirements:**
+- Existing systems and platforms
+- API requirements and data flows
+- Third-party integrations needed
+
+### **Implementation Considerations:**
+- Deployment preferences and constraints
+- Timeline and resource requirements
+- Training and support needs
+
+### **Technical Concerns:**
+- Risks and challenges identified
+- Technical blockers or limitations
+- Mitigation strategies discussed
+
+## **Technical Decision Criteria:**
+Key factors that will influence the technical evaluation and selection process.
+
+## **Action Items:**
+Technical follow-up tasks and next steps.`,
+
+      custom: `Enter your custom instructions for how the AI agent should analyze your meetings. 
+
+For example:
+- What specific information should be extracted?
+- How should the output be structured?
+- What format should the summary follow?
+- Are there specific topics or themes to focus on?
+
+Be as detailed as possible to ensure the AI understands exactly what you need from your meeting analysis.`
+    };
+
+    // Update agent prompt based on selection
+    function updateAgentPrompt() {
+      const agentSelect = document.getElementById('agentSelection');
+      const promptTextarea = document.getElementById('customPrompt');
+      const selectedAgent = agentSelect ? agentSelect.value : '';
+      
+      if (selectedAgent && agentPromptTemplates[selectedAgent]) {
+        promptTextarea.value = agentPromptTemplates[selectedAgent];
+        updateCharacterCount('customPrompt', 'promptCount');
+        updateTestButtonState();
+      } else if (selectedAgent === '') {
+        promptTextarea.value = '';
+        updateCharacterCount('customPrompt', 'promptCount');
+        updateTestButtonState();
+      }
+    }
+
+    // Agent configuration functions (legacy compatibility)
+    function updateAgentConfig() {
+      const selectedAgent = document.querySelector('input[name="agentType"]:checked');
+      if (selectedAgent) {
+        console.log(`Selected agent: ${selectedAgent.value}`);
+      }
+      // Additional agent-specific configuration can be added here
+    }
+
+    // Apply qualification framework template (legacy compatibility)
+    function applyTemplate(templateName) {
+      // This function is kept for backward compatibility but redirects to CRM template
+      applyCrmTemplate(templateName);
     }
 
     // Structured outputs functionality
@@ -2551,71 +3357,6 @@
       }
     }
 
-    // Toggle CRM writeback functionality
-    function toggleCrmWriteback() {
-      const enableCrmWriteback = document.getElementById('enableCrmWriteback').checked;
-      const crmIntegrationSection = document.getElementById('crmIntegrationSection');
-      
-      if (enableCrmWriteback) {
-        crmIntegrationSection.style.display = 'block';
-      } else {
-        crmIntegrationSection.style.display = 'none';
-        // Reset CRM fields when disabled
-        document.getElementById('crmObject').value = '';
-        document.getElementById('crmField').value = '';
-        document.getElementById('crmFieldGroup').style.display = 'none';
-        document.getElementById('writebackBehaviorGroup').style.display = 'none';
-      }
-    }
-
-    // CRM functionality
-    function updateCrmFields() {
-      const objectSelect = document.getElementById('crmObject');
-      const fieldSelect = document.getElementById('crmField');
-      const fieldGroup = document.getElementById('crmFieldGroup');
-      
-      const selectedObject = objectSelect.value;
-      
-      if (selectedObject && crmFieldMappings[selectedObject]) {
-        // Show the field group
-        fieldGroup.style.display = 'block';
-        
-        // Clear existing options
-        fieldSelect.innerHTML = '<option value="">Select Field</option>';
-        
-        // Add fields for selected object
-        crmFieldMappings[selectedObject].forEach(field => {
-          const option = document.createElement('option');
-          option.value = field.value;
-          option.textContent = field.label;
-          fieldSelect.appendChild(option);
-        });
-      } else {
-        // Hide the field group
-        fieldGroup.style.display = 'none';
-        fieldSelect.innerHTML = '<option value="">Select Field</option>';
-        
-        // Hide writeback options when no object is selected
-        document.getElementById('writebackBehaviorGroup').style.display = 'none';
-      }
-    }
-
-    // Update writeback options visibility
-    function updateWritebackOptions() {
-      const crmField = document.getElementById('crmField').value;
-      const writebackGroup = document.getElementById('writebackBehaviorGroup');
-      
-      if (crmField) {
-        writebackGroup.style.display = 'block';
-      } else {
-        writebackGroup.style.display = 'none';
-      }
-    }
-
-    // Update writeback controls based on selected mode
-    function updateWritebackControls() {
-      // No longer needed since we removed append options, but keeping for compatibility
-    }
 
     // Salesforce functionality (legacy compatibility)
     function updateSalesforceFields() {
@@ -2658,9 +3399,144 @@
       }
     }
 
-    // Test prompt functionality with new UI
+    // Sample outputs for different agents
+    const agentSampleOutputs = {
+      meddic: {
+        "structured": {
+          "metrics": "Reduce customer response time to under 4 hours, increase customer satisfaction score by 25%",
+          "economic_buyer": "Jennifer Walsh, CFO - has final budget authority for technology purchases over $100K",
+          "decision_criteria": "Must integrate with Salesforce, SOC2 compliance required, 99.9% uptime SLA",
+          "decision_process": "Technical evaluation (2 weeks) → Budget approval (1 week) → Final decision by March 31st",
+          "identified_pain": "Support agents using 5 different tools, average response time is 8 hours, customer complaints increasing",
+          "champion": "Michael Chen, VP of Customer Success - very motivated to solve this problem, has CEO's ear"
+        },
+        "conversational": {
+          "summary": "Had a productive discovery call with TechCorp. Michael Chen (VP Customer Success) is frustrated with their current support setup - agents are juggling multiple tools and response times are suffering. Jennifer Walsh from finance joined briefly but mostly listened. They're actively evaluating solutions with a March 31st deadline.",
+          "key_insights": "Michael is highly motivated and has influence with the CEO. They use Salesforce heavily and need tight integration. Previous bad experience with a competitor makes them cautious about implementation.",
+          "meddic_gaps": "Major gaps: (1) Need to confirm Jennifer's exact budget authority (2) Don't know full evaluation criteria beyond integration (3) Haven't identified other stakeholders in decision process (4) No discussion of specific budget range",
+          "next_actions": [
+            "Follow up with Michael to identify all decision stakeholders",
+            "Get detailed integration requirements document",
+            "Schedule call with Jennifer to discuss budget and approval process",
+            "Provide ROI calculator showing 4-hour response time impact"
+          ],
+          "risk_flags": "Jennifer was quiet during the call - need to ensure she's bought in. Timeline is aggressive for their decision process."
+        }
+      },
+      
+      bant: {
+        "structured": {
+          "budget": "$150K-200K allocated for customer support technology this fiscal year",
+          "authority": "Jennifer Walsh (CFO) has final approval, Michael Chen (VP Customer Success) is the business owner",
+          "need": "Consolidate support tools, reduce response times, improve customer satisfaction scores",
+          "timeline": "Decision by March 31st, implementation by June 1st to prepare for busy season"
+        },
+        "conversational": {
+          "summary": "Strong BANT qualification call with TechCorp. Clear budget allocated, identified decision makers, urgent business need, and firm timeline driven by seasonal business requirements.",
+          "key_insights": "Budget is pre-approved which removes a major hurdle. Michael has pain and urgency, Jennifer controls the purse strings. June 1st deadline is firm due to their busy season starting in summer.",
+          "bant_gaps": "Need to understand: (1) What other solutions are they evaluating? (2) Any technical requirements that could disqualify us? (3) Implementation resource availability on their side",
+          "next_actions": [
+            "Send detailed pricing proposal within budget range",
+            "Schedule technical deep-dive with their IT team",
+            "Provide implementation timeline showing June 1st feasibility",
+            "Get list of other vendors they're considering"
+          ],
+          "qualification_score": "Strong BANT - 8/10. Budget confirmed, authority identified, need is urgent, timeline is firm. Only missing competitive landscape details."
+        }
+      },
+      
+      sandler: {
+        "structured": {
+          "pain": "Support team burnout due to tool switching, customer complaints about slow response times, losing customers to competitors with faster support",
+          "budget": "$150K-200K available, Jennifer Walsh controls budget decisions, pain is costing them $50K/month in lost customers",
+          "decision": "Jennifer Walsh makes final call, Michael Chen drives the process, IT team has veto power on technical requirements",
+          "timeline": "Must decide by March 31st, implement by June 1st - missing this deadline means waiting until next fiscal year"
+        },
+        "conversational": {
+          "summary": "Excellent Sandler qualification with TechCorp. Identified significant emotional and financial pain, confirmed budget and decision-making authority, established urgent timeline with consequences.",
+          "key_insights": "Michael is feeling personal pain - his team is burning out and he's getting heat from the CEO about customer complaints. The June 1st deadline creates urgency - missing it means a full year delay.",
+          "sandler_gaps": "Need to explore: (1) What happens if they do nothing? (2) Have they tried to solve this before? (3) What's their biggest fear about making the wrong decision?",
+          "next_actions": [
+            "Quantify the cost of doing nothing vs. our solution",
+            "Get Michael to paint the picture of success 6 months from now",
+            "Understand previous failed attempts to solve this",
+            "Create urgency around the June 1st implementation deadline"
+          ],
+          "qualification_assessment": "Highly qualified opportunity. Pain is both emotional and financial, budget exists, decision process is clear, timeline has real consequences. Recommend moving to proposal stage."
+        }
+      },
+      
+      general: {
+        "structured": {
+          "meeting_purpose": "Discovery call to understand TechCorp's customer support challenges and evaluate potential solutions",
+          "key_participants": "Michael Chen (VP Customer Success), Jennifer Walsh (CFO), Sarah Johnson (IT Director)",
+          "main_topics": "Current support tool challenges, response time issues, budget and timeline for new solution",
+          "decisions_made": "Agreed to technical deep-dive next week, Jennifer will review budget allocation, Michael to send current process documentation"
+        },
+        "conversational": {
+          "summary": "Productive discovery call with TechCorp leadership team. Identified significant challenges with their current support infrastructure and established clear next steps for evaluation process.",
+          "key_insights": "Strong alignment between business (Michael) and finance (Jennifer) on the need for change. IT (Sarah) seems supportive but will need to validate technical requirements. Company is growing fast and current tools aren't scaling.",
+          "follow_up_required": "Technical architecture review, detailed ROI analysis, reference calls with similar companies",
+          "next_actions": [
+            "Schedule technical deep-dive with Sarah's team",
+            "Prepare ROI analysis for Jennifer",
+            "Send case studies from similar high-growth companies",
+            "Follow up on current process documentation from Michael"
+          ],
+          "meeting_outcome": "Positive - moving to next stage of evaluation with clear action items and engaged stakeholders"
+        }
+      },
+      
+      discovery: {
+        "structured": {
+          "current_state": "Using 5 different support tools (Zendesk, Slack, Jira, Confluence, custom scripts), average response time 8 hours, 15-person support team",
+          "future_state": "Unified platform, sub-4 hour response times, automated routing, integrated knowledge base, self-service options for customers",
+          "stakeholders": "Michael Chen (business owner), Jennifer Walsh (budget authority), Sarah Johnson (technical requirements), CEO (final influencer)",
+          "requirements": "Salesforce integration, SOC2 compliance, 99.9% uptime, mobile app for agents, reporting dashboard for executives",
+          "competition": "Evaluated Zendesk last year but didn't proceed due to integration complexity, currently looking at Freshworks and Intercom"
+        },
+        "conversational": {
+          "summary": "Comprehensive discovery session revealing TechCorp's support infrastructure challenges and requirements for a unified solution.",
+          "key_insights": "Previous Zendesk evaluation failed due to integration complexity - this is a key differentiator for us. Mobile access is critical as they have remote support agents. Executive reporting is important for CEO visibility.",
+          "discovery_gaps": "Need to understand: (1) Specific integration pain points with Zendesk (2) Mobile usage patterns (3) Current reporting capabilities (4) Budget for professional services",
+          "next_actions": [
+            "Demo our Salesforce integration capabilities",
+            "Show mobile app functionality",
+            "Provide executive dashboard examples",
+            "Get technical requirements document from Sarah"
+          ],
+          "competitive_position": "Strong advantage over Zendesk due to easier integration. Need to differentiate from Freshworks and Intercom on enterprise features."
+        }
+      },
+      
+      technical: {
+        "structured": {
+          "system_requirements": "Must integrate with Salesforce, support 10,000+ tickets/month, 99.9% uptime SLA, SOC2 Type II compliance",
+          "integration_needs": "Bi-directional Salesforce sync, SSO with Active Directory, API access for custom reporting, webhook support",
+          "implementation_timeline": "2-week technical setup, 2-week user training, 2-week parallel testing, go-live by June 1st",
+          "technical_concerns": "Data migration from 5 existing systems, user adoption across remote team, maintaining SLA during transition"
+        },
+        "conversational": {
+          "summary": "Detailed technical requirements gathering with TechCorp's IT team. Identified integration needs, compliance requirements, and implementation considerations.",
+          "key_insights": "Data migration is their biggest concern - they've been burned before. SSO integration is mandatory for security. Remote team needs mobile-first solution.",
+          "technical_risks": "Tight timeline for data migration and testing. Complex integration requirements may extend implementation. User training for remote team will be challenging.",
+          "next_actions": [
+            "Provide detailed data migration plan",
+            "Demo SSO integration process",
+            "Show mobile app capabilities",
+            "Schedule technical architecture review"
+          ],
+          "implementation_feasibility": "Achievable with proper planning. Recommend phased rollout starting with pilot group to reduce risk and ensure smooth transition."
+        }
+      }
+    };
+
+    // Test prompt functionality with realistic agent-specific output
     function testPrompt() {
-      const prompt = document.getElementById('customPrompt').value;
+      const customPromptEl = document.getElementById('customPrompt');
+      const prompt = customPromptEl ? customPromptEl.value : '';
+      const agentSelect = document.getElementById('agentSelection');
+      const selectedAgent = agentSelect ? agentSelect.value : '';
       const testPlaceholder = document.getElementById('testPlaceholder');
       const testResults = document.getElementById('testResults');
       const testLoading = document.getElementById('testLoading');
@@ -2676,27 +3552,55 @@
       testResults.classList.add('hidden');
       testLoading.classList.remove('hidden');
       
-      // Simulate API call with sample data
+      // Simulate API call with agent-specific sample data
       setTimeout(() => {
-        const sampleResult = `
-<strong>1. Key Topics Discussed:</strong><br>
-• Product roadmap and upcoming features<br>
-• Integration requirements with existing systems<br>
-• Pricing structure for enterprise package<br>
-• Timeline for implementation (Q2 2024)<br><br>
+        let sampleResult = '';
+        
+        if (selectedAgent && agentSampleOutputs[selectedAgent]) {
+          // Show structured JSON output for the selected agent
+          const output = agentSampleOutputs[selectedAgent];
+          sampleResult = `
+<div style="background: #f8f9fa; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+  <strong>Structured JSON Output:</strong>
+</div>
+<pre style="background: #f1f3f4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.875rem; line-height: 1.4;"><code>${JSON.stringify(output, null, 2)}</code></pre>
+<div style="margin-top: 1rem; padding: 0.75rem; background: #e3f2fd; border-left: 4px solid #1976d2; border-radius: 0.25rem;">
+  <strong>💡 CRM Mapping:</strong> The "structured" fields above can be mapped to your CRM fields in the CRM Actions section below.
+</div>
+<div style="margin-top: 0.5rem; font-size: 0.875rem; color: #666;">
+  <em>This is a sample output based on a realistic sales conversation. Actual results will vary based on your meeting content.</em>
+</div>
+          `;
+        } else {
+          // Generic output for custom prompts
+          sampleResult = `
+<div style="background: #f8f9fa; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+  <strong>Sample Output:</strong>
+</div>
+<div style="background: #f1f3f4; padding: 1rem; border-radius: 0.5rem;">
+  <strong>Meeting Analysis Results:</strong><br><br>
+  
+  <strong>Key Topics Discussed:</strong><br>
+  • Product roadmap and upcoming features<br>
+  • Integration requirements with existing systems<br>
+  • Pricing structure for enterprise package<br>
+  • Timeline for implementation (Q2 2024)<br><br>
 
-<strong>2. Action Items:</strong><br>
-• John Smith to send technical specifications by Friday<br>
-• Sarah Johnson to prepare pricing proposal by next week<br>
-• Schedule follow-up demo for decision makers<br><br>
+  <strong>Action Items:</strong><br>
+  • John Smith to send technical specifications by Friday<br>
+  • Sarah Johnson to prepare pricing proposal by next week<br>
+  • Schedule follow-up demo for decision makers<br><br>
 
-<strong>3. Next Steps:</strong><br>
-• Technical deep-dive meeting scheduled for March 15th<br>
-• Budget approval needed from finance team<br>
-• Final decision expected by end of month<br><br>
-
-<em>Note: This is a sample output based on your prompt structure. Actual results will vary based on meeting content.</em>
-        `;
+  <strong>Next Steps:</strong><br>
+  • Technical deep-dive meeting scheduled for March 15th<br>
+  • Budget approval needed from finance team<br>
+  • Final decision expected by end of month
+</div>
+<div style="margin-top: 1rem; font-size: 0.875rem; color: #666;">
+  <em>This is a sample output. For structured JSON output that can be mapped to CRM fields, select a specific agent above (MEDDIC, BANT, etc.).</em>
+</div>
+          `;
+        }
         
         // Hide loading, show results
         testLoading.classList.add('hidden');
@@ -2705,68 +3609,225 @@
       }, 1500);
     }
 
-    // Load summary for editing
-    function loadSummaryForEdit(editId) {
-      // Get summary data from localStorage
-      const editingSummary = localStorage.getItem('editingSummary');
-      if (!editingSummary) {
-        alert('Summary data not found. Redirecting to custom summaries page.');
-        window.location.href = 'custom-summaries.html';
-        return;
+    // NEW: EditSummaryManager Class - Robust Edit Functionality
+    class EditSummaryManager {
+      constructor() {
+        this.summaryData = null;
+        this.editMode = false;
+        this.editId = null;
       }
       
-      const summaryData = JSON.parse(editingSummary);
-      
-      // Update page title and button text for edit mode
-      document.title = 'Edit Custom Summary - Chorus by ZoomInfo';
-      document.querySelector('h1').textContent = 'Edit Custom Summary';
-      document.querySelector('.btn-primary').textContent = 'Update Custom Summary';
-      
-      // Pre-fill form with existing data
-      document.getElementById('summaryName').value = summaryData.name || '';
-      document.getElementById('summaryDescription').value = summaryData.description || '';
-      document.getElementById('customPrompt').value = summaryData.prompt || '';
-      document.getElementById('salesforceObject').value = summaryData.salesforceObject || '';
-      
-      // Update character counts
-      updateCharacterCount('summaryName', 'nameCount');
-      updateCharacterCount('summaryDescription', 'descriptionCount');
-      updateCharacterCount('customPrompt', 'promptCount');
-      
-      // Trigger field update for Salesforce fields
-      updateSalesforceFields();
-      
-      // Set Salesforce field after fields are populated
-      setTimeout(() => {
-        document.getElementById('salesforceField').value = summaryData.salesforceField || '';
-      }, 100);
-      
-      // Initialize empty states for triggers and structured outputs
-      updateTriggerEmptyState();
-      updateStructuredOutputsEmptyState();
-      
-      // Load structured outputs if they exist
-      if (summaryData.structuredOutputs && summaryData.structuredOutputs.length > 0) {
-        setTimeout(() => {
-          loadStructuredOutputs(summaryData.structuredOutputs);
-        }, 200);
+      // Safe element access with null checks
+      safeGetElement(id) {
+        const element = document.getElementById(id);
+        if (!element) {
+          console.warn(`Element with id '${id}' not found`);
+        }
+        return element;
       }
       
-      // Load delivery settings if they exist
-      if (summaryData.slackDelivery) {
-        setTimeout(() => {
-          const slackCheckbox = document.getElementById('slackDelivery');
-          if (slackCheckbox) {
-            slackCheckbox.checked = true;
+      // Safe value setting with comprehensive validation
+      safeSetValue(elementId, value, defaultValue = '') {
+        const element = this.safeGetElement(elementId);
+        if (element && value !== undefined && value !== null) {
+          element.value = value;
+          return true;
+        } else if (element && defaultValue !== '') {
+          element.value = defaultValue;
+          return true;
+        }
+        return false;
+      }
+      
+      // Initialize edit mode with data validation
+      initializeEdit(editId) {
+        try {
+          this.editId = editId;
+          this.editMode = true;
+          
+          // Get summary data from localStorage
+          const editingSummary = localStorage.getItem('editingSummary');
+          if (!editingSummary) {
+            this.handleError('Summary data not found', 'Redirecting to custom summaries page.');
+            return false;
           }
-        }, 100);
+          
+          this.summaryData = JSON.parse(editingSummary);
+          return this.populateForm();
+        } catch (error) {
+          console.error('Error initializing edit mode:', error);
+          this.handleError('Error loading summary data', 'Please try again.');
+          return false;
+        }
       }
       
-      // Store the edit ID for later use
-      window.editingSummaryId = editId;
+      // Populate form with comprehensive error handling
+      populateForm() {
+        try {
+          // Update page elements for edit mode
+          this.updatePageForEditMode();
+          
+          // Populate basic fields
+          this.populateBasicFields();
+          
+          // Update character counts
+          this.updateAllCharacterCounts();
+          
+          // Load triggers with delay for proper rendering
+          setTimeout(() => this.loadTriggers(), 200);
+          
+          // Store edit ID for later use
+          window.editingSummaryId = this.editId;
+          
+          // Clean up localStorage
+          localStorage.removeItem('editingSummary');
+          
+          return true;
+        } catch (error) {
+          console.error('Error populating form:', error);
+          this.handleError('Error loading form data', 'Some fields may not be populated correctly.');
+          return false;
+        }
+      }
       
-      // Clean up localStorage
-      localStorage.removeItem('editingSummary');
+      // Update page elements for edit mode
+      updatePageForEditMode() {
+        document.title = 'Edit Custom Summary - Chorus by ZoomInfo';
+        
+        const h1Element = document.querySelector('h1');
+        if (h1Element) {
+          h1Element.textContent = 'Edit Custom Summary';
+        }
+        
+        const primaryButton = document.querySelector('.btn-primary');
+        if (primaryButton) {
+          primaryButton.textContent = 'Update Custom Summary';
+        }
+      }
+      
+      // Populate basic form fields with safe access
+      populateBasicFields() {
+        if (!this.summaryData) return;
+        
+        this.safeSetValue('summaryName', this.summaryData.name);
+        this.safeSetValue('summaryDescription', this.summaryData.description);
+        this.safeSetValue('customPrompt', this.summaryData.prompt);
+        
+        // Handle agent selection
+        const agentSelect = this.safeGetElement('agentSelection');
+        if (agentSelect && this.summaryData.agent) {
+          agentSelect.value = this.summaryData.agent;
+        }
+      }
+      
+      // Update all character counts safely
+      updateAllCharacterCounts() {
+        const fields = [
+          { inputId: 'summaryName', countId: 'nameCount' },
+          { inputId: 'summaryDescription', countId: 'descriptionCount' },
+          { inputId: 'customPrompt', countId: 'promptCount' }
+        ];
+        
+        fields.forEach(field => {
+          try {
+            if (typeof updateCharacterCount === 'function') {
+              updateCharacterCount(field.inputId, field.countId);
+            }
+          } catch (error) {
+            console.warn(`Error updating character count for ${field.inputId}:`, error);
+          }
+        });
+      }
+      
+      // Load triggers with proper error handling
+      loadTriggers() {
+        try {
+          if (this.summaryData?.triggers && this.summaryData.triggers.length > 0) {
+            if (typeof setTriggerConditions === 'function') {
+              setTriggerConditions(this.summaryData.triggers);
+            } else {
+              console.warn('setTriggerConditions function not available');
+              this.initializeEmptyTriggers();
+            }
+          } else {
+            this.initializeEmptyTriggers();
+          }
+        } catch (error) {
+          console.error('Error loading triggers:', error);
+          this.initializeEmptyTriggers();
+        }
+      }
+      
+      // Initialize empty trigger state safely
+      initializeEmptyTriggers() {
+        try {
+          if (typeof updateTriggerEmptyState === 'function') {
+            updateTriggerEmptyState();
+          }
+        } catch (error) {
+          console.warn('Error initializing empty trigger state:', error);
+        }
+      }
+      
+      // Initialize empty CRM actions state safely
+      initializeEmptyCrmActions() {
+        try {
+          const crmActionsContainer = this.safeGetElement('crmActions');
+          if (crmActionsContainer) {
+            crmActionsContainer.innerHTML = '';
+            if (typeof updateCrmActionsEmptyState === 'function') {
+              updateCrmActionsEmptyState();
+            }
+          }
+        } catch (error) {
+          console.warn('Error initializing CRM actions:', error);
+        }
+      }
+      
+      // Handle errors gracefully
+      handleError(title, message) {
+        console.error(`${title}: ${message}`);
+        alert(`${title}. ${message}`);
+        
+        // Redirect to custom summaries page on critical errors
+        if (title.includes('not found') || title.includes('loading')) {
+          setTimeout(() => {
+            window.location.href = 'custom-summaries.html';
+          }, 1000);
+        }
+      }
+    }
+    
+    // Global EditSummaryManager instance
+    let editSummaryManager = null;
+
+    // REBUILT: Load summary for editing with new robust manager
+    function loadSummaryForEdit(editId) {
+      console.log('Loading summary for edit with ID:', editId);
+      
+      try {
+        // Create new EditSummaryManager instance
+        editSummaryManager = new EditSummaryManager();
+        
+        // Initialize edit mode
+        if (editSummaryManager.initializeEdit(editId)) {
+          console.log('Edit mode initialized successfully');
+          // Initialize CRM actions - apply Sandler template for edit=6
+          if (editId === '6') {
+            // Apply Sandler template for this specific summary
+            setTimeout(() => applyCrmTemplate('sandler'), 300);
+          } else {
+            // Initialize empty state for all other summaries
+            editSummaryManager.initializeEmptyCrmActions();
+          }
+        } else {
+          console.error('Failed to initialize edit mode');
+        }
+      } catch (error) {
+        console.error('Error in loadSummaryForEdit:', error);
+        alert('Error loading summary for editing. Redirecting to custom summaries page.');
+        window.location.href = 'custom-summaries.html';
+      }
     }
 
     // Load structured outputs for editing
